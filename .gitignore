@@ -1,0 +1,14 @@
+build/
+*.tar.gz
+*.AppImage
+*.deb
+*.exe
+*.dmg
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+.cache/
+*.o
+*.a
+*.so

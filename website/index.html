@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>أذكاري — Azkare | أذكار وأدعية على سطح مكتبك</title>
+  <meta name="description" content="تطبيق مكتبي مفتوح المصدر يعرض الأذكار والأدعية الأصيلة على خلفية سطح مكتبك — Linux وWindows وmacOS" />
+  <meta name="theme-color" content="#243C4C" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════════════════════ -->
+<header class="site-header" id="top">
+  <nav class="nav-inner">
+    <a href="#top" class="nav-logo" aria-label="أذكاري">
+      <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true">
+        <circle cx="18" cy="18" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="18" y="24" text-anchor="middle" font-family="Amiri,serif" font-size="16" fill="currentColor">ذ</text>
+      </svg>
+      <span class="logo-text" data-ar="أذكاري" data-en="Azkare">أذكاري</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#features"  data-ar="المميزات"      data-en="Features">المميزات</a></li>
+      <li><a href="#download"  data-ar="التحميل"       data-en="Download">التحميل</a></li>
+      <li><a href="#developer" data-ar="المطور"        data-en="Developer">المطور</a></li>
+      <li>
+        <a href="https://github.com/arcalc/azkare" class="nav-github" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38l-.01-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language">
+        <span data-ar="English" data-en="عربي">English</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════════════════════ -->
+<main>
+<section class="hero" id="hero">
+  <div class="hero-bg-grid" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span data-ar="مفتوح المصدر · Linux · Windows · macOS"
+            data-en="Open Source · Linux · Windows · macOS">مفتوح المصدر · Linux · Windows · macOS</span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="hero-title-ar" data-ar="أذكار وأدعية" data-en="Adhkar &amp; Duas">أذكار وأدعية</span>
+      <span class="hero-title-sub" data-ar="على سطح مكتبك — دائمًا" data-en="on your desktop — always">على سطح مكتبك — دائمًا</span>
+    </h1>
+
+    <p class="hero-body" data-ar="يعرض أذكاري أكثر من ٥٠٠ ذكر ودعاء أصيل مباشرةً فوق خلفية سطح مكتبك، تحت نوافذ تطبيقاتك، مع إشعارات دورية تُذكّرك بذكر الله طوال يومك."
+                         data-en="Azkare displays 500+ verified Adhkar and Duas directly above your desktop wallpaper, beneath your application windows, with periodic notifications to keep you remembering Allah throughout your day.">
+      يعرض أذكاري أكثر من ٥٠٠ ذكر ودعاء أصيل مباشرةً فوق خلفية سطح مكتبك، تحت نوافذ تطبيقاتك، مع إشعارات دورية تُذكّرك بذكر الله طوال يومك.
+    </p>
+
+    <div class="hero-cta-row">
+      <a href="#download" class="btn-primary" id="heroCta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span data-ar="تحميل أذكاري" data-en="Download Azkare">تحميل أذكاري</span>
+      </a>
+      <a href="https://github.com/arcalc/azkare" class="btn-ghost" target="_blank" rel="noopener">
+        <span data-ar="عرض المصدر" data-en="View Source">عرض المصدر</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">+٥٠٠</span>
+        <span class="stat-lbl" data-ar="ذكر ودعاء" data-en="Adhkar &amp; Duas">ذكر ودعاء</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat">
+        <span class="stat-num">٣</span>
+        <span class="stat-lbl" data-ar="أنظمة تشغيل" data-en="Platforms">أنظمة تشغيل</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat">
+        <span class="stat-num">٦</span>
+        <span class="stat-lbl" data-ar="خطوط عربية مدمجة" data-en="Bundled Arabic Fonts">خطوط عربية مدمجة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop mockup -->
+  <div class="hero-mockup" aria-hidden="true">
+    <div class="mockup-screen">
+      <div class="mockup-wallpaper">
+        <!-- Simulated desktop with wallpaper gradient -->
+        <div class="mockup-overlay-text">
+          <div class="dhikr-line amiri">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        </div>
+        <!-- Floating app windows above the overlay -->
+        <div class="mockup-window mockup-window-1">
+          <div class="win-bar"><span></span><span></span><span></span></div>
+          <div class="win-content"></div>
+        </div>
+        <div class="mockup-window mockup-window-2">
+          <div class="win-bar"><span></span><span></span><span></span></div>
+          <div class="win-content"></div>
+        </div>
+      </div>
+      <div class="mockup-taskbar">
+        <div class="taskbar-icon">⚙</div>
+        <div class="taskbar-icon">◉</div>
+        <div class="taskbar-icon tray-icon">ذ</div>
+      </div>
+    </div>
+    <!-- Z-order legend -->
+    <div class="mockup-legend">
+      <div class="legend-row"><span class="legend-box app"></span><span data-ar="نوافذ التطبيقات" data-en="App Windows">نوافذ التطبيقات</span></div>
+      <div class="legend-row"><span class="legend-box dhikr"></span><span data-ar="نص الذكر (أذكاري)" data-en="Dhikr text (Azkare)">نص الذكر (أذكاري)</span></div>
+      <div class="legend-row"><span class="legend-box wallpaper"></span><span data-ar="خلفية سطح المكتب" data-en="Desktop Wallpaper">خلفية سطح المكتب</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="ما يميّز أذكاري" data-en="What makes Azkare different">ما يميّز أذكاري</h2>
+    <p class="section-sub" data-ar="مصمم للمستخدم العادي، مبني بمعايير المطور" data-en="Designed for everyday users, built to developer standards">مصمم للمستخدم العادي، مبني بمعايير المطور</p>
+
+    <div class="features-grid">
+
+      <article class="feature-card feature-primary">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <h3 data-ar="طبقة سطح المكتب" data-en="Desktop Wallpaper Layer">طبقة سطح المكتب</h3>
+        <p data-ar="يظهر نص الذكر مباشرةً فوق الخلفية وتحت جميع نوافذ تطبيقاتك — لا يسرق تركيزك ولا يُعيق عملك."
+           data-en="The Dhikr text appears directly above your wallpaper and beneath all your application windows — it never steals focus or disrupts your workflow.">
+          يظهر نص الذكر مباشرةً فوق الخلفية وتحت جميع نوافذ تطبيقاتك — لا يسرق تركيزك ولا يُعيق عملك.
+        </p>
+        <div class="feature-tag" data-ar="Linux · Windows · macOS" data-en="Linux · Windows · macOS">Linux · Windows · macOS</div>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 data-ar="+٥٠٠ ذكر موثّق" data-en="500+ Verified Adhkar">+٥٠٠ ذكر موثّق</h3>
+        <p data-ar="قاعدة بيانات أذكار وأدعية مصدرها الدرر السنية وإسلام ويب والإسلام سؤال وجواب، مع مرجع كل حديث."
+           data-en="A verified database sourced from Dorar.net, IslamWeb, and IslamQA — every entry carries its hadith reference.">
+          قاعدة بيانات أذكار وأدعية مصدرها الدرر السنية وإسلام ويب والإسلام سؤال وجواب، مع مرجع كل حديث.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <h3 data-ar="خطوط عربية مدمجة" data-en="Bundled Arabic Fonts">خطوط عربية مدمجة</h3>
+        <p data-ar="أميري، شهرزاد، نوتو نسخ عربي، كايرو وغيرها — مدمجة داخل التطبيق، لا حاجة لتثبيت شيء."
+           data-en="Amiri, Scheherazade, Noto Naskh Arabic, Cairo and more — bundled inside the app, nothing to install separately.">
+          أميري، شهرزاد، نوتو نسخ عربي، كايرو وغيرها — مدمجة داخل التطبيق، لا حاجة لتثبيت شيء.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 data-ar="توقيت مرن" data-en="Flexible Timer">توقيت مرن</h3>
+        <p data-ar="تحكم كامل في مدة عرض كل ذكر: ٣٠ ثانية، دقيقة، ٥ دقائق، أو أي مدة مخصصة تختارها."
+           data-en="Full control over how long each Dhikr stays on screen: 30 seconds, 1 minute, 5 minutes, or any custom duration.">
+          تحكم كامل في مدة عرض كل ذكر: ٣٠ ثانية، دقيقة، ٥ دقائق، أو أي مدة مخصصة تختارها.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+          </svg>
+        </div>
+        <h3 data-ar="إشعارات ذكية" data-en="Smart Notifications">إشعارات ذكية</h3>
+        <p data-ar="إشعارات نظام أصلية تذكّرك بذكر جديد وفق الفترة التي تختارها — libnotify على لينكس، Toast على ويندوز، UNUserNotification على macOS."
+           data-en="Native system notifications remind you of a new Dhikr at your chosen interval — libnotify on Linux, Toast on Windows, UNUserNotification on macOS.">
+          إشعارات نظام أصلية تذكّرك بذكر جديد وفق الفترة التي تختارها — libnotify على لينكس، Toast على ويندوز، UNUserNotification على macOS.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </div>
+        <h3 data-ar="تحديثات تلقائية" data-en="Auto-Updater">تحديثات تلقائية</h3>
+        <p data-ar="يتحقق أذكاري من أحدث إصدار على GitHub ويعرض ملاحظات التحديث داخل التطبيق، مع رابط مباشر للتنزيل."
+           data-en="Azkare checks GitHub for the latest release, shows the release notes inside the app, and provides a direct download link.">
+          يتحقق أذكاري من أحدث إصدار على GitHub ويعرض ملاحظات التحديث داخل التطبيق، مع رابط مباشر للتنزيل.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+          </svg>
+        </div>
+        <h3 data-ar="دعم eww على لينكس" data-en="eww Support on Linux">دعم eww على لينكس</h3>
+        <p data-ar="مستخدمو لينكس المتقدمون يمكنهم اختيار eww كمحرك عرض بديل — يقوم أذكاري بإنشاء الإعدادات والتواصل معه تلقائيًا."
+           data-en="Advanced Linux users can choose eww as an alternative rendering backend — Azkare auto-generates the config and communicates with it.">
+          مستخدمو لينكس المتقدمون يمكنهم اختيار eww كمحرك عرض بديل — يقوم أذكاري بإنشاء الإعدادات والتواصل معه تلقائيًا.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <h3 data-ar="مناسب للجميع" data-en="Built for Everyone">مناسب للجميع</h3>
+        <p data-ar="كل إعداد مرفق بشرح واضح بلغة بسيطة — صُمّم للمستخدم الذي لا يعرف شيئًا عن التقنية."
+           data-en="Every setting comes with a plain-language explanation card — designed for users with zero technical background.">
+          كل إعداد مرفق بشرح واضح بلغة بسيطة — صُمّم للمستخدم الذي لا يعرف شيئًا عن التقنية.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     DOWNLOAD
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="download" id="download">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="تحميل وتثبيت" data-en="Download &amp; Install">تحميل وتثبيت</h2>
+    <p class="section-sub" data-ar="يتم جلب آخر إصدار من GitHub تلقائيًا" data-en="Latest release fetched automatically from GitHub">يتم جلب آخر إصدار من GitHub تلقائيًا</p>
+
+    <!-- Version badge (populated by JS) -->
+    <div class="version-banner" id="versionBanner" aria-live="polite">
+      <span class="version-dot"></span>
+      <span id="versionText" data-ar="جارٍ جلب الإصدار..." data-en="Fetching version...">جارٍ جلب الإصدار...</span>
+    </div>
+
+    <!-- Platform tabs -->
+    <div class="platform-tabs" role="tablist" aria-label="Platform">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="linux"   id="tab-linux">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        Linux
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="windows" id="tab-windows">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+        Windows
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="macos" id="tab-macos">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+        macOS
+      </button>
+    </div>
+
+    <!-- Tab panels -->
+    <div class="tab-panels">
+
+      <!-- Linux -->
+      <div class="tab-panel active" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux">
+        <div class="download-actions">
+          <a href="#" class="btn-primary btn-download" id="dl-linux-appimage" data-asset="linux-appimage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-ar="تحميل AppImage" data-en="Download AppImage">تحميل AppImage</span>
+          </a>
+          <a href="#" class="btn-ghost btn-download" id="dl-linux-deb" data-asset="linux-deb">
+            .deb (Ubuntu / Debian)
+          </a>
+        </div>
+
+        <div class="install-steps">
+          <h4 data-ar="خطوات التثبيت" data-en="Installation Steps">خطوات التثبيت</h4>
+
+          <div class="step">
+            <span class="step-num">١</span>
+            <div class="step-body">
+              <strong data-ar="تحميل AppImage" data-en="Download the AppImage">تحميل AppImage</strong>
+              <p data-ar="انقر على زر التحميل أعلاه لتحميل ملف AppImage." data-en="Click the download button above to get the AppImage file.">انقر على زر التحميل أعلاه لتحميل ملف AppImage.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">٢</span>
+            <div class="step-body">
+              <strong data-ar="منح صلاحية التنفيذ" data-en="Make it executable">منح صلاحية التنفيذ</strong>
+              <p data-ar="افتح الطرفية في مجلد التحميل ونفّذ:" data-en="Open a terminal in your Downloads folder and run:">افتح الطرفية في مجلد التحميل ونفّذ:</p>
+              <code class="code-block">chmod +x Azkare-*.AppImage</code>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">٣</span>
+            <div class="step-body">
+              <strong data-ar="تشغيل التطبيق" data-en="Run the app">تشغيل التطبيق</strong>
+              <p data-ar="انقر نقرًا مزدوجًا على الملف، أو نفّذ:" data-en="Double-click the file, or run:">انقر نقرًا مزدوجًا على الملف، أو نفّذ:</p>
+              <code class="code-block">./Azkare-*.AppImage</code>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">٤</span>
+            <div class="step-body">
+              <strong data-ar="إعداد التشغيل التلقائي (اختياري)" data-en="Enable autostart (optional)">إعداد التشغيل التلقائي (اختياري)</strong>
+              <p data-ar="من داخل الإعدادات ← عام، فعّل خيار التشغيل عند بدء النظام." data-en="From Settings → General, enable the autostart toggle.">من داخل الإعدادات ← عام، فعّل خيار التشغيل عند بدء النظام.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="alt-install" data-ar="للبناء من المصدر: " data-en="To build from source: ">للبناء من المصدر:
+          <a href="https://github.com/arcalc/azkare#building" target="_blank" rel="noopener">github.com/arcalc/azkare#building</a>
+        </p>
+      </div>
+
+      <!-- Windows -->
+      <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows">
+        <div class="download-actions">
+          <a href="#" class="btn-primary btn-download" id="dl-win-installer" data-asset="windows-setup">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-ar="تحميل المثبّت (.exe)" data-en="Download Installer (.exe)">تحميل المثبّت (.exe)</span>
+          </a>
+        </div>
+
+        <div class="install-steps">
+          <h4 data-ar="خطوات التثبيت" data-en="Installation Steps">خطوات التثبيت</h4>
+          <div class="step"><span class="step-num">1</span><div class="step-body"><strong data-ar="تحميل المثبّت" data-en="Download the installer">تحميل المثبّت</strong><p data-ar="انقر على زر التحميل." data-en="Click the download button.">انقر على زر التحميل.</p></div></div>
+          <div class="step"><span class="step-num">2</span><div class="step-body"><strong data-ar="تشغيل المثبّت" data-en="Run the installer">تشغيل المثبّت</strong><p data-ar="انقر نقرًا مزدوجًا على ملف .exe واتبع التعليمات." data-en="Double-click the .exe and follow the prompts.">انقر نقرًا مزدوجًا على ملف .exe واتبع التعليمات.</p></div></div>
+          <div class="step"><span class="step-num">3</span><div class="step-body"><strong data-ar="ابحث عن أيقونة الشريط" data-en="Find the tray icon">ابحث عن أيقونة الشريط</strong><p data-ar="ستجد أيقونة أذكاري في شريط المهام بالقرب من الساعة." data-en="Find the Azkare icon in your taskbar near the clock.">ستجد أيقونة أذكاري في شريط المهام بالقرب من الساعة.</p></div></div>
+        </div>
+      </div>
+
+      <!-- macOS -->
+      <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
+        <div class="download-actions">
+          <a href="#" class="btn-primary btn-download" id="dl-mac-dmg" data-asset="macos-dmg">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-ar="تحميل .dmg" data-en="Download .dmg">تحميل .dmg</span>
+          </a>
+        </div>
+
+        <div class="install-steps">
+          <h4 data-ar="خطوات التثبيت" data-en="Installation Steps">خطوات التثبيت</h4>
+          <div class="step"><span class="step-num">1</span><div class="step-body"><strong data-ar="فتح ملف .dmg" data-en="Open the .dmg">فتح ملف .dmg</strong><p data-ar="انقر نقرًا مزدوجًا على ملف .dmg." data-en="Double-click the .dmg file.">انقر نقرًا مزدوجًا على ملف .dmg.</p></div></div>
+          <div class="step"><span class="step-num">2</span><div class="step-body"><strong data-ar="سحب إلى التطبيقات" data-en="Drag to Applications">سحب إلى التطبيقات</strong><p data-ar="اسحب أيقونة أذكاري إلى مجلد التطبيقات." data-en="Drag the Azkare icon into your Applications folder.">اسحب أيقونة أذكاري إلى مجلد التطبيقات.</p></div></div>
+          <div class="step"><span class="step-num">3</span><div class="step-body"><strong data-ar="السماح بالتشغيل" data-en="Allow first launch">السماح بالتشغيل</strong><p data-ar="إذا ظهر تحذير Gatekeeper، اضغط نقرًا بزر الفأرة الأيمن → فتح." data-en="If Gatekeeper warns you, right-click → Open.">إذا ظهر تحذير Gatekeeper، اضغط نقرًا بزر الفأرة الأيمن → فتح.</p></div></div>
+        </div>
+      </div>
+
+    </div><!-- /.tab-panels -->
+
+    <p class="fallback-link">
+      <span data-ar="آخر إصدار دائمًا متاح على" data-en="Latest release always available on">آخر إصدار دائمًا متاح على</span>
+      <a href="https://github.com/arcalc/azkare/releases" target="_blank" rel="noopener">github.com/arcalc/azkare/releases</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     DHIKR PREVIEW
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="dhikr-preview" id="preview">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="من المحتوى" data-en="From the Content">من المحتوى</h2>
+    <div class="dhikr-cards">
+      <article class="dhikr-card">
+        <p class="dhikr-arabic amiri">أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ</p>
+        <p class="dhikr-source">أبو داود ٥٠٧٦ · أذكار الصباح</p>
+      </article>
+      <article class="dhikr-card">
+        <p class="dhikr-arabic amiri">يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ</p>
+        <p class="dhikr-source">الحاكم · أذكار الصباح</p>
+      </article>
+      <article class="dhikr-card">
+        <p class="dhikr-arabic amiri">رَبِّ زِدْنِي عِلْمًا</p>
+        <p class="dhikr-source">طه ٢٠:١١٤ · أدعية قرآنية</p>
+      </article>
+      <article class="dhikr-card">
+        <p class="dhikr-arabic amiri">اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعِلْمَ النَّافِعَ وَالرِّزْقَ الطَّيِّبَ وَالْعَمَلَ الْمُتَقَبَّلَ</p>
+        <p class="dhikr-source">ابن ماجه ٩٢٥ · أدعية عامة</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     DEVELOPER
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="developer" id="developer">
+  <div class="section-inner developer-inner">
+    <div class="dev-bio">
+      <div class="dev-avatar" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60">
+          <circle cx="30" cy="30" r="29" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="30" y="38" text-anchor="middle" font-family="Amiri,serif" font-size="22" fill="currentColor">م</text>
+        </svg>
+      </div>
+      <div>
+        <h2 data-ar="Mahmoud El Sheikh" data-en="Mahmoud El Sheikh">Mahmoud El Sheikh</h2>
+        <p class="dev-handle">arcalc</p>
+        <p class="dev-desc"
+           data-ar="مطور مفتوح المصدر متخصص في أدوات أمان لينكس، تطبيقات C++/Qt سطح مكتب، ومشاريع الويب."
+           data-en="Open-source developer specializing in Linux security tools, C++/Qt desktop applications, and web projects.">
+          مطور مفتوح المصدر متخصص في أدوات أمان لينكس، تطبيقات C++/Qt سطح مكتب، ومشاريع الويب.
+        </p>
+      </div>
+    </div>
+
+    <div class="dev-links">
+      <a href="https://arcalc.github.io/arcalc" class="dev-link" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span data-ar="الموقع الشخصي" data-en="Portfolio">الموقع الشخصي</span>
+      </a>
+      <a href="https://github.com/arcalc/azkare" class="dev-link" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38l-.01-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <a href="mailto:arcalc@proton.me" class="dev-link">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        arcalc@proton.me
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <a href="#top" class="nav-logo">
+        <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="18" y="24" text-anchor="middle" font-family="Amiri,serif" font-size="16" fill="currentColor">ذ</text>
+        </svg>
+        <span class="logo-text">أذكاري</span>
+      </a>
+      <p data-ar="مفتوح المصدر · MIT License" data-en="Open Source · MIT License">مفتوح المصدر · MIT License</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/arcalc/azkare" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/arcalc/azkare/releases" target="_blank" rel="noopener" data-ar="الإصدارات" data-en="Releases">الإصدارات</a>
+      <a href="https://github.com/arcalc/azkare/issues" target="_blank" rel="noopener" data-ar="الإبلاغ عن مشكلة" data-en="Report Issue">الإبلاغ عن مشكلة</a>
+      <a href="https://arcalc.github.io/arcalc" target="_blank" rel="noopener" data-ar="المطور" data-en="Developer">المطور</a>
+    </div>
+    <p class="footer-copy">
+      <span data-ar="بناه بـ ♥ " data-en="Built with ♥ by ">بناه بـ ♥ </span>
+      <a href="https://arcalc.github.io/arcalc" target="_blank" rel="noopener">arcalc</a>
+    </p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

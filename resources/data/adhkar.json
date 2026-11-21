@@ -1,0 +1,584 @@
+{
+  "version": "1.0.0",
+  "schema": "azkare-adhkar-v1",
+  "total": 520,
+  "categories": [
+    {
+      "id": "morning",
+      "name_ar": "أذكار الصباح",
+      "name_en": "Morning Adhkar",
+      "entries": [
+        {
+          "id": "m001",
+          "text_ar": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "transliteration": "Asbahna wa-asbahal-mulku lillah, wal-hamdu lillah, la ilaha illallahu wahdahu la sharika lah, lahul-mulku walahul-hamdu wahuwa ala kulli shay'in qadir",
+          "translation_en": "We have entered the morning and the whole kingdom of Allah entered the morning. All praise is for Allah. None has the right to be worshipped except Allah, alone without partner. His is the dominion, to Him belongs all praise, and He is over all things capable.",
+          "repeat": 1,
+          "source": {
+            "ref": "Abu Dawud 5076",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122052"
+          }
+        },
+        {
+          "id": "m002",
+          "text_ar": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
+          "transliteration": "Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namutu, wa ilayka-n-nushur",
+          "translation_en": "O Allah, by You we enter the morning, and by You we enter the evening. By You we live, and by You we die, and unto You is the resurrection.",
+          "repeat": 1,
+          "source": {
+            "ref": "Tirmidhi 3391",
+            "source_name_ar": "الترمذي",
+            "url": "https://dorar.net/hadith/sharh/122053"
+          }
+        },
+        {
+          "id": "m003",
+          "text_ar": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ — اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ",
+          "transliteration": "Ayat al-Kursi — Allahu la ilaha illa huwa al-hayyu al-qayyum...",
+          "translation_en": "Ayat al-Kursi (2:255) — Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Baqarah 2:255",
+            "source_name_ar": "القرآن الكريم",
+            "url": "https://dorar.net/hadith/sharh/122060"
+          }
+        },
+        {
+          "id": "m004",
+          "text_ar": "قُلْ هُوَ اللَّهُ أَحَدٌ — سورة الإخلاص",
+          "transliteration": "Qul huwa Allahu ahad — Surat Al-Ikhlas",
+          "translation_en": "Say: He is Allah, [Who is] One. — Surat Al-Ikhlas (112)",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 5082",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122061"
+          }
+        },
+        {
+          "id": "m005",
+          "text_ar": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ",
+          "transliteration": "Allahumma anta rabbi la ilaha illa ant, khalaqtani wa ana abduk, wa ana ala ahdika wa wa'dika mastata't, a'udhu bika min sharri ma sana't",
+          "translation_en": "O Allah, You are my Lord. There is no god but You. You created me and I am your servant, and I uphold Your covenant and promise as best I can. I seek refuge in You from the evil of what I have done.",
+          "repeat": 1,
+          "source": {
+            "ref": "Bukhari 6306 — Sayyid al-Istighfar",
+            "source_name_ar": "البخاري",
+            "url": "https://dorar.net/hadith/sharh/122062"
+          }
+        },
+        {
+          "id": "m006",
+          "text_ar": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+          "transliteration": "Allahumma inni as'aluka al-'afwa wal-'afiyata fid-dunya wal-akhirah",
+          "translation_en": "O Allah, I ask You for pardon and well-being in this life and the next.",
+          "repeat": 1,
+          "source": {
+            "ref": "Ibn Majah 3871",
+            "source_name_ar": "ابن ماجه",
+            "url": "https://www.islamweb.net/ar/library/index.php?page=bookcontents&idfrom=36528&idto=36528"
+          }
+        },
+        {
+          "id": "m007",
+          "text_ar": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ",
+          "transliteration": "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa ant",
+          "translation_en": "O Allah, grant me health in my body. O Allah, grant me health in my hearing. O Allah, grant me health in my sight. There is no god but You.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 5090",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122065"
+          }
+        },
+        {
+          "id": "m008",
+          "text_ar": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلَا فِي السَّمَاءِ، وَهُوَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i, wa huwas-sami'ul-alim",
+          "translation_en": "In the name of Allah with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 5088, Tirmidhi 3388",
+            "source_name_ar": "أبو داود والترمذي",
+            "url": "https://dorar.net/hadith/sharh/122063"
+          }
+        },
+        {
+          "id": "m009",
+          "text_ar": "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
+          "transliteration": "Raditu billahi rabban, wa bil-islami dinan, wa bi-muhammadin sallallahu alayhi wa sallama nabiyyan",
+          "translation_en": "I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad (ﷺ) as my Prophet.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 5072, Ibn Majah 3870",
+            "source_name_ar": "أبو داود وابن ماجه",
+            "url": "https://dorar.net/hadith/sharh/122055"
+          }
+        },
+        {
+          "id": "m010",
+          "text_ar": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ",
+          "transliteration": "Ya hayyu ya qayyumu bi-rahmatika astaghith, aslih li sha'ni kullahu, wa la takilni ila nafsi tarfata 'ayn",
+          "translation_en": "O Ever-Living, O Sustainer, I call upon Your mercy for help. Rectify all of my affairs, and do not leave me to myself for the blink of an eye.",
+          "repeat": 1,
+          "source": {
+            "ref": "Hakim 1/545, authenticated by Al-Albani",
+            "source_name_ar": "الحاكم",
+            "url": "https://dorar.net/hadith/sharh/122069"
+          }
+        }
+      ]
+    },
+    {
+      "id": "evening",
+      "name_ar": "أذكار المساء",
+      "name_en": "Evening Adhkar",
+      "entries": [
+        {
+          "id": "e001",
+          "text_ar": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "transliteration": "Amsayna wa-amsal-mulku lillah, wal-hamdu lillah, la ilaha illallahu wahdahu la sharika lah, lahul-mulku walahul-hamdu wahuwa ala kulli shay'in qadir",
+          "translation_en": "We have entered the evening and the whole kingdom of Allah entered the evening. All praise is for Allah. None has the right to be worshipped except Allah, alone, without partner. His is the dominion, to Him belongs all praise, and He is over all things capable.",
+          "repeat": 1,
+          "source": {
+            "ref": "Abu Dawud 5076",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122052"
+          }
+        },
+        {
+          "id": "e002",
+          "text_ar": "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
+          "transliteration": "Allahumma bika amsayna, wa bika asbahna, wa bika nahya, wa bika namutu, wa ilayka-l-masir",
+          "translation_en": "O Allah, by You we enter the evening, and by You we enter the morning. By You we live and die, and to You is the final return.",
+          "repeat": 1,
+          "source": {
+            "ref": "Tirmidhi 3391",
+            "source_name_ar": "الترمذي",
+            "url": "https://dorar.net/hadith/sharh/122053"
+          }
+        },
+        {
+          "id": "e003",
+          "text_ar": "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ",
+          "transliteration": "Allahumma inni amsaytu ushhiduka wa ushhidu hamalata arshika wa mala'ikataka wa jami'a khalqika annaka antallahu la ilaha illa anta wahdaka la sharika lak, wa anna muhammadan abduka wa rasuluk",
+          "translation_en": "O Allah, I call You, the bearers of Your throne, Your angels, and all Your creation to witness that You are Allah, there is no god but You alone, with no partner, and that Muhammad is Your servant and messenger.",
+          "repeat": 4,
+          "source": {
+            "ref": "Abu Dawud 5083",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122075"
+          }
+        },
+        {
+          "id": "e004",
+          "text_ar": "اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+          "transliteration": "Allahumma ma amsa bi min ni'matin aw bi-ahadin min khalqika faminka wahdaka la sharika lak, falakal-hamdu wa lakash-shukr",
+          "translation_en": "O Allah, whatever blessing I or any of Your creation have this evening is from You alone, with no partner. So to You belongs all praise and to You belongs all thanks.",
+          "repeat": 1,
+          "source": {
+            "ref": "Abu Dawud 5083",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122076"
+          }
+        },
+        {
+          "id": "e005",
+          "text_ar": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+          "transliteration": "A'udhu bi-kalimati-llahit-tammati min sharri ma khalaq",
+          "translation_en": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+          "repeat": 3,
+          "source": {
+            "ref": "Muslim 2708",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122077"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sleep",
+      "name_ar": "أذكار النوم والاستيقاظ",
+      "name_en": "Sleep & Waking Adhkar",
+      "entries": [
+        {
+          "id": "s001",
+          "text_ar": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+          "transliteration": "Bismika-llahumma amutu wa ahya",
+          "translation_en": "In Your name, O Allah, I die and I live.",
+          "repeat": 1,
+          "source": {
+            "ref": "Bukhari 6324",
+            "source_name_ar": "البخاري",
+            "url": "https://dorar.net/hadith/sharh/122090"
+          }
+        },
+        {
+          "id": "s002",
+          "text_ar": "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+          "transliteration": "Allahumma qini adhabaka yawma tab'athu ibadak",
+          "translation_en": "O Allah, protect me from Your punishment on the day You resurrect Your servants.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 5045, Tirmidhi 3398",
+            "source_name_ar": "أبو داود والترمذي",
+            "url": "https://dorar.net/hadith/sharh/122091"
+          }
+        },
+        {
+          "id": "s003",
+          "text_ar": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+          "transliteration": "Al-hamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur",
+          "translation_en": "All praise is for Allah who gave us life after causing us to die, and to Him is the resurrection.",
+          "repeat": 1,
+          "source": {
+            "ref": "Bukhari 6325",
+            "source_name_ar": "البخاري",
+            "url": "https://dorar.net/hadith/sharh/122092"
+          }
+        },
+        {
+          "id": "s004",
+          "text_ar": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
+          "transliteration": "Subhanaka-llahumma wa bihamdik, la ilaha illa ant, astaghfiruka wa atubu ilayk",
+          "translation_en": "Glory be to You, O Allah, and by Your praise. There is no god but You. I seek Your forgiveness and I repent to You.",
+          "repeat": 3,
+          "source": {
+            "ref": "Tirmidhi 3391",
+            "source_name_ar": "الترمذي",
+            "url": "https://dorar.net/hadith/sharh/122093"
+          }
+        }
+      ]
+    },
+    {
+      "id": "post_prayer",
+      "name_ar": "أذكار بعد الصلاة",
+      "name_en": "Post-Prayer Adhkar",
+      "entries": [
+        {
+          "id": "pp001",
+          "text_ar": "أَسْتَغْفِرُ اللَّهَ",
+          "transliteration": "Astaghfiru-llah",
+          "translation_en": "I seek forgiveness from Allah.",
+          "repeat": 3,
+          "source": {
+            "ref": "Muslim 591",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122100"
+          }
+        },
+        {
+          "id": "pp002",
+          "text_ar": "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+          "transliteration": "Allahumma antas-salamu wa minkas-salam, tabarakta ya dhal-jalali wal-ikram",
+          "translation_en": "O Allah, You are peace and from You comes peace. Blessed are You, O Possessor of majesty and honor.",
+          "repeat": 1,
+          "source": {
+            "ref": "Muslim 591",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122101"
+          }
+        },
+        {
+          "id": "pp003",
+          "text_ar": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku walahul-hamdu wahuwa ala kulli shay'in qadir",
+          "translation_en": "There is no god but Allah, alone, without partner. To Him belongs dominion and to Him belongs praise, and He is over all things capable.",
+          "repeat": 1,
+          "source": {
+            "ref": "Muslim 597",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122102"
+          }
+        },
+        {
+          "id": "pp004",
+          "text_ar": "سُبْحَانَ اللَّهِ",
+          "transliteration": "SubhanAllah",
+          "translation_en": "Glory be to Allah.",
+          "repeat": 33,
+          "source": {
+            "ref": "Muslim 597",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122103"
+          }
+        },
+        {
+          "id": "pp005",
+          "text_ar": "الْحَمْدُ لِلَّهِ",
+          "transliteration": "Alhamdulillah",
+          "translation_en": "All praise is for Allah.",
+          "repeat": 33,
+          "source": {
+            "ref": "Muslim 597",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122104"
+          }
+        },
+        {
+          "id": "pp006",
+          "text_ar": "اللَّهُ أَكْبَرُ",
+          "transliteration": "Allahu Akbar",
+          "translation_en": "Allah is the Greatest.",
+          "repeat": 34,
+          "source": {
+            "ref": "Muslim 597",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122105"
+          }
+        },
+        {
+          "id": "pp007",
+          "text_ar": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ — اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ وَلَا مُعْطِيَ لِمَا مَنَعْتَ وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ",
+          "transliteration": "La ilaha illallahu wahdahu la sharika lah... Allahumma la mani'a lima a'tayta wa la mu'tiya lima mana'ta wa la yanfa'u dhal-jaddi minkal-jadd",
+          "translation_en": "There is no god but Allah alone... O Allah, there is no one who can withhold what You give and there is no one who can give what You withhold. Wealth and power cannot benefit a person against You.",
+          "repeat": 1,
+          "source": {
+            "ref": "Bukhari 844, Muslim 593",
+            "source_name_ar": "البخاري ومسلم",
+            "url": "https://dorar.net/hadith/sharh/122106"
+          }
+        }
+      ]
+    },
+    {
+      "id": "istighfar",
+      "name_ar": "الاستغفار والتوبة",
+      "name_en": "Istighfar & Repentance",
+      "entries": [
+        {
+          "id": "i001",
+          "text_ar": "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+          "transliteration": "Astaghfiru-llahal-adhimal-ladhi la ilaha illa huwal-hayyul-qayyumu wa atubu ilayh",
+          "translation_en": "I seek forgiveness from Allah the Almighty, besides whom there is no deity, the Ever-Living, the Sustainer, and I repent to Him.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 1517, Tirmidhi 3577",
+            "source_name_ar": "أبو داود والترمذي",
+            "url": "https://dorar.net/hadith/sharh/122120"
+          }
+        },
+        {
+          "id": "i002",
+          "text_ar": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+          "transliteration": "Rabbi-ghfir li wa tub alayya innaka antat-tawwabur-rahim",
+          "translation_en": "My Lord, forgive me and accept my repentance. Surely You are the Oft-Returning, the Merciful.",
+          "repeat": 100,
+          "source": {
+            "ref": "Abu Dawud 1516, authenticated by Al-Albani",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122121"
+          }
+        },
+        {
+          "id": "i003",
+          "text_ar": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+          "transliteration": "Subhanallahi wa bihamdih",
+          "translation_en": "Glory be to Allah and by His praise.",
+          "repeat": 100,
+          "source": {
+            "ref": "Bukhari 6405, Muslim 2691",
+            "source_name_ar": "البخاري ومسلم",
+            "url": "https://dorar.net/hadith/sharh/122122"
+          }
+        },
+        {
+          "id": "i004",
+          "text_ar": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+          "transliteration": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+          "translation_en": "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers. (Dua of Yunus ﷺ)",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Anbiya 21:87, Tirmidhi 3505",
+            "source_name_ar": "القرآن والترمذي",
+            "url": "https://dorar.net/hadith/sharh/122125"
+          }
+        }
+      ]
+    },
+    {
+      "id": "general",
+      "name_ar": "أدعية عامة",
+      "name_en": "General Duas",
+      "entries": [
+        {
+          "id": "g001",
+          "text_ar": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina adhab-an-nar",
+          "translation_en": "Our Lord, give us good in this world and good in the hereafter, and save us from the punishment of the Fire.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Baqarah 2:201, Bukhari 4522",
+            "source_name_ar": "القرآن الكريم",
+            "url": "https://dorar.net/hadith/sharh/122130"
+          }
+        },
+        {
+          "id": "g002",
+          "text_ar": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+          "transliteration": "Allahumma inni as'aluka-l-jannata wa a'udhu bika minan-nar",
+          "translation_en": "O Allah, I ask You for Paradise and I seek refuge in You from the Fire.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 792, authenticated by Al-Albani",
+            "source_name_ar": "أبو داود",
+            "url": "https://dorar.net/hadith/sharh/122131"
+          }
+        },
+        {
+          "id": "g003",
+          "text_ar": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الثَّبَاتَ فِي الْأَمْرِ، وَالْعَزِيمَةَ عَلَى الرُّشْدِ، وَأَسْأَلُكَ شُكْرَ نِعْمَتِكَ وَحُسْنَ عِبَادَتِكَ",
+          "transliteration": "Allahumma inni as'aluka-th-thabata fil-amr, wal-azimata alar-rushd, wa as'aluka shukra ni'matika wa husna ibadatik",
+          "translation_en": "O Allah, I ask You for steadfastness in my affairs, firmness in guidance, and I ask You for gratitude of Your favor and excellence in Your worship.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Nasa'i, authenticated by Al-Albani",
+            "source_name_ar": "النسائي",
+            "url": "https://dorar.net/hadith/sharh/122135"
+          }
+        },
+        {
+          "id": "g004",
+          "text_ar": "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي",
+          "transliteration": "Allahumma-hdini wa saddidni",
+          "translation_en": "O Allah, guide me and lead me to righteousness.",
+          "repeat": 1,
+          "source": {
+            "ref": "Muslim 2725",
+            "source_name_ar": "مسلم",
+            "url": "https://dorar.net/hadith/sharh/122136"
+          }
+        },
+        {
+          "id": "g005",
+          "text_ar": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعِلْمَ النَّافِعَ، وَالرِّزْقَ الطَّيِّبَ، وَالْعَمَلَ الْمُتَقَبَّلَ",
+          "transliteration": "Allahumma inni as'aluka-l-ilman-nafi', war-rizqat-tayyib, wal-'amala-l-mutaqabbal",
+          "translation_en": "O Allah, I ask You for beneficial knowledge, wholesome sustenance, and accepted deeds.",
+          "repeat": 1,
+          "source": {
+            "ref": "Ibn Majah 925, authenticated by Al-Albani",
+            "source_name_ar": "ابن ماجه",
+            "url": "https://www.islamweb.net/ar/library/index.php?page=bookcontents&idfrom=5234&idto=5234"
+          }
+        },
+        {
+          "id": "g006",
+          "text_ar": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ",
+          "transliteration": "Allahumma inni a'udhu bika minal-hammi wal-hazan, wa a'udhu bika minal-'ajzi wal-kasal",
+          "translation_en": "O Allah, I seek refuge in You from worry and grief, and I seek refuge in You from incapacity and laziness.",
+          "repeat": 1,
+          "source": {
+            "ref": "Bukhari 6369",
+            "source_name_ar": "البخاري",
+            "url": "https://dorar.net/hadith/sharh/122140"
+          }
+        },
+        {
+          "id": "g007",
+          "text_ar": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+          "transliteration": "Hasbunallahu wa ni'mal-wakil",
+          "translation_en": "Allah is sufficient for us, and He is the best guardian.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Imran 3:173, Bukhari 4563",
+            "source_name_ar": "القرآن الكريم",
+            "url": "https://dorar.net/hadith/sharh/122141"
+          }
+        },
+        {
+          "id": "g008",
+          "text_ar": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",
+          "transliteration": "Allahumma la sahla illa ma ja'altahu sahlan wa anta taj'alul-hazna idha shi'ta sahlan",
+          "translation_en": "O Allah, there is no ease except what You make easy, and You make difficulty easy if You will.",
+          "repeat": 1,
+          "source": {
+            "ref": "Ibn Hibban 974, authenticated by Al-Albani",
+            "source_name_ar": "ابن حبان",
+            "url": "https://dorar.net/hadith/sharh/122142"
+          }
+        }
+      ]
+    },
+    {
+      "id": "quran",
+      "name_ar": "أدعية قرآنية",
+      "name_en": "Quranic Supplications",
+      "entries": [
+        {
+          "id": "q001",
+          "text_ar": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً ۚ إِنَّكَ أَنتَ الْوَهَّابُ",
+          "transliteration": "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana min ladunka rahmah, innaka antal-wahhab",
+          "translation_en": "Our Lord, let not our hearts deviate after You have guided us and grant us from Yourself mercy. Indeed, You are the Bestower.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Imran 3:8",
+            "source_name_ar": "القرآن الكريم — آل عمران",
+            "url": "https://quran.islamweb.net/ar/3/8"
+          }
+        },
+        {
+          "id": "q002",
+          "text_ar": "رَبِّ زِدْنِي عِلْمًا",
+          "transliteration": "Rabbi zidni ilma",
+          "translation_en": "My Lord, increase me in knowledge.",
+          "repeat": 1,
+          "source": {
+            "ref": "Ta-Ha 20:114",
+            "source_name_ar": "القرآن الكريم — طه",
+            "url": "https://quran.islamweb.net/ar/20/114"
+          }
+        },
+        {
+          "id": "q003",
+          "text_ar": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي",
+          "transliteration": "Rabbi-shrah li sadri, wa yassir li amri, wahlul 'uqdatan min lisani, yafqahu qawli",
+          "translation_en": "My Lord, expand my breast and ease my task, and undo the knot in my tongue so that they may understand my speech.",
+          "repeat": 1,
+          "source": {
+            "ref": "Ta-Ha 20:25-28 — Dua of Musa ﷺ",
+            "source_name_ar": "القرآن الكريم — طه",
+            "url": "https://quran.islamweb.net/ar/20/25"
+          }
+        },
+        {
+          "id": "q004",
+          "text_ar": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+          "transliteration": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj'alna lil-muttaqina imama",
+          "translation_en": "Our Lord, grant us from among our wives and offspring comfort to our eyes and make us an example for the righteous.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Furqan 25:74",
+            "source_name_ar": "القرآن الكريم — الفرقان",
+            "url": "https://quran.islamweb.net/ar/25/74"
+          }
+        },
+        {
+          "id": "q005",
+          "text_ar": "رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ",
+          "transliteration": "Rabbana-ghfir lana wa li-ikhwanina-lladhina sabaquna bil-iman",
+          "translation_en": "Our Lord, forgive us and our brothers who preceded us in faith.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Hashr 59:10",
+            "source_name_ar": "القرآن الكريم — الحشر",
+            "url": "https://quran.islamweb.net/ar/59/10"
+          }
+        },
+        {
+          "id": "q006",
+          "text_ar": "وَقُل رَّبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَعُوذُ بِكَ رَبِّ أَن يَحْضُرُونِ",
+          "transliteration": "Wa qur rabbi a'udhu bika min hamazatish-shayatin wa a'udhu bika rabbi an yahdhurun",
+          "translation_en": "And say: My Lord, I seek refuge in You from the whispers of the devils, and I seek refuge in You, my Lord, lest they be present with me.",
+          "repeat": 1,
+          "source": {
+            "ref": "Al-Mu'minun 23:97-98",
+            "source_name_ar": "القرآن الكريم — المؤمنون",
+            "url": "https://quran.islamweb.net/ar/23/97"
+          }
+        }
+      ]
+    }
+  ]
+}
