@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>أذكاري — Azkare | أذكار وأدعية على سطح مكتبك</title>
+  <meta name="description" content="تطبيق مكتبي مفتوح المصدر — Linux وWindows وmacOS — يُثبَّت بأمر واحد في الطرفية" />
+  <meta name="theme-color" content="#243C4C" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<header class="site-header" id="top">
+  <nav class="nav-inner">
+    <a href="#top" class="nav-logo" aria-label="أذكاري">
+      <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true">
+        <circle cx="18" cy="18" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="18" y="24" text-anchor="middle" font-family="Amiri,serif" font-size="16" fill="currentColor">ذ</text>
+      </svg>
+      <span class="logo-text" data-ar="أذكاري" data-en="Azkare">أذكاري</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#features"  data-ar="المميزات"  data-en="Features">المميزات</a></li>
+      <li><a href="#install"   data-ar="التثبيت"   data-en="Install">التثبيت</a></li>
+      <li><a href="#cli"       data-ar="الأوامر"   data-en="CLI">الأوامر</a></li>
+      <li><a href="#developer" data-ar="المطور"    data-en="Developer">المطور</a></li>
+      <li><a href="https://github.com/arcalc/azkare" class="nav-github" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38l-.01-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle"><span data-ar="English" data-en="عربي">English</span></button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-grid" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span data-ar="مفتوح المصدر · تثبيت بأمر واحد · Linux · Windows · macOS"
+            data-en="Open Source · One-Command Install · Linux · Windows · macOS">
+        مفتوح المصدر · تثبيت بأمر واحد · Linux · Windows · macOS
+      </span>
+    </div>
+    <h1 class="hero-title">
+      <span class="hero-title-ar" data-ar="أذكار وأدعية" data-en="Adhkar &amp; Duas">أذكار وأدعية</span>
+      <span class="hero-title-sub" data-ar="على سطح مكتبك — دائمًا" data-en="on your desktop — always">على سطح مكتبك — دائمًا</span>
+    </h1>
+    <p class="hero-body"
+       data-ar="يعرض أذكاري أكثر من ٥٠٠ ذكر ودعاء أصيل فوق خلفية سطح مكتبك، تحت نوافذ تطبيقاتك. يُثبَّت بأمر واحد في الطرفية — بدون ملفات تنزيل يدوية."
+       data-en="Azkare displays 500+ verified Adhkar above your desktop wallpaper, beneath your app windows. Installed with a single terminal command — no manual file downloads.">
+      يعرض أذكاري أكثر من ٥٠٠ ذكر ودعاء أصيل فوق خلفية سطح مكتبك، تحت نوافذ تطبيقاتك. يُثبَّت بأمر واحد في الطرفية — بدون ملفات تنزيل يدوية.
+    </p>
+
+    <!-- Hero quick-install box -->
+    <div class="hero-terminal">
+      <div class="os-label">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span id="heroOsLabel" data-ar="تثبيت تلقائي" data-en="Quick Install">تثبيت تلقائي</span>
+        <span class="os-pill" id="heroOsPill">Linux / macOS</span>
+      </div>
+      <div class="terminal-box">
+        <div class="terminal-bar">
+          <div class="terminal-dots"><i></i><i></i><i></i></div>
+          <span data-ar="الطرفية" data-en="Terminal">الطرفية</span>
+        </div>
+        <div class="terminal-cmd">
+          <code id="heroCmd"><span class="cmd-prompt">$ </span>curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code>
+          <button class="copy-btn" data-copy="heroCmd" aria-label="Copy">
+            <span data-ar="نسخ" data-en="Copy">نسخ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-cta-row" style="margin-top:20px">
+      <a href="#install" class="btn-primary">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span data-ar="دليل التثبيت الكامل" data-en="Full Install Guide">دليل التثبيت الكامل</span>
+      </a>
+      <a href="https://github.com/arcalc/azkare" class="btn-ghost" target="_blank" rel="noopener">
+        <span data-ar="عرض المصدر" data-en="View Source">عرض المصدر</span>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">+٥٠٠</span><span class="stat-lbl" data-ar="ذكر ودعاء" data-en="Adhkar">ذكر ودعاء</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">٣</span><span class="stat-lbl" data-ar="أنظمة" data-en="Platforms">أنظمة</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">1</span><span class="stat-lbl" data-ar="أمر للتثبيت" data-en="Command to install">أمر للتثبيت</span></div>
+    </div>
+  </div>
+
+  <!-- Mockup -->
+  <div class="hero-mockup" aria-hidden="true">
+    <div class="mockup-screen">
+      <div class="mockup-wallpaper">
+        <div class="mockup-overlay-text">
+          <div class="dhikr-line amiri">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        </div>
+        <div class="mockup-window mockup-window-1"><div class="win-bar"><span></span><span></span><span></span></div><div class="win-content"></div></div>
+        <div class="mockup-window mockup-window-2"><div class="win-bar"><span></span><span></span><span></span></div><div class="win-content"></div></div>
+      </div>
+      <!-- Terminal overlay at bottom of mockup -->
+      <div class="mockup-terminal-strip">
+        <code><span style="color:#698696">$</span> azkare --next</code>
+      </div>
+      <div class="mockup-taskbar">
+        <div class="taskbar-icon">⚙</div><div class="taskbar-icon">◉</div>
+        <div class="taskbar-icon tray-icon">ذ</div>
+      </div>
+    </div>
+    <div class="mockup-legend">
+      <div class="legend-row"><span class="legend-box app"></span><span data-ar="نوافذ التطبيقات" data-en="App windows">نوافذ التطبيقات</span></div>
+      <div class="legend-row"><span class="legend-box dhikr"></span><span data-ar="نص الذكر" data-en="Dhikr text">نص الذكر</span></div>
+      <div class="legend-row"><span class="legend-box wallpaper"></span><span data-ar="خلفية سطح المكتب" data-en="Wallpaper">خلفية سطح المكتب</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="ما يميّز أذكاري" data-en="What makes Azkare different">ما يميّز أذكاري</h2>
+    <p class="section-sub" data-ar="تثبيت تلقائي كامل · تحكم عبر الطرفية · C++17 · Qt6" data-en="Fully automatic install · Terminal control · C++17 · Qt6">تثبيت تلقائي كامل · تحكم عبر الطرفية · C++17 · Qt6</p>
+    <div class="features-grid">
+      <article class="feature-card feature-primary">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+        <h3 data-ar="تثبيت بأمر واحد" data-en="One-Command Install">تثبيت بأمر واحد</h3>
+        <p data-ar="أمر curl / irm واحد يثبّت التبعيات تلقائيًا ويبني من المصدر ويثبّت الملف التنفيذي — بدون تنزيل يدوي." data-en="One curl / irm command auto-installs all dependencies, builds from source, and places the binary — no manual downloads.">أمر curl / irm واحد يثبّت التبعيات تلقائيًا ويبني من المصدر ويثبّت الملف التنفيذي — بدون تنزيل يدوي.</p>
+        <div class="feature-tag">Linux · macOS · Windows</div>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h3 data-ar="طبقة سطح المكتب" data-en="Desktop Wallpaper Layer">طبقة سطح المكتب</h3>
+        <p data-ar="يظهر نص الذكر فوق الخلفية وتحت جميع النوافذ — لا يسرق تركيزك." data-en="Dhikr text appears above the wallpaper, below all windows — never steals focus.">يظهر نص الذكر فوق الخلفية وتحت جميع النوافذ — لا يسرق تركيزك.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 data-ar="+٥٠٠ ذكر موثّق" data-en="500+ Verified Adhkar">+٥٠٠ ذكر موثّق</h3>
+        <p data-ar="مصدرها الدرر السنية وإسلام ويب والإسلام سؤال وجواب — مع مرجع كل حديث." data-en="Sourced from Dorar.net, IslamWeb, and IslamQA — every entry carries its hadith reference.">مصدرها الدرر السنية وإسلام ويب والإسلام سؤال وجواب — مع مرجع كل حديث.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3 data-ar="تحديثات من الطرفية" data-en="Terminal Updates">تحديثات من الطرفية</h3>
+        <p data-ar="azkare --update يجلب آخر إصدار ويعيد البناء تلقائيًا — بدون متصفح." data-en="azkare --update fetches the latest release and rebuilds automatically — no browser needed."><code>azkare --update</code> يجلب آخر إصدار ويعيد البناء تلقائيًا — بدون متصفح.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3 data-ar="توقيت مرن" data-en="Flexible Timer">توقيت مرن</h3>
+        <p data-ar="٣٠ ثانية إلى ساعة أو أي مدة مخصصة — يمكن تغييرها من الطرفية أو من الإعدادات." data-en="30 seconds to 1 hour or any custom interval — changeable from CLI or settings GUI.">٣٠ ثانية إلى ساعة أو أي مدة مخصصة.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></div>
+        <h3 data-ar="دعم eww على لينكس" data-en="eww Support (Linux)">دعم eww على لينكس</h3>
+        <p data-ar="أذكاري يُنشئ إعداداته ويتواصل معه تلقائيًا عبر IPC." data-en="Azkare auto-generates the eww config and communicates via IPC.">أذكاري يُنشئ إعداداته ويتواصل معه تلقائيًا عبر IPC.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+        <h3 data-ar="إشعارات نظام أصلية" data-en="Native Notifications">إشعارات نظام أصلية</h3>
+        <p data-ar="libnotify (لينكس) · Toast (ويندوز) · UNUserNotification (macOS)" data-en="libnotify (Linux) · Toast (Windows) · UNUserNotification (macOS)">libnotify · Toast · UNUserNotification</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <h3 data-ar="خطوط عربية مدمجة" data-en="Bundled Arabic Fonts">خطوط عربية مدمجة</h3>
+        <p data-ar="أميري، شهرزاد، نوتو نسخ، كايرو — يُنزّلها المثبّت تلقائيًا." data-en="Amiri, Scheherazade, Noto Naskh, Cairo — downloaded automatically by the installer.">أميري، شهرزاد، نوتو نسخ، كايرو — يُنزّلها المثبّت تلقائيًا.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section class="download" id="install">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="التثبيت عبر الطرفية" data-en="Terminal Installation">التثبيت عبر الطرفية</h2>
+    <p class="section-sub" data-ar="لا ملفات تنزيل — أمر واحد يفعل كل شيء" data-en="No file downloads — one command does everything">لا ملفات تنزيل — أمر واحد يفعل كل شيء</p>
+
+    <div class="version-banner" id="versionBanner" aria-live="polite">
+      <span class="version-dot"></span>
+      <span id="versionText">...</span>
+    </div>
+
+    <div class="platform-tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="linux"   id="tab-linux">Linux</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="windows" id="tab-windows">Windows</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="macos"   id="tab-macos">macOS</button>
+    </div>
+
+    <div class="tab-panels">
+
+      <!-- LINUX -->
+      <div class="tab-panel active" id="panel-linux" role="tabpanel">
+        <div class="install-steps">
+          <h4 data-ar="التثبيت التلقائي (موصى به)" data-en="Automatic Install (Recommended)">التثبيت التلقائي (موصى به)</h4>
+          <div class="step">
+            <span class="step-num">١</span>
+            <div class="step-body">
+              <strong data-ar="أمر واحد — يثبّت كل شيء تلقائيًا" data-en="One command — installs everything automatically">أمر واحد — يثبّت كل شيء تلقائيًا</strong>
+              <p data-ar="يكتشف توزيعتك (Arch / Ubuntu / Fedora / openSUSE / Alpine) ويثبّت التبعيات والخطوط ويبني ويثبّت أذكاري." data-en="Detects your distro (Arch / Ubuntu / Fedora / openSUSE / Alpine), installs dependencies + fonts, builds and installs Azkare.">يكتشف توزيعتك ويثبّت التبعيات والخطوط ويبني ويثبّت أذكاري.</p>
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>bash</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-linux-install"><span class="cmd-prompt">$ </span>curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code>
+                    <button class="copy-btn" data-copy="cmd-linux-install"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="margin-top:28px" data-ar="البناء اليدوي من المصدر" data-en="Manual Build from Source">البناء اليدوي من المصدر</h4>
+          <div class="step">
+            <span class="step-num">٢</span>
+            <div class="step-body">
+              <strong data-ar="استنساخ وبناء" data-en="Clone and build">استنساخ وبناء</strong>
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>bash</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-linux-manual"><span class="cmd-prompt">$ </span>git clone https://github.com/arcalc/azkare.git &amp;&amp; cd azkare &amp;&amp; cmake -B build -DCMAKE_BUILD_TYPE=Release &amp;&amp; cmake --build build -j$(nproc) &amp;&amp; sudo cmake --install build</code>
+                    <button class="copy-btn" data-copy="cmd-linux-manual"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="margin-top:28px" data-ar="إدارة التطبيق من الطرفية" data-en="Manage from Terminal">إدارة التطبيق من الطرفية</h4>
+          <div class="step">
+            <span class="step-num">٣</span>
+            <div class="step-body">
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>bash</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-linux-manage"><span class="cmd-prompt">$ </span>azkare --update      # تحديث
+azkare --settings    # الإعدادات
+azkare --next        # الذكر التالي
+azkare --uninstall   # إلغاء التثبيت</code>
+                    <button class="copy-btn" data-copy="cmd-linux-manage"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOWS -->
+      <div class="tab-panel" id="panel-windows" role="tabpanel">
+        <div class="install-steps">
+          <h4 data-ar="التثبيت التلقائي (PowerShell)" data-en="Automatic Install (PowerShell)">التثبيت التلقائي (PowerShell)</h4>
+          <div class="step">
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <strong data-ar="افتح PowerShell كمسؤول وشغّل:" data-en="Open PowerShell as Administrator and run:">افتح PowerShell كمسؤول وشغّل:</strong>
+              <p data-ar="يثبّت Git وCMake وأدوات C++ وQt6 تلقائيًا عبر winget ثم يبني أذكاري." data-en="Automatically installs Git, CMake, C++ tools, and Qt6 via winget, then builds Azkare.">يثبّت كل التبعيات تلقائيًا عبر winget ثم يبني أذكاري.</p>
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>PowerShell</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-win-install"><span class="cmd-prompt">PS&gt; </span>irm https://raw.githubusercontent.com/arcalc/azkare/main/install.ps1 | iex</code>
+                    <button class="copy-btn" data-copy="cmd-win-install"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h4 style="margin-top:28px" data-ar="إدارة التطبيق" data-en="Manage">إدارة التطبيق</h4>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>PowerShell</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-win-manage"><span class="cmd-prompt">PS&gt; </span>azkare --update
+azkare --settings
+azkare --uninstall</code>
+                    <button class="copy-btn" data-copy="cmd-win-manage"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MACOS -->
+      <div class="tab-panel" id="panel-macos" role="tabpanel">
+        <div class="install-steps">
+          <h4 data-ar="التثبيت التلقائي (Homebrew + CMake)" data-en="Automatic Install (Homebrew + CMake)">التثبيت التلقائي</h4>
+          <div class="step">
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <strong data-ar="تأكد من تثبيت Homebrew أولاً ثم شغّل:" data-en="Ensure Homebrew is installed, then run:">تأكد من تثبيت Homebrew أولاً ثم شغّل:</strong>
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>zsh</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-mac-install"><span class="cmd-prompt">% </span>curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code>
+                    <button class="copy-btn" data-copy="cmd-mac-install"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <strong data-ar="إذا لم يكن Homebrew مثبتًا:" data-en="If Homebrew is not installed:">إذا لم يكن Homebrew مثبتًا:</strong>
+              <div class="step-terminal">
+                <div class="terminal-box">
+                  <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span>zsh</span></div>
+                  <div class="terminal-cmd">
+                    <code id="cmd-mac-brew"><span class="cmd-prompt">% </span>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code>
+                    <button class="copy-btn" data-copy="cmd-mac-brew"><span data-ar="نسخ" data-en="Copy">نسخ</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.tab-panels -->
+
+    <p class="fallback-link">
+      <span data-ar="المصدر دائمًا على" data-en="Source always on">المصدر دائمًا على</span>
+      <a href="https://github.com/arcalc/azkare" target="_blank" rel="noopener">github.com/arcalc/azkare</a>
+    </p>
+  </div>
+</section>
+
+<!-- CLI REFERENCE -->
+<section class="dhikr-preview" id="cli">
+  <div class="section-inner">
+    <h2 class="section-title" data-ar="مرجع أوامر الطرفية" data-en="CLI Reference">مرجع أوامر الطرفية</h2>
+    <p class="section-sub" data-ar="تحكم كامل في التطبيق بدون واجهة رسومية" data-en="Full control without opening a GUI">تحكم كامل في التطبيق بدون واجهة رسومية</p>
+    <div class="terminal-box" style="max-width:720px;margin:0 auto">
+      <div class="terminal-bar"><div class="terminal-dots"><i></i><i></i><i></i></div><span data-ar="أوامر أذكاري" data-en="Azkare CLI">أوامر أذكاري</span></div>
+      <table class="cli-table">
+        <thead><tr>
+          <th data-ar="الأمر" data-en="Command">الأمر</th>
+          <th data-ar="الوصف" data-en="Description">الوصف</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>azkare</td><td data-ar="تشغيل الطبقة + شريط المهام" data-en="Start overlay + system tray">تشغيل الطبقة + شريط المهام</td></tr>
+          <tr><td>azkare --settings</td><td data-ar="فتح نافذة الإعدادات" data-en="Open settings window">فتح نافذة الإعدادات</td></tr>
+          <tr><td>azkare --next</td><td data-ar="الانتقال للذكر التالي فورًا" data-en="Rotate to next Dhikr immediately">الانتقال للذكر التالي فورًا</td></tr>
+          <tr><td>azkare --mode &lt;overlay|notify|both&gt;</td><td data-ar="تغيير وضع العرض" data-en="Change display mode">تغيير وضع العرض</td></tr>
+          <tr><td>azkare --autostart &lt;on|off&gt;</td><td data-ar="تفعيل/إيقاف التشغيل التلقائي" data-en="Toggle autostart at login">تفعيل/إيقاف التشغيل التلقائي</td></tr>
+          <tr><td>azkare --update</td><td data-ar="تحديث من المصدر وإعادة البناء" data-en="Update from source and rebuild">تحديث من المصدر وإعادة البناء</td></tr>
+          <tr><td>azkare --uninstall</td><td data-ar="إزالة التطبيق نهائيًا" data-en="Remove Azkare completely">إزالة التطبيق نهائيًا</td></tr>
+          <tr><td>azkare --status</td><td data-ar="عرض حالة التشغيل" data-en="Show running status">عرض حالة التشغيل</td></tr>
+          <tr><td>azkare --version</td><td data-ar="طباعة الإصدار + hash + تاريخ البناء" data-en="Print version + git hash + build date">طباعة الإصدار + hash + تاريخ البناء</td></tr>
+          <tr><td>azkare --help</td><td data-ar="دليل الاستخدام ثنائي اللغة" data-en="Bilingual usage guide">دليل الاستخدام ثنائي اللغة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DEVELOPER -->
+<section class="developer" id="developer">
+  <div class="section-inner developer-inner">
+    <div class="dev-bio">
+      <div class="dev-avatar"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="29" fill="none" stroke="currentColor" stroke-width="1"/><text x="30" y="38" text-anchor="middle" font-family="Amiri,serif" font-size="22" fill="currentColor">م</text></svg></div>
+      <div>
+        <h2>Mahmoud El Sheikh</h2>
+        <p class="dev-handle">arcalc</p>
+        <p class="dev-desc" data-ar="مطور مفتوح المصدر متخصص في أدوات أمان لينكس، تطبيقات C++/Qt، ومشاريع الويب." data-en="Open-source developer specializing in Linux security tools, C++/Qt desktop apps, and web projects.">مطور مفتوح المصدر متخصص في أدوات أمان لينكس، تطبيقات C++/Qt، ومشاريع الويب.</p>
+      </div>
+    </div>
+    <div class="dev-links">
+      <a href="https://arcalc.github.io/arcalc" class="dev-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><span data-ar="الموقع الشخصي" data-en="Portfolio">الموقع الشخصي</span></a>
+      <a href="https://github.com/arcalc/azkare" class="dev-link" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38l-.01-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+      <a href="mailto:arcalc@proton.me" class="dev-link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>arcalc@proton.me</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <a href="#top" class="nav-logo"><svg class="logo-mark" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="18" y="24" text-anchor="middle" font-family="Amiri,serif" font-size="16" fill="currentColor">ذ</text></svg><span class="logo-text">أذكاري</span></a>
+      <p data-ar="مفتوح المصدر · MIT License" data-en="Open Source · MIT License">مفتوح المصدر · MIT License</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/arcalc/azkare" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/arcalc/azkare/releases" target="_blank" rel="noopener" data-ar="الإصدارات" data-en="Releases">الإصدارات</a>
+      <a href="https://github.com/arcalc/azkare/issues"   target="_blank" rel="noopener" data-ar="الإبلاغ عن مشكلة" data-en="Report Issue">الإبلاغ عن مشكلة</a>
+    </div>
+    <p class="footer-copy"><span data-ar="بناه بـ ♥ " data-en="Built with ♥ by ">بناه بـ ♥ </span><a href="https://arcalc.github.io/arcalc" target="_blank" rel="noopener">arcalc</a></p>
+  </div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

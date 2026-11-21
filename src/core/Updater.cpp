@@ -3,7 +3,6 @@
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 #include <QDebug>
 
 Updater::Updater(const QString &owner,
@@ -21,12 +20,10 @@ Updater::Updater(const QString &owner,
 
 void Updater::checkAsync()
 {
-    QString url = QString("https://api.github.com/repos/%1/%2/releases/latest")
-                      .arg(m_owner, m_repo);
-
-    QNetworkRequest req(url);
-    req.setHeader(QNetworkRequest::UserAgentHeader,
-                  "Azkare/" + m_currentVersion);
+    QNetworkRequest req(
+        QString("https://api.github.com/repos/%1/%2/releases/latest")
+            .arg(m_owner, m_repo));
+    req.setHeader(QNetworkRequest::UserAgentHeader, "Azkare/" + m_currentVersion);
     req.setRawHeader("Accept", "application/vnd.github+json");
     m_nam.get(req);
 }
@@ -41,71 +38,48 @@ void Updater::onReplyFinished(QNetworkReply *reply)
     }
 
     QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (!doc.isObject()) {
-        emit checkFailed("Invalid JSON from GitHub API");
-        return;
-    }
+    if (!doc.isObject()) { emit checkFailed("Invalid JSON"); return; }
 
     QJsonObject root = doc.object();
-    QString latestTag  = root["tag_name"].toString();   // e.g. "v1.2.0"
-    QString releaseName = root["name"].toString();
-    QString releaseBody = root["body"].toString();
-    QString htmlUrl     = root["html_url"].toString();
-
-    // Find the asset for the current platform
-    QString downloadUrl = htmlUrl; // fallback
-    QString platform;
-#if defined(Q_OS_LINUX)
-    platform = "linux";
-#elif defined(Q_OS_WIN)
-    platform = "windows";
-#elif defined(Q_OS_MACOS)
-    platform = "macos";
-#endif
-
-    QJsonArray assets = root["assets"].toArray();
-    for (const QJsonValue &v : assets) {
-        QJsonObject asset = v.toObject();
-        QString assetName = asset["name"].toString().toLower();
-        if (assetName.contains(platform)) {
-            downloadUrl = asset["browser_download_url"].toString();
-            break;
-        }
-    }
+    QString latestTag = root["tag_name"].toString();
 
     if (isNewer(latestTag, m_currentVersion)) {
         ReleaseInfo info;
-        info.tag         = latestTag;
-        info.name        = releaseName;
-        info.body        = releaseBody;
-        info.browserUrl  = htmlUrl;
-        info.downloadUrl = downloadUrl;
+        info.tag            = latestTag;
+        info.name           = root["name"].toString();
+        info.body           = root["body"].toString();
+        info.browserUrl     = root["html_url"].toString();
+        info.installCommand = terminalUpdateCommand();
         emit updateAvailable(info);
-        qInfo() << "[Updater] New version available:" << latestTag;
+        qInfo() << "[Updater] New version:" << latestTag
+                << "— update with:" << info.installCommand;
     } else {
         emit upToDate();
-        qInfo() << "[Updater] Up to date.";
     }
+}
+
+// Returns the terminal command a user should run to update
+QString Updater::terminalUpdateCommand()
+{
+#if defined(Q_OS_WIN)
+    return "azkare --update";
+#else
+    return "azkare --update";
+#endif
 }
 
 bool Updater::isNewer(const QString &a, const QString &b)
 {
-    // Strip leading 'v'
-    auto strip = [](const QString &s) -> QString {
+    auto strip = [](const QString &s) {
         return s.startsWith('v') ? s.mid(1) : s;
     };
-
-    auto parts = [](const QString &s) -> QList<int> {
+    auto parts = [](const QString &s) {
         QList<int> out;
-        for (const QString &p : s.split('.'))
-            out << p.toInt();
+        for (const QString &p : s.split('.')) out << p.toInt();
         while (out.size() < 3) out << 0;
         return out;
     };
-
-    QList<int> va = parts(strip(a));
-    QList<int> vb = parts(strip(b));
-
+    QList<int> va = parts(strip(a)), vb = parts(strip(b));
     for (int i = 0; i < 3; ++i) {
         if (va[i] > vb[i]) return true;
         if (va[i] < vb[i]) return false;

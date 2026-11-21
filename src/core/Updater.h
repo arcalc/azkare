@@ -6,16 +6,16 @@
 #include <QNetworkReply>
 
 struct ReleaseInfo {
-    QString tag;         ///< e.g. "v1.1.0"
-    QString name;        ///< Release title
-    QString body;        ///< Markdown release notes
-    QString browserUrl;  ///< https://github.com/arcalc/azkare/releases/tag/v1.1.0
-    QString downloadUrl; ///< Direct asset URL for current platform
+    QString tag;            ///< e.g. "v1.1.0"
+    QString name;           ///< Release title
+    QString body;           ///< Markdown release notes
+    QString browserUrl;     ///< GitHub release page URL
+    QString installCommand; ///< Terminal command to update (install.sh/ps1)
 };
 
 /**
- * Queries https://api.github.com/repos/<owner>/<repo>/releases/latest
- * and emits updateAvailable() when a newer version exists.
+ * Checks https://api.github.com/repos/<owner>/<repo>/releases/latest
+ * and emits updateAvailable() with a terminal install command (not a binary URL).
  */
 class Updater : public QObject
 {
@@ -27,7 +27,6 @@ public:
                      const QString &currentVersion,
                      QObject       *parent = nullptr);
 
-    /** Kick off a background check — non-blocking. */
     void checkAsync();
 
 signals:
@@ -39,8 +38,8 @@ private slots:
     void onReplyFinished(QNetworkReply *reply);
 
 private:
-    /** Simple semver comparison: returns true if a > b */
     static bool isNewer(const QString &a, const QString &b);
+    static QString terminalUpdateCommand();
 
     QNetworkAccessManager m_nam;
     QString m_owner;
