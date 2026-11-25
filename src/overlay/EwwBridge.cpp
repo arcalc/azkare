@@ -1,5 +1,7 @@
 #include "EwwBridge.h"
 
+#include "../core/AppSettings.h"
+
 #include <QDir>
 #include <QFile>
 #include <QProcess>
@@ -8,158 +10,113 @@
 #include <QDebug>
 
 EwwBridge::EwwBridge(AppSettings &settings, QObject *parent)
-    : QObject(parent)
-    , m_settings(settings)
-{
-    m_configDir = QDir::homePath() + "/.config/eww/azkare";
-}
+    : QObject(parent), m_settings(settings),
+      m_configDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QStringLiteral("/azkare-eww"))
+{}
 
-EwwBridge::~EwwBridge() { close(); }
+bool EwwBridge::isAvailable() { return !QStandardPaths::findExecutable(QStringLiteral("eww")).isEmpty(); }
 
-bool EwwBridge::isAvailable()
+bool EwwBridge::runEww(const QStringList &args)
 {
-    return !QStandardPaths::findExecutable("eww").isEmpty();
+    QStringList full{QStringLiteral("--config"), m_configDir};
+    full << args;
+    return QProcess::execute(QStringLiteral("eww"), full) == 0;
 }
 
 void EwwBridge::initialize()
 {
     QDir().mkpath(m_configDir);
-    writeEwwConfig();
-    startDaemon();
+    writeConfig();
+    runEww({QStringLiteral("close"), QStringLiteral("azkare-window")});
+    m_open = runEww({QStringLiteral("open"), QStringLiteral("azkare-window")});
+    if (!m_open)
+        qWarning() << "[EwwBridge] 'eww open' failed - check `eww --config" << m_configDir << "logs`";
 }
 
-void EwwBridge::showEntry(const AdhkarEntry &entry)
+void EwwBridge::reconfigure()
 {
-    if (!m_running) return;
+    runEww({QStringLiteral("kill")});
+    initialize();
+}
 
-    // Escape double quotes in Arabic text
-    QString text = entry.textAr;
-    text.replace('"', "'");
-
-    QString source = m_settings.showSource() ? entry.sourceRef : QString();
-
-    runEww({"update", QString("azkare-text=\"%1\"").arg(text)});
-    runEww({"update", QString("azkare-source=\"%1\"").arg(source)});
+void EwwBridge::showEntry(const AdhkarEntry &e)
+{
+    if (!m_open)
+        return;
+    QStringList meta;
+    if (m_settings.showSource() && !e.sourceRef.isEmpty()) meta << e.sourceRef;
+    if (e.repeat > 1) meta << QStringLiteral("× %1").arg(e.repeat);
+    // No shell is involved, so the values are passed verbatim (no quoting needed).
+    runEww({QStringLiteral("update"),
+            QStringLiteral("azkare-text=") + e.textAr,
+            QStringLiteral("azkare-translation=") + (m_settings.showTranslation() ? e.translationEn : QString()),
+            QStringLiteral("azkare-meta=") + meta.join(QStringLiteral("  ·  "))});
 }
 
 void EwwBridge::close()
 {
-    if (m_running) {
-        runEww({"close", "azkare-window"});
-        m_running = false;
+    if (m_open) {
+        runEww({QStringLiteral("kill")});
+        m_open = false;
     }
 }
 
-// ── Private ──────────────────────────────────────────────────────────────────
-
-void EwwBridge::writeEwwConfig()
+void EwwBridge::writeConfig()
 {
-    // ── eww.yuck ──────────────────────────────────────────────────────────
-    QString yuck = R"yuck(
-(defvar azkare-text "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
-(defvar azkare-source "")
-
-(defwidget azkare-widget []
-  (box :orientation "v"
-       :class "azkare-box"
-    (label :text azkare-text
-           :class "azkare-text"
-           :wrap true
-           :justify "right")
-    (label :text azkare-source
-           :class "azkare-source"
-           :visible {azkare-source != ""})))
-
-(defwindow azkare-window
-  :monitor 0
-  :geometry (geometry
-              :x "%POSX%"
-              :y "%POSY%"
-              :width "50%"
-              :anchor "%ANCHOR%")
-  :stacking "bottom"
-  :exclusive false
-  (azkare-widget))
-)yuck";
-
-    // Substitute position settings
-    QString posX    = "0%";
-    QString posY    = "90%";
-    QString anchor  = "bottom-center";
-
+    QString anchor = QStringLiteral("bottom center");
+    QString x = QStringLiteral("0px"), y = QStringLiteral("24px");
     switch (m_settings.overlayPosition()) {
-    case OverlayPosition::TopLeft:    posX="2%"; posY="2%";  anchor="top-left";     break;
-    case OverlayPosition::TopCenter:  posX="0%"; posY="2%";  anchor="top-center";   break;
-    case OverlayPosition::TopRight:   posX="2%"; posY="2%";  anchor="top-right";    break;
-    case OverlayPosition::Center:     posX="0%"; posY="0%";  anchor="center";       break;
-    case OverlayPosition::BottomLeft: posX="2%"; posY="90%"; anchor="bottom-left";  break;
-    case OverlayPosition::BottomCenter: posX="0%"; posY="90%"; anchor="bottom-center"; break;
-    case OverlayPosition::BottomRight: posX="2%"; posY="90%"; anchor="bottom-right"; break;
-    default: break;
+    case OverlayPosition::TopLeft:      anchor = QStringLiteral("top left"); x = QStringLiteral("24px"); break;
+    case OverlayPosition::TopCenter:    anchor = QStringLiteral("top center"); break;
+    case OverlayPosition::TopRight:     anchor = QStringLiteral("top right"); x = QStringLiteral("24px"); break;
+    case OverlayPosition::Center:       anchor = QStringLiteral("center"); y = QStringLiteral("0px"); break;
+    case OverlayPosition::BottomLeft:   anchor = QStringLiteral("bottom left"); x = QStringLiteral("24px"); break;
+    case OverlayPosition::BottomCenter: break;
+    case OverlayPosition::BottomRight:  anchor = QStringLiteral("bottom right"); x = QStringLiteral("24px"); break;
+    case OverlayPosition::Custom:
+        anchor = QStringLiteral("top left");
+        x = QStringLiteral("%1px").arg(m_settings.overlayCustomPos().x());
+        y = QStringLiteral("%1px").arg(m_settings.overlayCustomPos().y());
+        break;
     }
 
-    yuck.replace("%POSX%",  posX);
-    yuck.replace("%POSY%",  posY);
-    yuck.replace("%ANCHOR%", anchor);
+    QString yuck = QStringLiteral(
+        "(defvar azkare-text \"\")\n"
+        "(defvar azkare-translation \"\")\n"
+        "(defvar azkare-meta \"\")\n\n"
+        "(defwidget azkare-widget []\n"
+        "  (box :class \"azkare-box\" :orientation \"v\" :space-evenly false\n"
+        "    (label :class \"azkare-text\" :text azkare-text :wrap true :justify \"center\")\n"
+        "    (label :class \"azkare-translation\" :text azkare-translation :wrap true :justify \"center\"\n"
+        "           :visible {azkare-translation != \"\"})\n"
+        "    (label :class \"azkare-meta\" :text azkare-meta :visible {azkare-meta != \"\"})))\n\n"
+        "(defwindow azkare-window\n"
+        "  :monitor @MONITOR@\n"
+        "  :geometry (geometry :x \"@X@\" :y \"@Y@\" :width \"60%\" :anchor \"@ANCHOR@\")\n"
+        "  :stacking \"bg\"\n"
+        "  :exclusive false\n"
+        "  :focusable false\n"
+        "  (azkare-widget))\n");
+    yuck.replace(QLatin1String("@MONITOR@"), QString::number(m_settings.overlayMonitor()));
+    yuck.replace(QLatin1String("@X@"), x);
+    yuck.replace(QLatin1String("@Y@"), y);
+    yuck.replace(QLatin1String("@ANCHOR@"), anchor);
 
-    QFile yuckFile(m_configDir + "/eww.yuck");
-    if (yuckFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        QTextStream(&yuckFile) << yuck;
+    const QColor c = m_settings.textColor();
+    const QString shadow = m_settings.shadowEnabled() ? QStringLiteral("text-shadow: 2px 2px 4px rgba(0,0,0,0.8);") : QString();
+    const QString scss = QStringLiteral(
+        ".azkare-box { background: transparent; padding: 12px; }\n"
+        ".azkare-text { font-family: \"%1\"; font-size: %2pt; color: %3; %4 }\n"
+        ".azkare-translation { font-size: %5pt; color: %3; %4 }\n"
+        ".azkare-meta { font-size: %6pt; color: %3; %4 }\n")
+        .arg(m_settings.fontFamily()).arg(m_settings.fontSize()).arg(c.name(), shadow)
+        .arg(qMax(9, m_settings.fontSize() * 55 / 100)).arg(qMax(8, m_settings.fontSize() * 45 / 100));
 
-    // ── eww.scss ──────────────────────────────────────────────────────────
-    QColor color = m_settings.textColor();
-    QString scss = QString(R"scss(
-.azkare-box {
-  background: transparent;
-  padding: 12px;
-}
-.azkare-text {
-  font-family: "%1";
-  font-size: %2px;
-  color: %3;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-  direction: rtl;
-}
-.azkare-source {
-  font-family: "%1";
-  font-size: %4px;
-  color: rgba(%5,%6,%7,0.65);
-  direction: rtl;
-  margin-top: 4px;
-}
-)scss")
-        .arg(m_settings.fontFamily())
-        .arg(m_settings.fontSize())
-        .arg(color.name())
-        .arg(m_settings.fontSize() / 2)
-        .arg(color.red()).arg(color.green()).arg(color.blue());
-
-    QFile scssFile(m_configDir + "/eww.scss");
-    if (scssFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        QTextStream(&scssFile) << scss;
-
-    qInfo() << "[EwwBridge] Config written to" << m_configDir;
-}
-
-void EwwBridge::startDaemon()
-{
-    // Kill any existing azkare eww daemon
-    QProcess::execute("eww", {"--config", m_configDir, "kill"});
-
-    // Start daemon
-    QProcess *daemon = new QProcess(this);
-    daemon->start("eww", {"--config", m_configDir, "daemon"});
-    daemon->waitForStarted(2000);
-
-    // Open our window
-    runEww({"--config", m_configDir, "open", "azkare-window"});
-    m_running = true;
-    qInfo() << "[EwwBridge] eww daemon started and window opened.";
-}
-
-void EwwBridge::runEww(const QStringList &args)
-{
-    QStringList fullArgs = {"--config", m_configDir};
-    fullArgs << args;
-    QProcess::execute("eww", fullArgs);
+    for (const auto &pair : {qMakePair(QStringLiteral("eww.yuck"), yuck), qMakePair(QStringLiteral("eww.scss"), scss)}) {
+        QFile f(m_configDir + QLatin1Char('/') + pair.first);
+        if (f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+            QTextStream(&f) << pair.second;
+        else
+            qWarning() << "[EwwBridge] cannot write" << f.fileName();
+    }
 }

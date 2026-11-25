@@ -1,7 +1,8 @@
 {
-  "version": "1.0.0",
   "schema": "azkare-adhkar-v1",
-  "total": 520,
+  "version": "1.1.0",
+  "total": 44,
+  "notes": "Starter dataset. References name the hadith collection and number but have NOT been reviewed by a scholar yet - verify before relying on them. Contributions with sources are welcome.",
   "categories": [
     {
       "id": "morning",
@@ -15,9 +16,8 @@
           "translation_en": "We have entered the morning and the whole kingdom of Allah entered the morning. All praise is for Allah. None has the right to be worshipped except Allah, alone without partner. His is the dominion, to Him belongs all praise, and He is over all things capable.",
           "repeat": 1,
           "source": {
-            "ref": "Abu Dawud 5076",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122052"
+            "ref": "Muslim 2723",
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -28,44 +28,40 @@
           "repeat": 1,
           "source": {
             "ref": "Tirmidhi 3391",
-            "source_name_ar": "الترمذي",
-            "url": "https://dorar.net/hadith/sharh/122053"
+            "source_name_ar": "الترمذي"
           }
         },
         {
           "id": "m003",
-          "text_ar": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ — اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ",
-          "transliteration": "Ayat al-Kursi — Allahu la ilaha illa huwa al-hayyu al-qayyum...",
-          "translation_en": "Ayat al-Kursi (2:255) — Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep.",
+          "text_ar": "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+          "transliteration": "Ayat al-Kursi",
+          "translation_en": "Allah - there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is there that can intercede with Him except by His permission? He knows what is before them and what is behind them, and they encompass nothing of His knowledge except what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great.",
           "repeat": 1,
           "source": {
             "ref": "Al-Baqarah 2:255",
-            "source_name_ar": "القرآن الكريم",
-            "url": "https://dorar.net/hadith/sharh/122060"
+            "source_name_ar": "القرآن الكريم — البقرة"
           }
         },
         {
           "id": "m004",
-          "text_ar": "قُلْ هُوَ اللَّهُ أَحَدٌ — سورة الإخلاص",
-          "transliteration": "Qul huwa Allahu ahad — Surat Al-Ikhlas",
-          "translation_en": "Say: He is Allah, [Who is] One. — Surat Al-Ikhlas (112)",
+          "text_ar": "قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+          "transliteration": "Surat Al-Ikhlas (112)",
+          "translation_en": "Say: He is Allah, One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent. (Surat Al-Ikhlas, 112)",
           "repeat": 3,
           "source": {
-            "ref": "Abu Dawud 5082",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122061"
+            "ref": "Abu Dawud 5082, Tirmidhi 3575",
+            "source_name_ar": "أبو داود والترمذي"
           }
         },
         {
           "id": "m005",
-          "text_ar": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ",
-          "transliteration": "Allahumma anta rabbi la ilaha illa ant, khalaqtani wa ana abduk, wa ana ala ahdika wa wa'dika mastata't, a'udhu bika min sharri ma sana't",
-          "translation_en": "O Allah, You are my Lord. There is no god but You. You created me and I am your servant, and I uphold Your covenant and promise as best I can. I seek refuge in You from the evil of what I have done.",
+          "text_ar": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+          "transliteration": "Allahumma anta rabbi la ilaha illa ant, khalaqtani wa ana abduk, wa ana ala ahdika wa wa'dika mastata't, a'udhu bika min sharri ma sana't, abu'u laka bi-ni'matika alayya, wa abu'u bi-dhanbi faghfir li, fa-innahu la yaghfirudh-dhunuba illa ant",
+          "translation_en": "O Allah, You are my Lord; there is no god but You. You created me and I am Your servant, and I keep Your covenant and promise as best I can. I seek refuge in You from the evil of what I have done. I acknowledge Your favor upon me and I acknowledge my sin, so forgive me, for none forgives sins but You.",
           "repeat": 1,
           "source": {
-            "ref": "Bukhari 6306 — Sayyid al-Istighfar",
-            "source_name_ar": "البخاري",
-            "url": "https://dorar.net/hadith/sharh/122062"
+            "ref": "Bukhari 6306 (Sayyid al-Istighfar)",
+            "source_name_ar": "البخاري"
           }
         },
         {
@@ -76,8 +72,7 @@
           "repeat": 1,
           "source": {
             "ref": "Ibn Majah 3871",
-            "source_name_ar": "ابن ماجه",
-            "url": "https://www.islamweb.net/ar/library/index.php?page=bookcontents&idfrom=36528&idto=36528"
+            "source_name_ar": "ابن ماجه"
           }
         },
         {
@@ -88,8 +83,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 5090",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122065"
+            "source_name_ar": "أبو داود"
           }
         },
         {
@@ -100,8 +94,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 5088, Tirmidhi 3388",
-            "source_name_ar": "أبو داود والترمذي",
-            "url": "https://dorar.net/hadith/sharh/122063"
+            "source_name_ar": "أبو داود والترمذي"
           }
         },
         {
@@ -112,8 +105,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 5072, Ibn Majah 3870",
-            "source_name_ar": "أبو داود وابن ماجه",
-            "url": "https://dorar.net/hadith/sharh/122055"
+            "source_name_ar": "أبو داود وابن ماجه"
           }
         },
         {
@@ -124,8 +116,7 @@
           "repeat": 1,
           "source": {
             "ref": "Hakim 1/545, authenticated by Al-Albani",
-            "source_name_ar": "الحاكم",
-            "url": "https://dorar.net/hadith/sharh/122069"
+            "source_name_ar": "الحاكم"
           }
         }
       ]
@@ -142,9 +133,8 @@
           "translation_en": "We have entered the evening and the whole kingdom of Allah entered the evening. All praise is for Allah. None has the right to be worshipped except Allah, alone, without partner. His is the dominion, to Him belongs all praise, and He is over all things capable.",
           "repeat": 1,
           "source": {
-            "ref": "Abu Dawud 5076",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122052"
+            "ref": "Muslim 2723",
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -155,8 +145,7 @@
           "repeat": 1,
           "source": {
             "ref": "Tirmidhi 3391",
-            "source_name_ar": "الترمذي",
-            "url": "https://dorar.net/hadith/sharh/122053"
+            "source_name_ar": "الترمذي"
           }
         },
         {
@@ -166,9 +155,8 @@
           "translation_en": "O Allah, I call You, the bearers of Your throne, Your angels, and all Your creation to witness that You are Allah, there is no god but You alone, with no partner, and that Muhammad is Your servant and messenger.",
           "repeat": 4,
           "source": {
-            "ref": "Abu Dawud 5083",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122075"
+            "ref": "Abu Dawud 5069",
+            "source_name_ar": "أبو داود"
           }
         },
         {
@@ -178,9 +166,8 @@
           "translation_en": "O Allah, whatever blessing I or any of Your creation have this evening is from You alone, with no partner. So to You belongs all praise and to You belongs all thanks.",
           "repeat": 1,
           "source": {
-            "ref": "Abu Dawud 5083",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122076"
+            "ref": "Abu Dawud 5073",
+            "source_name_ar": "أبو داود"
           }
         },
         {
@@ -191,8 +178,7 @@
           "repeat": 3,
           "source": {
             "ref": "Muslim 2708",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122077"
+            "source_name_ar": "مسلم"
           }
         }
       ]
@@ -210,8 +196,7 @@
           "repeat": 1,
           "source": {
             "ref": "Bukhari 6324",
-            "source_name_ar": "البخاري",
-            "url": "https://dorar.net/hadith/sharh/122090"
+            "source_name_ar": "البخاري"
           }
         },
         {
@@ -222,8 +207,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 5045, Tirmidhi 3398",
-            "source_name_ar": "أبو داود والترمذي",
-            "url": "https://dorar.net/hadith/sharh/122091"
+            "source_name_ar": "أبو داود والترمذي"
           }
         },
         {
@@ -234,20 +218,7 @@
           "repeat": 1,
           "source": {
             "ref": "Bukhari 6325",
-            "source_name_ar": "البخاري",
-            "url": "https://dorar.net/hadith/sharh/122092"
-          }
-        },
-        {
-          "id": "s004",
-          "text_ar": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
-          "transliteration": "Subhanaka-llahumma wa bihamdik, la ilaha illa ant, astaghfiruka wa atubu ilayk",
-          "translation_en": "Glory be to You, O Allah, and by Your praise. There is no god but You. I seek Your forgiveness and I repent to You.",
-          "repeat": 3,
-          "source": {
-            "ref": "Tirmidhi 3391",
-            "source_name_ar": "الترمذي",
-            "url": "https://dorar.net/hadith/sharh/122093"
+            "source_name_ar": "البخاري"
           }
         }
       ]
@@ -265,8 +236,7 @@
           "repeat": 3,
           "source": {
             "ref": "Muslim 591",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122100"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -277,8 +247,7 @@
           "repeat": 1,
           "source": {
             "ref": "Muslim 591",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122101"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -289,8 +258,7 @@
           "repeat": 1,
           "source": {
             "ref": "Muslim 597",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122102"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -301,8 +269,7 @@
           "repeat": 33,
           "source": {
             "ref": "Muslim 597",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122103"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -313,8 +280,7 @@
           "repeat": 33,
           "source": {
             "ref": "Muslim 597",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122104"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -325,8 +291,7 @@
           "repeat": 34,
           "source": {
             "ref": "Muslim 597",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122105"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -337,8 +302,7 @@
           "repeat": 1,
           "source": {
             "ref": "Bukhari 844, Muslim 593",
-            "source_name_ar": "البخاري ومسلم",
-            "url": "https://dorar.net/hadith/sharh/122106"
+            "source_name_ar": "البخاري ومسلم"
           }
         }
       ]
@@ -356,8 +320,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 1517, Tirmidhi 3577",
-            "source_name_ar": "أبو داود والترمذي",
-            "url": "https://dorar.net/hadith/sharh/122120"
+            "source_name_ar": "أبو داود والترمذي"
           }
         },
         {
@@ -368,8 +331,7 @@
           "repeat": 100,
           "source": {
             "ref": "Abu Dawud 1516, authenticated by Al-Albani",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122121"
+            "source_name_ar": "أبو داود"
           }
         },
         {
@@ -380,8 +342,7 @@
           "repeat": 100,
           "source": {
             "ref": "Bukhari 6405, Muslim 2691",
-            "source_name_ar": "البخاري ومسلم",
-            "url": "https://dorar.net/hadith/sharh/122122"
+            "source_name_ar": "البخاري ومسلم"
           }
         },
         {
@@ -392,8 +353,18 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Anbiya 21:87, Tirmidhi 3505",
-            "source_name_ar": "القرآن والترمذي",
-            "url": "https://dorar.net/hadith/sharh/122125"
+            "source_name_ar": "القرآن والترمذي"
+          }
+        },
+        {
+          "id": "i005",
+          "text_ar": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
+          "transliteration": "Subhanaka-llahumma wa bihamdik, la ilaha illa ant, astaghfiruka wa atubu ilayk",
+          "translation_en": "Glory be to You, O Allah, and by Your praise. There is no god but You. I seek Your forgiveness and I repent to You.",
+          "repeat": 3,
+          "source": {
+            "ref": "Abu Dawud 4859, Tirmidhi 3433",
+            "source_name_ar": "أبو داود والترمذي"
           }
         }
       ]
@@ -411,8 +382,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Baqarah 2:201, Bukhari 4522",
-            "source_name_ar": "القرآن الكريم",
-            "url": "https://dorar.net/hadith/sharh/122130"
+            "source_name_ar": "القرآن الكريم"
           }
         },
         {
@@ -423,8 +393,7 @@
           "repeat": 3,
           "source": {
             "ref": "Abu Dawud 792, authenticated by Al-Albani",
-            "source_name_ar": "أبو داود",
-            "url": "https://dorar.net/hadith/sharh/122131"
+            "source_name_ar": "أبو داود"
           }
         },
         {
@@ -435,8 +404,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Nasa'i, authenticated by Al-Albani",
-            "source_name_ar": "النسائي",
-            "url": "https://dorar.net/hadith/sharh/122135"
+            "source_name_ar": "النسائي"
           }
         },
         {
@@ -447,8 +415,7 @@
           "repeat": 1,
           "source": {
             "ref": "Muslim 2725",
-            "source_name_ar": "مسلم",
-            "url": "https://dorar.net/hadith/sharh/122136"
+            "source_name_ar": "مسلم"
           }
         },
         {
@@ -459,8 +426,7 @@
           "repeat": 1,
           "source": {
             "ref": "Ibn Majah 925, authenticated by Al-Albani",
-            "source_name_ar": "ابن ماجه",
-            "url": "https://www.islamweb.net/ar/library/index.php?page=bookcontents&idfrom=5234&idto=5234"
+            "source_name_ar": "ابن ماجه"
           }
         },
         {
@@ -471,8 +437,7 @@
           "repeat": 1,
           "source": {
             "ref": "Bukhari 6369",
-            "source_name_ar": "البخاري",
-            "url": "https://dorar.net/hadith/sharh/122140"
+            "source_name_ar": "البخاري"
           }
         },
         {
@@ -483,8 +448,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Imran 3:173, Bukhari 4563",
-            "source_name_ar": "القرآن الكريم",
-            "url": "https://dorar.net/hadith/sharh/122141"
+            "source_name_ar": "القرآن الكريم"
           }
         },
         {
@@ -495,8 +459,7 @@
           "repeat": 1,
           "source": {
             "ref": "Ibn Hibban 974, authenticated by Al-Albani",
-            "source_name_ar": "ابن حبان",
-            "url": "https://dorar.net/hadith/sharh/122142"
+            "source_name_ar": "ابن حبان"
           }
         }
       ]
@@ -514,8 +477,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Imran 3:8",
-            "source_name_ar": "القرآن الكريم — آل عمران",
-            "url": "https://quran.islamweb.net/ar/3/8"
+            "source_name_ar": "القرآن الكريم — آل عمران"
           }
         },
         {
@@ -526,8 +488,7 @@
           "repeat": 1,
           "source": {
             "ref": "Ta-Ha 20:114",
-            "source_name_ar": "القرآن الكريم — طه",
-            "url": "https://quran.islamweb.net/ar/20/114"
+            "source_name_ar": "القرآن الكريم — طه"
           }
         },
         {
@@ -538,8 +499,7 @@
           "repeat": 1,
           "source": {
             "ref": "Ta-Ha 20:25-28 — Dua of Musa ﷺ",
-            "source_name_ar": "القرآن الكريم — طه",
-            "url": "https://quran.islamweb.net/ar/20/25"
+            "source_name_ar": "القرآن الكريم — طه"
           }
         },
         {
@@ -550,8 +510,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Furqan 25:74",
-            "source_name_ar": "القرآن الكريم — الفرقان",
-            "url": "https://quran.islamweb.net/ar/25/74"
+            "source_name_ar": "القرآن الكريم — الفرقان"
           }
         },
         {
@@ -562,8 +521,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Hashr 59:10",
-            "source_name_ar": "القرآن الكريم — الحشر",
-            "url": "https://quran.islamweb.net/ar/59/10"
+            "source_name_ar": "القرآن الكريم — الحشر"
           }
         },
         {
@@ -574,8 +532,7 @@
           "repeat": 1,
           "source": {
             "ref": "Al-Mu'minun 23:97-98",
-            "source_name_ar": "القرآن الكريم — المؤمنون",
-            "url": "https://quran.islamweb.net/ar/23/97"
+            "source_name_ar": "القرآن الكريم — المؤمنون"
           }
         }
       ]

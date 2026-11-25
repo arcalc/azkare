@@ -1,47 +1,12 @@
 {
-  "note": "All fonts listed here are open-source (OFL / Apache 2.0) and must be downloaded separately and placed in this directory before building. The CMake build embeds them into the Qt resource system.",
-  "fonts": [
-    {
-      "family": "Amiri",
-      "files": ["Amiri-Regular.ttf", "Amiri-Bold.ttf", "Amiri-Italic.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/aliftype/amiri/releases",
-      "description": "Classical Arabic book font — excellent for Quran and hadith text"
-    },
-    {
-      "family": "Scheherazade New",
-      "files": ["ScheherazadeNew-Regular.ttf", "ScheherazadeNew-Bold.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/silnrsi/font-scheherazade/releases",
-      "description": "Traditional Arabic nastaliq-influenced font by SIL International"
-    },
-    {
-      "family": "Noto Naskh Arabic",
-      "files": ["NotoNaskhArabic-Regular.ttf", "NotoNaskhArabic-Bold.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/notofonts/arabic/releases",
-      "description": "Google Noto naskh Arabic — highly legible at all sizes"
-    },
-    {
-      "family": "Cairo",
-      "files": ["Cairo-Regular.ttf", "Cairo-Bold.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/google/fonts/tree/main/ofl/cairo",
-      "description": "Modern geometric Arabic/Latin bilingual font"
-    },
-    {
-      "family": "IBM Plex Sans Arabic",
-      "files": ["IBMPlexSansArabic-Regular.ttf", "IBMPlexSansArabic-Bold.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/IBM/plex/releases",
-      "description": "IBM's open-source corporate Arabic font — clean UI font"
-    },
-    {
-      "family": "Aref Ruqaa",
-      "files": ["ArefRuqaa-Regular.ttf"],
-      "license": "OFL-1.1",
-      "url": "https://github.com/google/fonts/tree/main/ofl/arefruqaa",
-      "description": "Calligraphic Ruqaa-style Arabic display font"
-    }
+  "note": "Fonts are downloaded by scripts/fetch-fonts.sh (and by install.sh / install.ps1) from the google/fonts repository and embedded into the binary. All are licensed under the SIL Open Font License 1.1.",
+  "source": "https://github.com/google/fonts/tree/main/ofl",
+  "families": [
+    {"family": "Amiri", "files": ["Amiri-Regular.ttf", "Amiri-Bold.ttf"], "license": "OFL-1.1"},
+    {"family": "Scheherazade New", "files": ["ScheherazadeNew-Regular.ttf", "ScheherazadeNew-Bold.ttf"], "license": "OFL-1.1"},
+    {"family": "Noto Naskh Arabic", "files": ["NotoNaskhArabic.ttf"], "license": "OFL-1.1"},
+    {"family": "Cairo", "files": ["Cairo.ttf"], "license": "OFL-1.1"},
+    {"family": "IBM Plex Sans Arabic", "files": ["IBMPlexSansArabic-Regular.ttf", "IBMPlexSansArabic-Bold.ttf"], "license": "OFL-1.1"},
+    {"family": "Aref Ruqaa", "files": ["ArefRuqaa-Regular.ttf", "ArefRuqaa-Bold.ttf"], "license": "OFL-1.1"}
   ]
 }

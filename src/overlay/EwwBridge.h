@@ -1,43 +1,32 @@
 #pragma once
-
 #include <QObject>
-#include <QProcess>
 #include <QString>
+
 #include "../core/AdhkarDatabase.h"
-#include "../core/AppSettings.h"
+
+class AppSettings;
 
 /**
- * Linux-only: drives ElKowar's Wacky Widgets (eww) as an alternative
- * rendering backend.
- *
- * On initialize():
- *   1. Writes ~/.config/eww/azkare/eww.yuck  (widget definition)
- *   2. Writes ~/.config/eww/azkare/eww.scss  (styling)
- *   3. Launches eww daemon and opens the azkare window.
- *
- * On showEntry(): updates the eww variable `azkare-text` via eww update.
+ * Linux only: renders through ElKowar's Wacky Widgets (eww) using a private config
+ * directory (~/.config/azkare-eww) so the user's own eww setup is never touched.
  */
 class EwwBridge : public QObject
 {
     Q_OBJECT
-
 public:
     explicit EwwBridge(AppSettings &settings, QObject *parent = nullptr);
-    ~EwwBridge() override;
 
-    /** Returns true if eww binary is found on PATH. */
     static bool isAvailable();
-
-    void initialize();
+    void initialize();   ///< write config, open the window (starts the eww daemon)
+    void reconfigure();  ///< settings changed: rewrite config and reopen
     void showEntry(const AdhkarEntry &entry);
     void close();
 
 private:
-    void writeEwwConfig();
-    void startDaemon();
-    void runEww(const QStringList &args);
+    void writeConfig();
+    bool runEww(const QStringList &args);
 
     AppSettings &m_settings;
-    QString      m_configDir;
-    bool         m_running = false;
+    QString m_configDir;
+    bool m_open = false;
 };

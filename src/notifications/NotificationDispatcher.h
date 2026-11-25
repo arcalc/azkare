@@ -1,40 +1,30 @@
 #pragma once
-
 #include <QObject>
+
 #include "../core/AdhkarDatabase.h"
-#include "../core/AppSettings.h"
+
+class AppSettings;
+class QSystemTrayIcon;
 
 /**
- * Sends a native desktop notification for a given Adhkar entry.
- *
- *  Linux   — libnotify via D-Bus (org.freedesktop.Notifications)
- *  Windows — Windows Toast Notifications via WinRT
- *  macOS   — UNUserNotificationCenter (bridged via Objective-C++)
+ * Sends a native desktop notification.
+ *  Linux:   org.freedesktop.Notifications over D-Bus (replaces the previous one)
+ *  Windows/macOS (and Linux without D-Bus): QSystemTrayIcon::showMessage, which Qt maps to
+ *  the platform's native notifications.
  */
 class NotificationDispatcher : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit NotificationDispatcher(AppSettings    &settings,
-                                    AdhkarDatabase &db,
-                                    QObject        *parent = nullptr);
+    explicit NotificationDispatcher(AppSettings &settings, QObject *parent = nullptr);
 
-    /** Request any permissions needed (macOS, Windows). */
-    void initialize();
-
-    /** Send a notification for the given entry. */
+    void setTrayIcon(QSystemTrayIcon *tray) { m_tray = tray; }
     void send(const AdhkarEntry &entry);
 
-signals:
-    void notificationSent();
-    void notificationFailed(const QString &reason);
-
 private:
-    void sendLinux(const AdhkarEntry &entry);
-    void sendWindows(const AdhkarEntry &entry);
-    void sendMacOS(const AdhkarEntry &entry);
+    bool sendViaDBus(const QString &title, const QString &body);
 
-    AppSettings    &m_settings;
-    AdhkarDatabase &m_db;
+    AppSettings &m_settings;
+    QSystemTrayIcon *m_tray = nullptr;
+    quint32 m_lastId = 0;
 };

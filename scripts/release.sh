@@ -1,60 +1,57 @@
 #!/usr/bin/env bash
-# ═══════════════════════════════════════════════════════════════════════════════
-# Azkare — Automated Version Bump & Release Script
+# Bump VERSION, commit, tag and push. A pushed v* tag triggers .github/workflows/release.yml.
 #
-# Usage:
-#   ./scripts/release.sh patch      # 1.0.0 → 1.0.1
-#   ./scripts/release.sh minor      # 1.0.0 → 1.1.0
-#   ./scripts/release.sh major      # 1.0.0 → 2.0.0
-#   ./scripts/release.sh 1.2.3      # explicit version
-# ═══════════════════════════════════════════════════════════════════════════════
-set -euo pipefail
+#   ./scripts/release.sh patch|minor|major|X.Y.Z [-y]
+set -eu
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION_FILE="${REPO_ROOT}/VERSION"
-BUMP="${1:-patch}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+BUMP="${1:-}"
+YES=0
+if [ "${2:-}" = "-y" ] || [ "${2:-}" = "--yes" ]; then YES=1; fi
+die() { echo "ERROR: $*" >&2; exit 1; }
 
-# ── Read current version ──────────────────────────────────────────────────────
-CURRENT=$(cat "$VERSION_FILE" | tr -d '[:space:]')
-IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+[ -n "$BUMP" ] || die "usage: $0 patch|minor|major|X.Y.Z [-y]"
+git rev-parse --git-dir >/dev/null 2>&1 || die "not a git repository"
+[ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || die "releases are made from the main branch"
+if ! git diff --quiet || ! git diff --cached --quiet; then die "uncommitted changes: commit or stash them first"; fi
 
-# ── Compute new version ───────────────────────────────────────────────────────
+CURRENT="$(tr -d '[:space:]' < VERSION)"
+echo "$CURRENT" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || die "VERSION is not X.Y.Z: '$CURRENT'"
+IFS=. read -r MAJOR MINOR PATCH <<EOV
+$CURRENT
+EOV
 case "$BUMP" in
-    patch)   NEW_VER="${MAJOR}.${MINOR}.$((PATCH + 1))" ;;
-    minor)   NEW_VER="${MAJOR}.$((MINOR + 1)).0" ;;
-    major)   NEW_VER="$((MAJOR + 1)).0.0" ;;
-    [0-9]*.*) NEW_VER="$BUMP" ;;
-    *)
-        echo "Usage: $0 [patch|minor|major|X.Y.Z]"
-        exit 1
-        ;;
+    patch) NEW="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+    minor) NEW="$MAJOR.$((MINOR + 1)).0" ;;
+    major) NEW="$((MAJOR + 1)).0.0" ;;
+    *) echo "$BUMP" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || die "'$BUMP' is not patch|minor|major|X.Y.Z"; NEW="$BUMP" ;;
 esac
+TAG="v$NEW"
+HIGHEST="$(printf '%s\n%s\n' "$CURRENT" "$NEW" | sort -V | tail -n 1)"
+if [ "$HIGHEST" != "$NEW" ] || [ "$CURRENT" = "$NEW" ]; then die "new version $NEW must be greater than $CURRENT"; fi
 
-TAG="v${NEW_VER}"
+git fetch --quiet origin main --tags || die "cannot reach origin"
+[ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ] || die "local main differs from origin/main: pull or push first"
+git rev-parse -q --verify "refs/tags/$TAG" >/dev/null && die "tag $TAG already exists"
 
-echo "Current version : ${CURRENT}"
-echo "New version     : ${NEW_VER} (${TAG})"
-echo ""
-read -rp "Proceed? [y/N] " confirm
-[[ "$confirm" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
-
-# ── Ensure working tree is clean ──────────────────────────────────────────────
-if ! git -C "$REPO_ROOT" diff --quiet HEAD; then
-    echo "ERROR: Working tree has uncommitted changes. Commit or stash first."
-    exit 1
+if command -v python3 >/dev/null 2>&1 && [ -f scripts/validate_adhkar.py ]; then
+    python3 scripts/validate_adhkar.py >/dev/null || die "resources/data/adhkar.json failed validation"
+    python3 scripts/check_i18n.py >/dev/null || die "translations failed validation"
 fi
 
-# ── Write new version ─────────────────────────────────────────────────────────
-echo "$NEW_VER" > "$VERSION_FILE"
+echo "Release: $CURRENT -> $NEW ($TAG)"
+if [ "$YES" -ne 1 ]; then
+    printf 'Proceed? [y/N] '; read -r a
+    case "$a" in y|Y|yes) ;; *) echo "Aborted."; exit 0 ;; esac
+fi
 
-# ── Commit + tag + push ───────────────────────────────────────────────────────
-git -C "$REPO_ROOT" add "$VERSION_FILE"
-git -C "$REPO_ROOT" commit -m "chore(release): ${TAG}"
-git -C "$REPO_ROOT" tag -a "$TAG" -m "Release ${TAG}"
-git -C "$REPO_ROOT" push origin main
-git -C "$REPO_ROOT" push origin "$TAG"
-
-echo ""
-echo "✓ Released ${TAG}"
-echo "  GitHub Actions will now build and publish the release automatically."
-echo "  View: https://github.com/arcalc/azkare/releases/tag/${TAG}"
+echo "$NEW" > VERSION
+git add VERSION
+git commit -q -m "chore(release): $TAG"
+git tag -a "$TAG" -m "Release $TAG"
+if ! git push origin main "refs/tags/$TAG"; then
+    echo "Push failed. To undo locally: git tag -d $TAG && git reset --hard HEAD~1" >&2
+    exit 1
+fi
+echo "Released $TAG - CI publishes it at https://github.com/arcalc/azkare/releases/tag/$TAG"

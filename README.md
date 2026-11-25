@@ -1,108 +1,115 @@
 # أذكاري — Azkare
 
-**أذكار وأدعية أصيلة على خلفية سطح مكتبك**  
-*Authentic Adhkar & Duas on your desktop background*
+**أذكار وأدعية على سطح مكتبك** · *Adhkar & Duas on your desktop*
 
+[![CI](https://github.com/arcalc/azkare/actions/workflows/ci.yml/badge.svg)](https://github.com/arcalc/azkare/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-informational)](https://github.com/arcalc/azkare/releases)
-[![C++17](https://img.shields.io/badge/C%2B%2B-17-orange.svg)](CMakeLists.txt)
-[![Qt6](https://img.shields.io/badge/Qt-6.x-green.svg)](CMakeLists.txt)
+
+Azkare shows Adhkar and Duas **above your wallpaper and below your windows**, and can send periodic
+notifications. C++17 / Qt6. Installed and controlled entirely from the terminal.
+
+يعرض أذكاري الأذكار والأدعية فوق خلفية سطح المكتب وتحت النوافذ، مع إشعارات دورية. مكتوب بـ C++17 وQt6،
+ويُثبَّت ويُدار بالكامل من الطرفية.
 
 ---
 
-## التثبيت / Install
+## Install / التثبيت
 
-### Linux & macOS — أمر واحد
 ```bash
+# Linux & macOS
 curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash
 ```
-يكتشف توزيعتك (`pacman` / `apt` / `dnf` / `zypper` / `apk` / `brew`)، يثبّت التبعيات تلقائيًا، يُنزّل الخطوط العربية، يبني من المصدر، ويثبّت في `~/.local/bin/`.
-
-### Windows (PowerShell)
 ```powershell
+# Windows (PowerShell)
 irm https://raw.githubusercontent.com/arcalc/azkare/main/install.ps1 | iex
 ```
-يثبّت Git وCMake وأدوات C++ وQt6 عبر `winget` ثم يبني ويثبّت في `%LOCALAPPDATA%\Azkare\bin\`.
 
----
+The installer installs build dependencies with your package manager (`pacman`, `apt`, `dnf`, `zypper`,
+`apk`, `brew`; on Windows `winget`/`choco`/`scoop` + MSYS2), downloads the Arabic fonts, builds in
+Release mode and installs `azkare` to `~/.local/bin` (`%LOCALAPPDATA%\Azkare\bin` on Windows).
+Pin a version with `AZKARE_REF=v1.0.1`. Read the script first if you prefer: [`install.sh`](install.sh).
 
-## CLI Reference / مرجع الأوامر
+### Status — what has actually been tested
 
-| Command | Description |
-|---------|-------------|
-| `azkare` | Start overlay + system tray |
-| `azkare --settings` | Open bilingual settings GUI |
-| `azkare --next` | Rotate to next Dhikr immediately |
-| `azkare --mode <overlay\|notify\|both>` | Switch display mode |
-| `azkare --autostart <on\|off>` | Enable/disable login autostart |
-| `azkare --update` | Pull latest source, rebuild, restart |
-| `azkare --uninstall` | Remove binary, autostart, and optionally config |
-| `azkare --status` | Show running status |
-| `azkare --version` | Print `vX.Y.Z (githash, built YYYY-MM-DD)` |
-| `azkare --help` | Bilingual (AR/EN) usage guide |
+| Platform | Status |
+|---|---|
+| Linux, X11 (Ubuntu 24.04, Qt 6.4) | Built and run: overlay window type/stacking, IPC, settings window (AR + EN), install / update / uninstall |
+| Linux, Wayland | Code path for `layer-shell-qt` exists but is **untested** (needs a wlroots/KDE compositor). On GNOME the overlay is an ordinary window |
+| eww backend | Config generator written, **untested** |
+| macOS | Code written, **not compiled or run yet** (CI job is experimental) |
+| Windows | Code and MSYS2 installer written, **not compiled or run yet** (CI job is experimental) |
 
----
+Please open an issue with logs if something fails on a platform marked untested.
 
-## Versioning & Releases / الإصدارات
+## Usage / الاستخدام
 
-Single source of truth: **`VERSION`** file in repo root.
-
-```bash
-# Bump version, commit, tag, and push (triggers GitHub Actions CI release)
-./scripts/release.sh patch   # 1.0.0 → 1.0.1
-./scripts/release.sh minor   # 1.0.0 → 1.1.0
-./scripts/release.sh major   # 1.0.0 → 2.0.0
-./scripts/release.sh 1.2.3   # explicit version
+```text
+azkare                       start in the background (overlay + tray)
+azkare --foreground          stay attached to the terminal
+azkare --settings            open the settings window
+azkare --next                show the next Dhikr now
+azkare --mode overlay|notify|both
+azkare --autostart on|off    start at login
+azkare --update [--force]    check GitHub, pull, rebuild, restart
+azkare --uninstall [--purge] remove (--purge also deletes settings and source)
+azkare --quit                stop the running instance
+azkare --status | --version | --help
 ```
 
-GitHub Actions (`.github/workflows/release.yml`) automatically builds for Linux, Windows, and macOS and publishes to [Releases](https://github.com/arcalc/azkare/releases) when a `v*` tag is pushed.
+All commands except starting and `--settings-window` work without a display (SSH-friendly).
+Settings live in `settings.json`; `azkare --status` prints its path.
 
----
+### Wayland
+Build with `layer-shell-qt` installed (`layer-shell-qt` on Arch, `liblayershellqtinterface-dev` on
+Debian/Ubuntu 24.10+). The installer tries to install it. Without it, Wayland sessions fall back to XWayland/X11 behaviour.
 
-## Building from Source / البناء من المصدر
+## Content / المحتوى
+
+`resources/data/adhkar.json` is a **starter set** (see `"total"` in the file) in 7 categories. Every entry has a
+reference to the hadith collection or Quran verse. **The references have not been reviewed by a scholar yet**; please
+verify before relying on them and send corrections with sources.
+Validate changes: `python3 scripts/validate_adhkar.py`.
+
+## Build from source
 
 ```bash
 git clone https://github.com/arcalc/azkare.git && cd azkare
+bash scripts/fetch-fonts.sh          # optional: bundled Arabic fonts (SIL OFL) are fetched automatically if missing
 cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel $(nproc)
+cmake --build build -j
 sudo cmake --install build
 ```
+Requires CMake ≥ 3.20, a C++17 compiler, Qt ≥ 6.2 (Widgets, Network; DBus optional), libX11 headers on Linux.
+macOS: add `-DCMAKE_PREFIX_PATH="$(brew --prefix qt)"`.
 
-**Requirements:** CMake ≥ 3.20, Qt6 (Widgets, Network), C++17 compiler, Git
+## Releases / الإصدارات
 
----
+`VERSION` is the single source of truth; CMake turns it plus the git hash and build date into `Version.h`.
 
-## Project Structure
+```bash
+./scripts/release.sh patch      # 1.0.0 -> 1.0.1   (also: minor | major | X.Y.Z)
+```
+It checks you are on a clean, up-to-date `main`, bumps `VERSION`, commits `chore(release): vX.Y.Z`, tags and pushes.
+The tag triggers `.github/workflows/release.yml`, which checks tag == `VERSION`, validates data, test-builds and
+publishes a GitHub Release with notes generated from the commits. `azkare --update` and the website read that release.
+
+## Layout
 
 ```
-azkare/
-├── VERSION                        ← single version source of truth
-├── CMakeLists.txt                 ← reads VERSION, generates Version.h
-├── install.sh                     ← zero-touch Linux/macOS installer
-├── install.ps1                    ← zero-touch Windows installer
-├── scripts/release.sh             ← version bump + git tag + push
-├── cmake/Version.h.in             ← template for auto-generated Version.h
-├── .github/workflows/release.yml  ← CI: build + GitHub Release on v* tag
-├── src/
-│   ├── main.cpp                   ← full CLI parser + IPC server
-│   ├── core/                      ← DB, settings, scheduler, updater
-│   ├── overlay/                   ← Qt desktop layer + eww bridge
-│   ├── notifications/             ← D-Bus / Toast / UNUserNotification
-│   ├── platform/                  ← autostart, tray, macOS bridges
-│   └── ui/                        ← bilingual settings GUI
-├── resources/
-│   ├── data/adhkar.json           ← 500+ Adhkar (Dorar, IslamWeb, IslamQA)
-│   ├── fonts/fonts_manifest.json
-│   └── i18n/ar.json  en.json
-├── packaging/linux/azkare.desktop
-└── website/                       ← GitHub Pages site (terminal-only UI)
+VERSION  CMakeLists.txt  install.sh  install.ps1  LICENSE
+cmake/Version.h.in         scripts/ (release, fetch-fonts, validate_adhkar, check_i18n)
+src/core      dataset, settings, scheduler, updater, localizer, IPC
+src/overlay   Qt overlay window (X11 / layer-shell / Win / mac) + eww bridge
+src/ui        bilingual settings window      src/platform  autostart, tray, macOS bridge
+src/notifications   D-Bus / Qt notifications
+resources/    adhkar.json, i18n (ar, en), fonts manifest     docs/   website (GitHub Pages)
+.github/      workflows (ci, release), SECURITY.md
 ```
 
----
+## Website
+
+`docs/` is served by GitHub Pages: **Settings → Pages → Deploy from a branch → `main` → `/docs`**.
 
 ## Developer
 
-**Mahmoud El Sheikh (arcalc)**  
-🌐 https://arcalc.github.io/arcalc · 💻 https://github.com/arcalc · 📧 arcalc@proton.me
-
-MIT License
+Mahmoud El Sheikh (**arcalc**) · https://arcalc.github.io/arcalc · arcalc@proton.me · MIT licence

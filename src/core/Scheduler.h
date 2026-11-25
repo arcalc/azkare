@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QObject>
 #include <QTimer>
 
@@ -8,31 +7,23 @@ class AdhkarDatabase;
 class OverlayManager;
 class NotificationDispatcher;
 
-/**
- * Central timer loop.  Advances the Adhkar database on the rotation
- * interval and fires notification dispatch on its own cadence.
- */
+/** Drives overlay rotation and notification cadence according to the display mode. */
 class Scheduler : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit Scheduler(AppSettings          &settings,
-                       AdhkarDatabase       &db,
-                       OverlayManager       &overlay,
-                       NotificationDispatcher &notifier,
-                       QObject              *parent = nullptr);
+    Scheduler(AppSettings &settings, AdhkarDatabase &db, OverlayManager &overlay,
+              NotificationDispatcher &notifier, QObject *parent = nullptr);
 
     void start();
-    void stop();
+    bool isPaused() const { return m_paused; }
 
 public slots:
     void forceNext();
     void togglePause();
-    void applyNewSettings(); ///< Call after settings change
+    void applyNewSettings(); ///< re-read intervals / mode and restart timers
 
 signals:
-    void dhikrChanged();
     void pauseStateChanged(bool paused);
 
 private slots:
@@ -40,12 +31,13 @@ private slots:
     void onNotificationTick();
 
 private:
-    AppSettings            &m_settings;
-    AdhkarDatabase         &m_db;
-    OverlayManager         &m_overlay;
-    NotificationDispatcher &m_notifier;
+    void restartTimers();
 
+    AppSettings &m_settings;
+    AdhkarDatabase &m_db;
+    OverlayManager &m_overlay;
+    NotificationDispatcher &m_notifier;
     QTimer m_rotationTimer;
     QTimer m_notifTimer;
-    bool   m_paused = false;
+    bool m_paused = false;
 };

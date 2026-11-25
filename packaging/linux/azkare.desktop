@@ -1,17 +1,15 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=أذكاري
-Name[en]=Azkare
-GenericName=تذكير الأذكار
-GenericName[en]=Adhkar Reminder
-Comment=أذكار وأدعية أصيلة على خلفية سطح مكتبك
-Comment[en]=Authentic Adhkar and Duas on your desktop background
+Name=Azkare
+Name[ar]=أذكاري
+GenericName=Adhkar reminder
+GenericName[ar]=تذكير بالأذكار
+Comment=Adhkar and Duas on your desktop
+Comment[ar]=أذكار وأدعية على سطح مكتبك
 Exec=azkare
 Icon=azkare
 Terminal=false
-Categories=Utility;Education;
-Keywords=adhkar;dua;dhikr;islam;prayer;أذكار;دعاء;ذكر;
+Categories=Utility;
+Keywords=adhkar;dua;dhikr;islam;أذكار;دعاء;
 StartupNotify=false
-X-AppImage-Version=1.0.0
-MimeType=

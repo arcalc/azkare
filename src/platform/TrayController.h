@@ -1,59 +1,44 @@
 #pragma once
-
 #include <QObject>
 #include <QSystemTrayIcon>
-#include <QMenu>
-#include <QAction>
 
+class QAction;
+class QMenu;
 class AppSettings;
+class Localizer;
 class Scheduler;
-class OverlayManager;
-class NotificationDispatcher;
 struct ReleaseInfo;
 
-/**
- * Manages the system tray icon, its context menu, and quick-action signals.
- */
+/** System tray icon with quick actions: Next, Pause/Resume, Settings, Check for updates, Quit. */
 class TrayController : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit TrayController(AppSettings            &settings,
-                            Scheduler              &scheduler,
-                            OverlayManager         &overlay,
-                            NotificationDispatcher &notifier,
-                            QObject                *parent = nullptr);
+    TrayController(Localizer &loc, Scheduler &scheduler, QObject *parent = nullptr);
+    ~TrayController() override;
 
     void show();
-    void updatePauseLabel(bool paused);
+    QSystemTrayIcon *icon() const { return m_tray; }
 
 public slots:
-    void showUpdateNotification(const ReleaseInfo &info);
+    void showMessage(const QString &title, const QString &text);
+    void showUpdateAvailable(const ReleaseInfo &info);
 
 signals:
     void openSettingsRequested();
     void nextDhikrRequested();
     void pauseResumeRequested();
+    void checkUpdatesRequested();
 
 private slots:
-    void onTrayActivated(QSystemTrayIcon::ActivationReason reason);
+    void retranslate();
+    void onActivated(QSystemTrayIcon::ActivationReason reason);
 
 private:
-    void buildMenu();
-    void retranslate();
-
-    AppSettings            &m_settings;
-    Scheduler              &m_scheduler;
-    OverlayManager         &m_overlay;
-    NotificationDispatcher &m_notifier;
-
-    QSystemTrayIcon *m_tray   = nullptr;
-    QMenu           *m_menu   = nullptr;
-
-    QAction *m_actNext        = nullptr;
-    QAction *m_actPause       = nullptr;
-    QAction *m_actSettings    = nullptr;
-    QAction *m_actUpdate      = nullptr;
-    QAction *m_actQuit        = nullptr;
+    Localizer &m_loc;
+    Scheduler &m_scheduler;
+    QSystemTrayIcon *m_tray = nullptr;
+    QMenu *m_menu = nullptr;
+    QAction *m_actNext = nullptr, *m_actPause = nullptr, *m_actSettings = nullptr,
+            *m_actUpdates = nullptr, *m_actQuit = nullptr;
 };

@@ -2,228 +2,116 @@
 
 #include <QDir>
 #include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QSaveFile>
 #include <QStandardPaths>
 #include <QDebug>
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+namespace {
+struct ModeName { DisplayMode v; const char *s; };
+const ModeName kModes[] = {{DisplayMode::OverlayOnly, "overlay"}, {DisplayMode::NotificationsOnly, "notify"}, {DisplayMode::Both, "both"}};
+struct PosName { OverlayPosition v; const char *s; };
+const PosName kPositions[] = {
+    {OverlayPosition::TopLeft, "top_left"}, {OverlayPosition::TopCenter, "top_center"}, {OverlayPosition::TopRight, "top_right"},
+    {OverlayPosition::Center, "center"}, {OverlayPosition::BottomLeft, "bottom_left"},
+    {OverlayPosition::BottomCenter, "bottom_center"}, {OverlayPosition::BottomRight, "bottom_right"}, {OverlayPosition::Custom, "custom"}};
 
-// ── Helpers: enum ↔ string ────────────────────────────────────────────────────
+QString modeToStr(DisplayMode m) { for (const auto &e : kModes) if (e.v == m) return QLatin1String(e.s); return QStringLiteral("both"); }
+DisplayMode strToMode(const QString &s) { for (const auto &e : kModes) if (s == QLatin1String(e.s)) return e.v; return DisplayMode::Both; }
+QString posToStr(OverlayPosition p) { for (const auto &e : kPositions) if (e.v == p) return QLatin1String(e.s); return QStringLiteral("bottom_center"); }
+OverlayPosition strToPos(const QString &s) { for (const auto &e : kPositions) if (s == QLatin1String(e.s)) return e.v; return OverlayPosition::BottomCenter; }
 
-static QString displayModeToStr(DisplayMode m) {
-    switch (m) {
-    case DisplayMode::OverlayOnly:       return "overlay_only";
-    case DisplayMode::NotificationsOnly: return "notifications_only";
-    case DisplayMode::Both:              return "both";
-    }
-    return "both";
+QString alignToStr(Qt::Alignment a) {
+    if (a & Qt::AlignLeft) return QStringLiteral("left");
+    if (a & Qt::AlignRight) return QStringLiteral("right");
+    return QStringLiteral("center");
 }
-static DisplayMode strToDisplayMode(const QString &s) {
-    if (s == "overlay_only")       return DisplayMode::OverlayOnly;
-    if (s == "notifications_only") return DisplayMode::NotificationsOnly;
-    return DisplayMode::Both;
+Qt::Alignment strToAlign(const QString &s) {
+    if (s == QLatin1String("left")) return Qt::AlignLeft;
+    if (s == QLatin1String("right")) return Qt::AlignRight;
+    return Qt::AlignHCenter;
 }
-
-static QString backendToStr(OverlayBackend b) {
-    return b == OverlayBackend::Eww ? "eww" : "native";
-}
-static OverlayBackend strToBackend(const QString &s) {
-    return s == "eww" ? OverlayBackend::Eww : OverlayBackend::Native;
-}
-
-static QString posToStr(OverlayPosition p) {
-    switch (p) {
-    case OverlayPosition::TopLeft:      return "top_left";
-    case OverlayPosition::TopCenter:    return "top_center";
-    case OverlayPosition::TopRight:     return "top_right";
-    case OverlayPosition::Center:       return "center";
-    case OverlayPosition::BottomLeft:   return "bottom_left";
-    case OverlayPosition::BottomCenter: return "bottom_center";
-    case OverlayPosition::BottomRight:  return "bottom_right";
-    case OverlayPosition::Custom:       return "custom";
-    }
-    return "bottom_center";
-}
-static OverlayPosition strToPos(const QString &s) {
-    if (s == "top_left")      return OverlayPosition::TopLeft;
-    if (s == "top_center")    return OverlayPosition::TopCenter;
-    if (s == "top_right")     return OverlayPosition::TopRight;
-    if (s == "center")        return OverlayPosition::Center;
-    if (s == "bottom_left")   return OverlayPosition::BottomLeft;
-    if (s == "bottom_center") return OverlayPosition::BottomCenter;
-    if (s == "bottom_right")  return OverlayPosition::BottomRight;
-    if (s == "custom")        return OverlayPosition::Custom;
-    return OverlayPosition::BottomCenter;
-}
-
-// ── Constructor ───────────────────────────────────────────────────────────────
+} // namespace
 
 AppSettings::AppSettings(QObject *parent) : QObject(parent) {}
 
-// ── Persistence ───────────────────────────────────────────────────────────────
+void AppSettings::resetToDefaults() { m_d = Data(); }
 
-QString AppSettings::configFilePath() const
+QString AppSettings::configFilePath()
 {
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    QDir().mkpath(dir);
-    return dir + "/settings.json";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    return dir + QStringLiteral("/settings.json");
 }
 
-void AppSettings::load()
+bool AppSettings::load()
 {
     QFile f(configFilePath());
-    if (!f.open(QIODevice::ReadOnly)) {
-        qInfo() << "[AppSettings] No config file found; using defaults.";
-        return;
+    if (!f.open(QIODevice::ReadOnly))
+        return false;
+    QJsonParseError err;
+    const QJsonDocument doc = QJsonDocument::fromJson(f.readAll(), &err);
+    if (err.error != QJsonParseError::NoError || !doc.isObject()) {
+        qWarning() << "[AppSettings] ignoring invalid settings file:" << err.errorString();
+        return false;
     }
+    const QJsonObject o = doc.object();
+    auto has = [&o](const char *k) { return o.contains(QLatin1String(k)); };
+    auto val = [&o](const char *k) { return o.value(QLatin1String(k)); };
 
-    try {
-        json root = json::parse(f.readAll().constData());
-
-#define LOAD_STR(key, setter, def) \
-    if (root.contains(#key)) setter(QString::fromStdString(root[#key].get<std::string>())); \
-    else setter(def);
-
-#define LOAD_BOOL(key, field) \
-    if (root.contains(#key)) field = root[#key].get<bool>();
-
-#define LOAD_INT(key, field) \
-    if (root.contains(#key)) field = root[#key].get<int>();
-
-        LOAD_STR(language, setLanguage, "ar")
-        LOAD_BOOL(autostart, m_autostart)
-
-        if (root.contains("display_mode"))
-            setDisplayMode(strToDisplayMode(QString::fromStdString(root["display_mode"].get<std::string>())));
-        if (root.contains("overlay_backend"))
-            setOverlayBackend(strToBackend(QString::fromStdString(root["overlay_backend"].get<std::string>())));
-        if (root.contains("overlay_position"))
-            setOverlayPosition(strToPos(QString::fromStdString(root["overlay_position"].get<std::string>())));
-
-        if (root.contains("custom_pos_x") && root.contains("custom_pos_y"))
-            m_customPos = {root["custom_pos_x"].get<int>(), root["custom_pos_y"].get<int>()};
-
-        LOAD_INT(monitor, m_monitor)
-        LOAD_INT(rotation_secs, m_rotationSecs)
-
-        LOAD_STR(font_family, setFontFamily, "Amiri")
-        LOAD_INT(font_size, m_fontSize)
-        LOAD_BOOL(shadow, m_shadow)
-
-        if (root.contains("text_color"))
-            m_textColor = QColor(QString::fromStdString(root["text_color"].get<std::string>()));
-
-        LOAD_BOOL(notifications_enabled, m_notifEnabled)
-        LOAD_INT(notification_secs, m_notifSecs)
-        LOAD_BOOL(shuffle, m_shuffle)
-        LOAD_BOOL(show_source, m_showSource)
-        LOAD_BOOL(show_translation, m_showTranslation)
-
-        if (root.contains("active_categories")) {
-            m_activeCategories.clear();
-            for (const auto &cat : root["active_categories"])
-                m_activeCategories << QString::fromStdString(cat.get<std::string>());
-        }
-
-#undef LOAD_STR
-#undef LOAD_BOOL
-#undef LOAD_INT
-
-    } catch (const json::exception &ex) {
-        qWarning() << "[AppSettings] JSON parse error:" << ex.what();
+    if (has("language")) setLanguage(val("language").toString());
+    if (has("display_mode")) m_d.mode = strToMode(val("display_mode").toString());
+    if (has("overlay_backend")) m_d.backend = val("overlay_backend").toString() == QLatin1String("eww") ? OverlayBackend::Eww : OverlayBackend::Native;
+    if (has("overlay_position")) m_d.position = strToPos(val("overlay_position").toString());
+    if (has("custom_pos_x") && has("custom_pos_y")) m_d.customPos = QPoint(val("custom_pos_x").toInt(), val("custom_pos_y").toInt());
+    if (has("monitor")) setOverlayMonitor(val("monitor").toInt());
+    if (has("rotation_secs")) setRotationIntervalSecs(val("rotation_secs").toInt());
+    if (has("notification_secs")) setNotificationIntervalSecs(val("notification_secs").toInt());
+    if (has("font_family")) setFontFamily(val("font_family").toString());
+    if (has("font_size")) setFontSize(val("font_size").toInt());
+    if (has("text_color")) setTextColor(QColor(val("text_color").toString()));
+    if (has("shadow")) m_d.shadow = val("shadow").toBool();
+    if (has("alignment")) m_d.align = strToAlign(val("alignment").toString());
+    if (has("shuffle")) m_d.shuffle = val("shuffle").toBool();
+    if (has("show_source")) m_d.showSource = val("show_source").toBool();
+    if (has("show_translation")) m_d.showTranslation = val("show_translation").toBool();
+    if (has("active_categories")) {
+        m_d.categories.clear();
+        for (const QJsonValue &v : val("active_categories").toArray())
+            m_d.categories << v.toString();
     }
+    return true;
 }
 
-void AppSettings::save() const
+bool AppSettings::save() const
 {
-    json root;
-    root["language"]              = m_language.toStdString();
-    root["autostart"]             = m_autostart;
-    root["display_mode"]          = displayModeToStr(m_displayMode).toStdString();
-    root["overlay_backend"]       = backendToStr(m_backend).toStdString();
-    root["overlay_position"]      = posToStr(m_position).toStdString();
-    root["custom_pos_x"]          = m_customPos.x();
-    root["custom_pos_y"]          = m_customPos.y();
-    root["monitor"]               = m_monitor;
-    root["rotation_secs"]         = m_rotationSecs;
-    root["font_family"]           = m_fontFamily.toStdString();
-    root["font_size"]             = m_fontSize;
-    root["shadow"]                = m_shadow;
-    root["text_color"]            = m_textColor.name().toStdString();
-    root["notifications_enabled"] = m_notifEnabled;
-    root["notification_secs"]     = m_notifSecs;
-    root["shuffle"]               = m_shuffle;
-    root["show_source"]           = m_showSource;
-    root["show_translation"]      = m_showTranslation;
+    QJsonObject o;
+    o.insert(QStringLiteral("language"), m_d.language);
+    o.insert(QStringLiteral("display_mode"), modeToStr(m_d.mode));
+    o.insert(QStringLiteral("overlay_backend"), m_d.backend == OverlayBackend::Eww ? QStringLiteral("eww") : QStringLiteral("native"));
+    o.insert(QStringLiteral("overlay_position"), posToStr(m_d.position));
+    o.insert(QStringLiteral("custom_pos_x"), m_d.customPos.x());
+    o.insert(QStringLiteral("custom_pos_y"), m_d.customPos.y());
+    o.insert(QStringLiteral("monitor"), m_d.monitor);
+    o.insert(QStringLiteral("rotation_secs"), m_d.rotationSecs);
+    o.insert(QStringLiteral("notification_secs"), m_d.notifSecs);
+    o.insert(QStringLiteral("font_family"), m_d.fontFamily);
+    o.insert(QStringLiteral("font_size"), m_d.fontSize);
+    o.insert(QStringLiteral("text_color"), m_d.color.name());
+    o.insert(QStringLiteral("shadow"), m_d.shadow);
+    o.insert(QStringLiteral("alignment"), alignToStr(m_d.align));
+    o.insert(QStringLiteral("shuffle"), m_d.shuffle);
+    o.insert(QStringLiteral("show_source"), m_d.showSource);
+    o.insert(QStringLiteral("show_translation"), m_d.showTranslation);
+    o.insert(QStringLiteral("active_categories"), QJsonArray::fromStringList(m_d.categories));
 
-    json cats = json::array();
-    for (const QString &c : m_activeCategories)
-        cats.push_back(c.toStdString());
-    root["active_categories"] = cats;
-
-    QFile f(configFilePath());
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "[AppSettings] Cannot write config file.";
-        return;
+    QDir().mkpath(QFileInfo(configFilePath()).absolutePath());
+    QSaveFile f(configFilePath());
+    if (!f.open(QIODevice::WriteOnly)) {
+        qWarning() << "[AppSettings] cannot write" << configFilePath();
+        return false;
     }
-    f.write(QByteArray::fromStdString(root.dump(2)));
+    f.write(QJsonDocument(o).toJson(QJsonDocument::Indented));
+    return f.commit();
 }
-
-// ── Accessors ─────────────────────────────────────────────────────────────────
-
-QString AppSettings::language() const { return m_language; }
-void AppSettings::setLanguage(const QString &l) { m_language = l; }
-
-bool AppSettings::autostartEnabled() const { return m_autostart; }
-void AppSettings::setAutostartEnabled(bool on) { m_autostart = on; }
-
-DisplayMode AppSettings::displayMode() const { return m_displayMode; }
-void AppSettings::setDisplayMode(DisplayMode m) { m_displayMode = m; }
-
-OverlayBackend AppSettings::overlayBackend() const { return m_backend; }
-void AppSettings::setOverlayBackend(OverlayBackend b) { m_backend = b; }
-
-OverlayPosition AppSettings::overlayPosition() const { return m_position; }
-void AppSettings::setOverlayPosition(OverlayPosition p) { m_position = p; }
-
-QPoint AppSettings::overlayCustomPos() const { return m_customPos; }
-void AppSettings::setOverlayCustomPos(const QPoint &pos) { m_customPos = pos; }
-
-int AppSettings::overlayMonitor() const { return m_monitor; }
-void AppSettings::setOverlayMonitor(int idx) { m_monitor = idx; }
-
-int AppSettings::rotationIntervalSecs() const { return m_rotationSecs; }
-void AppSettings::setRotationIntervalSecs(int s) { m_rotationSecs = s; }
-
-QString AppSettings::fontFamily() const { return m_fontFamily; }
-void AppSettings::setFontFamily(const QString &f) { m_fontFamily = f; }
-
-int AppSettings::fontSize() const { return m_fontSize; }
-void AppSettings::setFontSize(int pt) { m_fontSize = pt; }
-
-QColor AppSettings::textColor() const { return m_textColor; }
-void AppSettings::setTextColor(const QColor &c) { m_textColor = c; }
-
-bool AppSettings::shadowEnabled() const { return m_shadow; }
-void AppSettings::setShadowEnabled(bool on) { m_shadow = on; }
-
-Qt::Alignment AppSettings::textAlignment() const { return m_alignment; }
-void AppSettings::setTextAlignment(Qt::Alignment a) { m_alignment = a; }
-
-bool AppSettings::notificationsEnabled() const { return m_notifEnabled; }
-void AppSettings::setNotificationsEnabled(bool on) { m_notifEnabled = on; }
-
-int AppSettings::notificationIntervalSecs() const { return m_notifSecs; }
-void AppSettings::setNotificationIntervalSecs(int s) { m_notifSecs = s; }
-
-QStringList AppSettings::activeCategories() const { return m_activeCategories; }
-void AppSettings::setActiveCategories(const QStringList &ids) { m_activeCategories = ids; }
-
-bool AppSettings::shuffleEnabled() const { return m_shuffle; }
-void AppSettings::setShuffleEnabled(bool on) { m_shuffle = on; }
-
-bool AppSettings::showSource() const { return m_showSource; }
-void AppSettings::setShowSource(bool on) { m_showSource = on; }
-
-bool AppSettings::showTranslation() const { return m_showTranslation; }
-void AppSettings::setShowTranslation(bool on) { m_showTranslation = on; }

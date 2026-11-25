@@ -1,655 +1,626 @@
 #include "SettingsWindow.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QScrollArea>
-#include <QColorDialog>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QApplication>
-#include <QScreen>
-#include <QDebug>
-
-#include "../core/AppSettings.h"
+#include "AppIcon.h"
 #include "../core/AdhkarDatabase.h"
-#include "../core/Scheduler.h"
+#include "../core/AppSettings.h"
+#include "../core/Localizer.h"
+#include "../core/Ipc.h"
 #include "../core/Updater.h"
-#include "../overlay/OverlayManager.h"
-#include "../notifications/NotificationDispatcher.h"
 #include "../platform/AutostartManager.h"
-#include "../platform/TrayController.h"
+#include "Version.h"
 
-// ── Constructor ───────────────────────────────────────────────────────────────
+#include <QApplication>
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QDesktopServices>
+#include <QFontDatabase>
+#include <QGraphicsDropShadowEffect>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QScreen>
+#include <QScrollArea>
+#include <QSpinBox>
+#include <QTabWidget>
+#include <QUrl>
+#include <QVBoxLayout>
 
-SettingsWindow::SettingsWindow(AppSettings            &settings,
-                               AdhkarDatabase         &db,
-                               OverlayManager         &overlay,
-                               NotificationDispatcher &notifier,
-                               Scheduler              &scheduler,
-                               TrayController         &tray,
-                               QWidget                *parent)
-    : QMainWindow(parent)
-    , m_settings(settings)
-    , m_db(db)
-    , m_overlay(overlay)
-    , m_notifier(notifier)
-    , m_scheduler(scheduler)
-    , m_tray(tray)
+namespace {
+constexpr int kKeyRole = Qt::UserRole + 1;
+
+void addItem(QComboBox *c, const char *key, int data)
 {
-    setWindowTitle("أذكاري — الإعدادات");
-    setMinimumSize(700, 540);
-    resize(760, 580);
+    c->addItem(QString(), data);
+    c->setItemData(c->count() - 1, QString::fromLatin1(key), kKeyRole);
+}
 
-    // Central widget
-    QWidget *central = new QWidget(this);
+/** Secondary text: 65% text colour + 35% window colour, so it stays readable in light and dark themes. */
+void muteLabel(QLabel *l)
+{
+    QPalette pal = l->palette();
+    const QColor t = pal.color(QPalette::WindowText), b = pal.color(QPalette::Window);
+    pal.setColor(QPalette::WindowText, QColor((t.red() * 65 + b.red() * 35) / 100, (t.green() * 65 + b.green() * 35) / 100,
+                                              (t.blue() * 65 + b.blue() * 35) / 100));
+    l->setPalette(pal);
+}
+
+QString presetKey(int secs)
+{
+    switch (secs) {
+    case 30: return QStringLiteral("settings.preset_30s");
+    case 60: return QStringLiteral("settings.preset_1m");
+    case 300: return QStringLiteral("settings.preset_5m");
+    case 900: return QStringLiteral("settings.preset_15m");
+    case 1800: return QStringLiteral("settings.preset_30m");
+    case 3600: return QStringLiteral("settings.preset_1h");
+    case 7200: return QStringLiteral("settings.preset_2h");
+    }
+    return QStringLiteral("settings.preset_custom");
+}
+
+void syncPreset(QComboBox *combo, int secs)
+{
+    int idx = combo->findData(secs);
+    if (idx < 0)
+        idx = combo->findData(-1);
+    combo->setCurrentIndex(idx);
+}
+} // namespace
+
+SettingsWindow::SettingsWindow(AppSettings &settings, AdhkarDatabase &db, Localizer &loc, Updater &updater, QWidget *parent)
+    : QMainWindow(parent), m_settings(settings), m_db(db), m_loc(loc), m_updater(updater)
+{
+    setWindowIcon(appIcon());
+    resize(800, 680);
+
+    auto *central = new QWidget(this);
+    auto *root = new QVBoxLayout(central);
+    root->setContentsMargins(0, 0, 0, 0);
+
+    m_tabs = new QTabWidget(central);
+    m_tabs->addTab(buildGeneralTab(), QString());
+    m_tabs->addTab(buildDisplayTab(), QString());
+    m_tabs->addTab(buildAppearanceTab(), QString());
+    m_tabs->addTab(buildNotificationsTab(), QString());
+    m_tabs->addTab(buildContentTab(), QString());
+    m_tabs->addTab(buildAboutTab(), QString());
+    root->addWidget(m_tabs, 1);
+
+    auto *bar = new QWidget(central);
+    auto *bl = new QHBoxLayout(bar);
+    bl->setContentsMargins(16, 10, 16, 12);
+    m_btnReset = new QPushButton(bar);
+    m_btnReset->setProperty("i18n", QStringLiteral("settings.btn_reset"));
+    m_btnCancel = new QPushButton(bar);
+    m_btnCancel->setProperty("i18n", QStringLiteral("settings.btn_cancel"));
+    m_btnApply = new QPushButton(bar);
+    m_btnApply->setProperty("i18n", QStringLiteral("settings.btn_apply"));
+    m_btnSave = new QPushButton(bar);
+    m_btnSave->setProperty("i18n", QStringLiteral("settings.btn_save"));
+    m_btnSave->setDefault(true);
+    bl->addWidget(m_btnReset);
+    bl->addStretch(1);
+    bl->addWidget(m_btnCancel);
+    bl->addWidget(m_btnApply);
+    bl->addWidget(m_btnSave);
+    root->addWidget(bar);
     setCentralWidget(central);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(central);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
+    connect(m_btnSave, &QPushButton::clicked, this, &SettingsWindow::onSave);
+    connect(m_btnApply, &QPushButton::clicked, this, &SettingsWindow::onApply);
+    connect(m_btnCancel, &QPushButton::clicked, this, &SettingsWindow::onCancel);
+    connect(m_btnReset, &QPushButton::clicked, this, &SettingsWindow::onReset);
+    connect(&m_loc, &Localizer::languageChanged, this, &SettingsWindow::retranslate);
 
-    // Tab widget
-    m_tabs = new QTabWidget(central);
-    m_tabs->addTab(buildGeneralTab(),       "عام");
-    m_tabs->addTab(buildDisplayTab(),       "طريقة العرض");
-    m_tabs->addTab(buildAppearanceTab(),    "المظهر");
-    m_tabs->addTab(buildNotificationsTab(), "الإشعارات");
-    m_tabs->addTab(buildContentTab(),       "المحتوى");
-    m_tabs->addTab(buildAboutTab(),         "حول التطبيق");
-    mainLayout->addWidget(m_tabs);
-
-    // Bottom button bar
-    QWidget     *btnBar    = new QWidget(central);
-    QHBoxLayout *btnLayout = new QHBoxLayout(btnBar);
-    btnLayout->setContentsMargins(16, 12, 16, 12);
-
-    QPushButton *btnReset  = new QPushButton("استعادة الافتراضي");
-    QPushButton *btnCancel = new QPushButton("إلغاء");
-    QPushButton *btnApply  = new QPushButton("تطبيق");
-    QPushButton *btnSave   = new QPushButton("حفظ");
-    btnSave->setDefault(true);
-
-    btnLayout->addWidget(btnReset);
-    btnLayout->addStretch();
-    btnLayout->addWidget(btnCancel);
-    btnLayout->addWidget(btnApply);
-    btnLayout->addWidget(btnSave);
-    mainLayout->addWidget(btnBar);
-
-    connect(btnSave,   &QPushButton::clicked, this, &SettingsWindow::onSave);
-    connect(btnCancel, &QPushButton::clicked, this, &SettingsWindow::onCancel);
-    connect(btnApply,  &QPushButton::clicked, this, &SettingsWindow::onApply);
-    connect(btnReset,  &QPushButton::clicked, this, [this]() {
-        // Reset to compiled defaults — just reconstruct an AppSettings
-        AppSettings fresh;
-        m_settings = fresh;
-        loadToUi();
+    connect(&m_updater, &Updater::updateAvailable, this, [this](const ReleaseInfo &info) {
+        m_updateLabel->setText(m_loc.t(QStringLiteral("settings.about_update_available")) + QStringLiteral(" ") + info.tag
+                               + QStringLiteral("\n") + m_loc.t(QStringLiteral("settings.about_update_cmd"))
+                               + QStringLiteral(" ") + info.installCommand);
+        m_releaseNotes->setPlainText(info.body);
+    });
+    connect(&m_updater, &Updater::upToDate, this, [this]() {
+        m_updateLabel->setText(m_loc.t(QStringLiteral("settings.about_up_to_date")));
+    });
+    connect(&m_updater, &Updater::checkFailed, this, [this](const QString &why) {
+        m_updateLabel->setText(m_loc.t(QStringLiteral("settings.about_check_failed")) + QStringLiteral(" ") + why);
     });
 
     loadToUi();
+    retranslate();
 }
 
 void SettingsWindow::showAndRaise()
 {
     loadToUi();
+    retranslate();
     show();
     raise();
     activateWindow();
 }
 
-// ── Tab builders ──────────────────────────────────────────────────────────────
-
-/**
- * Helper: adds a labeled control row with a plain-language helper subtitle.
- * Layout:
- *   [Label]
- *   [Control widget]
- *   [Helper subtitle in muted smaller text]
- */
-void SettingsWindow::addFormRow(QWidget       *container,
-                                QLayout       *layout,
-                                const QString &label,
-                                QWidget       *control,
-                                const QString &helpText)
+void SettingsWindow::hideEvent(QHideEvent *e)
 {
-    QVBoxLayout *vl = qobject_cast<QVBoxLayout *>(layout);
-    if (!vl) return;
+    if (m_dragChk && m_dragChk->isChecked())
+        m_dragChk->setChecked(false);   // also tells the daemon to leave drag mode
+    QMainWindow::hideEvent(e);
+}
 
-    QLabel *lbl = new QLabel(label, container);
-    QFont f = lbl->font();
-    f.setBold(true);
-    lbl->setFont(f);
-    vl->addWidget(lbl);
+// ── Builders ─────────────────────────────────────────────────────────────────
 
-    vl->addWidget(control);
+QWidget *SettingsWindow::makePage(QVBoxLayout *&layout)
+{
+    auto *scroll = new QScrollArea;
+    scroll->setWidgetResizable(true);
+    scroll->setFrameShape(QFrame::NoFrame);
+    auto *w = new QWidget;
+    layout = new QVBoxLayout(w);
+    layout->setContentsMargins(24, 20, 24, 20);
+    layout->setSpacing(4);
+    scroll->setWidget(w);
+    return scroll;
+}
 
-    if (!helpText.isEmpty()) {
-        QLabel *help = new QLabel(helpText, container);
-        help->setWordWrap(true);
-        QPalette p = help->palette();
-        p.setColor(QPalette::WindowText, p.color(QPalette::Mid));
-        help->setPalette(p);
-        QFont hf = help->font();
-        hf.setPointSizeF(hf.pointSizeF() * 0.88);
-        help->setFont(hf);
-        vl->addWidget(help);
+void SettingsWindow::addRow(QVBoxLayout *vl, const char *titleKey, QWidget *control, const char *helpKey)
+{
+    QWidget *parent = vl->parentWidget();
+    if (titleKey) {
+        auto *t = new QLabel(parent);
+        t->setProperty("i18n", QString::fromLatin1(titleKey));
+        QFont f = t->font();
+        f.setBold(true);
+        t->setFont(f);
+        vl->addWidget(t);
     }
+    if (control)
+        vl->addWidget(control);
+    if (helpKey) {
+        auto *h = new QLabel(parent);
+        h->setProperty("i18n", QString::fromLatin1(helpKey));
+        h->setWordWrap(true);
+        muteLabel(h);
+        vl->addWidget(h);
+    }
+    vl->addSpacing(14);
+}
 
-    // Spacer between rows
-    vl->addSpacing(12);
+QWidget *SettingsWindow::makeIntervalPicker(QComboBox *&combo, QSpinBox *&spin, const QList<int> &presets, int minSecs)
+{
+    auto *w = new QWidget;
+    auto *hl = new QHBoxLayout(w);
+    hl->setContentsMargins(0, 0, 0, 0);
+    combo = new QComboBox(w);
+    for (int p : presets)
+        addItem(combo, presetKey(p).toLatin1().constData(), p);
+    addItem(combo, "settings.preset_custom", -1);
+    spin = new QSpinBox(w);
+    spin->setRange(minSecs, 86400);
+    spin->setProperty("i18nSuffix", QStringLiteral("settings.unit_seconds"));
+    hl->addWidget(combo, 1);
+    hl->addWidget(spin, 1);
+    QComboBox *c = combo;
+    QSpinBox *s = spin;
+    connect(c, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this, c, s](int) {
+        const int v = c->currentData().toInt();
+        if (!m_loading && v > 0)
+            s->setValue(v);
+    });
+    connect(s, QOverload<int>::of(&QSpinBox::valueChanged), this, [c](int v) { syncPreset(c, v); });
+    return w;
 }
 
 QWidget *SettingsWindow::buildGeneralTab()
 {
-    QScrollArea *scroll = new QScrollArea;
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
-
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(24, 24, 24, 24);
-    vl->setSpacing(0);
-
-    // Language
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
     m_langCombo = new QComboBox;
-    m_langCombo->addItem("العربية", "ar");
-    m_langCombo->addItem("English", "en");
-    connect(m_langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &SettingsWindow::onLanguageChanged);
+    m_langCombo->addItem(QString::fromUtf8("العربية"), QStringLiteral("ar"));
+    m_langCombo->addItem(QStringLiteral("English"), QStringLiteral("en"));
+    connect(m_langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int) {
+        if (m_loading)
+            return;
+        const QString code = m_langCombo->currentData().toString();
+        m_settings.setLanguage(code);
+        m_loc.load(code);
+    });
+    addRow(vl, "settings.general_language", m_langCombo, "settings.general_language_desc");
 
-    addFormRow(w, vl, "اللغة",
-               m_langCombo,
-               "اختر لغة واجهة التطبيق. سيتغير التخطيط تلقائيًا بين اليمين لليسار (عربي) واليسار لليمين (إنجليزي).");
-
-    // Autostart
-    m_autostartChk = new QCheckBox("تفعيل التشغيل التلقائي عند بدء النظام");
-    addFormRow(w, vl, "التشغيل عند بدء الجهاز",
-               m_autostartChk,
-               "عند تفعيل هذا الخيار، سيبدأ تطبيق أذكاري تلقائيًا عند كل مرة تشغّل فيها جهازك دون الحاجة لفتحه يدويًا.");
-
-    vl->addStretch();
-    scroll->setWidget(w);
-    return scroll;
+    m_autostartChk = new QCheckBox;
+    m_autostartChk->setProperty("i18n", QStringLiteral("settings.general_autostart_label"));
+    addRow(vl, "settings.general_autostart", m_autostartChk, "settings.general_autostart_desc");
+    vl->addStretch(1);
+    return page;
 }
 
 QWidget *SettingsWindow::buildDisplayTab()
 {
-    QScrollArea *scroll = new QScrollArea;
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
 
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(24, 24, 24, 24);
-    vl->setSpacing(0);
-
-    // Display mode
     m_modeCombo = new QComboBox;
-    m_modeCombo->addItem("على خلفية سطح المكتب فقط",  int(DisplayMode::OverlayOnly));
-    m_modeCombo->addItem("إشعارات فقط",               int(DisplayMode::NotificationsOnly));
-    m_modeCombo->addItem("الاثنين معاً",               int(DisplayMode::Both));
-    connect(m_modeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &SettingsWindow::onDisplayModeChanged);
-    addFormRow(w, vl, "وضع العرض", m_modeCombo,
-               "اختر كيف تريد رؤية الأذكار: هل تريدها على خلفية سطح المكتب، أم كإشعارات فقط، أم كليهما معاً؟");
+    addItem(m_modeCombo, "settings.overlay_mode_desktop_only", int(DisplayMode::OverlayOnly));
+    addItem(m_modeCombo, "settings.overlay_mode_notifications_only", int(DisplayMode::NotificationsOnly));
+    addItem(m_modeCombo, "settings.overlay_mode_both", int(DisplayMode::Both));
+    addRow(vl, "settings.overlay_mode", m_modeCombo, "settings.overlay_mode_desc");
 
-    // Backend (Linux only)
 #if defined(Q_OS_LINUX)
     m_backendCombo = new QComboBox;
-    m_backendCombo->addItem("المحرك الافتراضي (موصى به)", int(OverlayBackend::Native));
-    m_backendCombo->addItem("eww (لينكس — متقدم)",        int(OverlayBackend::Eww));
-    connect(m_backendCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &SettingsWindow::onBackendChanged);
-    addFormRow(w, vl, "محرك العرض", m_backendCombo,
-               "الطريقة التقنية التي يستخدمها التطبيق لعرض النص على سطح مكتبك. المحرك الافتراضي يعمل على جميع الأنظمة بدون أي إعداد إضافي. أما eww فهو لمستخدمي لينكس الذين يستخدمونه بالفعل.");
+    addItem(m_backendCombo, "settings.backend_native", int(OverlayBackend::Native));
+    addItem(m_backendCombo, "settings.backend_eww", int(OverlayBackend::Eww));
+    addRow(vl, "settings.overlay_backend", m_backendCombo, "settings.overlay_backend_desc");
 #endif
 
-    // Position
     m_posCombo = new QComboBox;
-    m_posCombo->addItem("أعلى اليسار",   int(OverlayPosition::TopLeft));
-    m_posCombo->addItem("أعلى الوسط",   int(OverlayPosition::TopCenter));
-    m_posCombo->addItem("أعلى اليمين",  int(OverlayPosition::TopRight));
-    m_posCombo->addItem("وسط الشاشة",   int(OverlayPosition::Center));
-    m_posCombo->addItem("أسفل اليسار",  int(OverlayPosition::BottomLeft));
-    m_posCombo->addItem("أسفل الوسط",   int(OverlayPosition::BottomCenter));
-    m_posCombo->addItem("أسفل اليمين",  int(OverlayPosition::BottomRight));
-    m_posCombo->addItem("موضع مخصص",    int(OverlayPosition::Custom));
-    connect(m_posCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &SettingsWindow::onPositionChanged);
-    addFormRow(w, vl, "موضع النص على الشاشة", m_posCombo,
-               "حدد في أي مكان من الشاشة تريد ظهور نص الذكر. اختر موضعًا محددًا مسبقًا، أو اضغط 'تفعيل وضع السحب' لتحريك النص بالماوس.");
+    addItem(m_posCombo, "settings.position_topleft", int(OverlayPosition::TopLeft));
+    addItem(m_posCombo, "settings.position_topcenter", int(OverlayPosition::TopCenter));
+    addItem(m_posCombo, "settings.position_topright", int(OverlayPosition::TopRight));
+    addItem(m_posCombo, "settings.position_center", int(OverlayPosition::Center));
+    addItem(m_posCombo, "settings.position_bottomleft", int(OverlayPosition::BottomLeft));
+    addItem(m_posCombo, "settings.position_bottomcenter", int(OverlayPosition::BottomCenter));
+    addItem(m_posCombo, "settings.position_bottomright", int(OverlayPosition::BottomRight));
+    addItem(m_posCombo, "settings.position_custom", int(OverlayPosition::Custom));
+    addRow(vl, "settings.overlay_position", m_posCombo, "settings.overlay_position_desc");
 
-    // Drag mode
-    m_dragModeChk = new QCheckBox("تفعيل وضع السحب (اسحب النص بالماوس إلى أي مكان)");
-    connect(m_dragModeChk, &QCheckBox::toggled, this, &SettingsWindow::onDragModeToggled);
-    addFormRow(w, vl, "السحب والإفلات", m_dragModeChk,
-               "عند التفعيل، يمكنك النقر على نص الذكر وسحبه إلى أي مكان تريده على الشاشة. يتذكر التطبيق الموضع الجديد.");
+    m_dragChk = new QCheckBox;
+    m_dragChk->setProperty("i18n", QStringLiteral("settings.overlay_drag_mode_label"));
+    connect(m_dragChk, &QCheckBox::toggled, this, &SettingsWindow::onDragToggled);
+    addRow(vl, "settings.overlay_drag_mode", m_dragChk, "settings.overlay_drag_mode_desc");
 
-    // Monitor selector
     m_monitorCombo = new QComboBox;
-    const auto screens = QApplication::screens();
-    for (int i = 0; i < screens.size(); ++i) {
-        m_monitorCombo->addItem(
-            QString("الشاشة %1 (%2×%3)")
-                .arg(i + 1)
-                .arg(screens[i]->geometry().width())
-                .arg(screens[i]->geometry().height()),
-            i);
-    }
-    addFormRow(w, vl, "الشاشة", m_monitorCombo,
-               "إذا كان لديك أكثر من شاشة واحدة موصولة بجهازك، اختر على أيها تريد ظهور الأذكار.");
+    const auto screens = QGuiApplication::screens();
+    for (int i = 0; i < screens.size(); ++i)
+        m_monitorCombo->addItem(QStringLiteral("%1 — %2×%3").arg(i + 1).arg(screens[i]->geometry().width()).arg(screens[i]->geometry().height()), i);
+    addRow(vl, "settings.overlay_monitor", m_monitorCombo, "settings.overlay_monitor_desc");
 
-    // Rotation interval
-    m_rotationSpin = new QSpinBox;
-    m_rotationSpin->setRange(10, 86400);
-    m_rotationSpin->setSuffix("  ثانية");
-    m_rotationSpin->setSpecialValueText("مخصص");
-    addFormRow(w, vl, "مدة عرض كل ذكر", m_rotationSpin,
-               "كم من الوقت يظل كل ذكر معروضًا قبل الانتقال إلى التالي؟ على سبيل المثال: ٣٠ ثانية، أو ٣٠٠ ثانية (٥ دقائق).");
-
-    vl->addStretch();
-    scroll->setWidget(w);
-    return scroll;
+    addRow(vl, "settings.overlay_timer", makeIntervalPicker(m_rotPreset, m_rotSpin, {30, 60, 300, 900, 3600}, 5), "settings.overlay_timer_desc");
+    vl->addStretch(1);
+    return page;
 }
 
 QWidget *SettingsWindow::buildAppearanceTab()
 {
-    QScrollArea *scroll = new QScrollArea;
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
 
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(24, 24, 24, 24);
-    vl->setSpacing(0);
+    m_fontCombo = new QComboBox;
+    m_fontCombo->addItems(QFontDatabase::families(QFontDatabase::Arabic));
+    connect(m_fontCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SettingsWindow::updatePreview);
+    addRow(vl, "settings.appearance_font", m_fontCombo, "settings.appearance_font_desc");
 
-    // Font family
-    m_fontCombo = new QFontComboBox;
-    m_fontCombo->setFontFilters(QFontComboBox::AllFonts);
-    connect(m_fontCombo, &QFontComboBox::currentFontChanged,
-            this, &SettingsWindow::onFontChanged);
-    addFormRow(w, vl, "الخط", m_fontCombo,
-               "اختر الخط المستخدم لعرض الأذكار. الخطوط العربية كأميري وشهرازاد مدمجة في التطبيق ومتاحة مباشرة.");
+    m_sizeSpin = new QSpinBox;
+    m_sizeSpin->setRange(8, 96);
+    m_sizeSpin->setSuffix(QStringLiteral(" pt"));
+    connect(m_sizeSpin, QOverload<int>::of(&QSpinBox::valueChanged), this, &SettingsWindow::updatePreview);
+    addRow(vl, "settings.appearance_font_size", m_sizeSpin, "settings.appearance_font_size_desc");
 
-    // Font size
-    m_fontSizeSpin = new QSpinBox;
-    m_fontSizeSpin->setRange(8, 72);
-    m_fontSizeSpin->setSuffix("  نقطة");
-    addFormRow(w, vl, "حجم الخط", m_fontSizeSpin,
-               "حجم النص المعروض بالنقاط. زد الحجم لقراءة أيسر من بعيد، أو قلله إذا أردت مساحة أصغر على الشاشة.");
+    m_colorBtn = new QPushButton;
+    m_colorBtn->setProperty("i18n", QStringLiteral("settings.appearance_color_btn"));
+    connect(m_colorBtn, &QPushButton::clicked, this, &SettingsWindow::onPickColor);
+    addRow(vl, "settings.appearance_color", m_colorBtn, "settings.appearance_color_desc");
 
-    // Text color
-    m_colorBtn = new QToolButton;
-    m_colorBtn->setText("   اختر اللون   ");
-    m_colorBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    connect(m_colorBtn, &QToolButton::clicked, this, &SettingsWindow::onColorPickerClicked);
-    addFormRow(w, vl, "لون النص", m_colorBtn,
-               "اختر لون الكتابة. إذا كانت خلفية سطح مكتبك فاتحة، اختر لونًا داكنًا، والعكس بالعكس. الأبيض يناسب معظم الخلفيات.");
+    m_shadowChk = new QCheckBox;
+    m_shadowChk->setProperty("i18n", QStringLiteral("settings.appearance_shadow_label"));
+    connect(m_shadowChk, &QCheckBox::toggled, this, &SettingsWindow::updatePreview);
+    addRow(vl, "settings.appearance_shadow", m_shadowChk, "settings.appearance_shadow_desc");
 
-    // Shadow
-    m_shadowChk = new QCheckBox("إضافة ظل للنص");
-    addFormRow(w, vl, "ظل النص", m_shadowChk,
-               "يضيف هذا الخيار ظلًا خفيفًا حول الحروف يجعل النص أوضح وأسهل قراءة بغض النظر عن لون أو صورة الخلفية. يُنصح بتفعيله دائمًا.");
-
-    // Alignment
     m_alignCombo = new QComboBox;
-    m_alignCombo->addItem("يمين",  int(Qt::AlignRight));
-    m_alignCombo->addItem("وسط",   int(Qt::AlignCenter));
-    m_alignCombo->addItem("يسار",  int(Qt::AlignLeft));
-    addFormRow(w, vl, "محاذاة النص", m_alignCombo,
-               "كيف تريد محاذاة نص الذكر؟ 'وسط' هو الأنسب لمعظم المواضع. 'يمين' هو الأنسب للنصوص العربية الطويلة.");
+    addItem(m_alignCombo, "settings.align_right", int(Qt::AlignRight));
+    addItem(m_alignCombo, "settings.align_center", int(Qt::AlignHCenter));
+    addItem(m_alignCombo, "settings.align_left", int(Qt::AlignLeft));
+    connect(m_alignCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SettingsWindow::updatePreview);
+    addRow(vl, "settings.appearance_alignment", m_alignCombo, "settings.appearance_alignment_desc");
 
-    vl->addStretch();
-    scroll->setWidget(w);
-    return scroll;
+    m_preview = new QLabel(QString::fromUtf8("سُبْحَانَ اللَّهِ وَبِحَمْدِهِ"));
+    m_preview->setMinimumHeight(110);
+    m_preview->setWordWrap(true);
+    m_preview->setLayoutDirection(Qt::RightToLeft);
+    addRow(vl, "settings.appearance_preview", m_preview, nullptr);
+    vl->addStretch(1);
+    return page;
 }
 
 QWidget *SettingsWindow::buildNotificationsTab()
 {
-    QScrollArea *scroll = new QScrollArea;
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
-
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(24, 24, 24, 24);
-    vl->setSpacing(0);
-
-    m_notifEnabledChk = new QCheckBox("تفعيل إشعارات الذكر");
-    addFormRow(w, vl, "الإشعارات", m_notifEnabledChk,
-               "عند التفعيل، سيظهر إشعار على شاشتك كل فترة زمنية تحددها يذكّرك بذكر أو دعاء جديد. تعمل هذه الإشعارات حتى عندما تكون نوافذ التطبيقات مفتوحة.");
-
-    m_notifIntervalSpin = new QSpinBox;
-    m_notifIntervalSpin->setRange(60, 86400);
-    m_notifIntervalSpin->setSuffix("  ثانية");
-    addFormRow(w, vl, "الفترة بين الإشعارات", m_notifIntervalSpin,
-               "كم من الوقت بين كل إشعار والآخر؟ ١٨٠٠ ثانية = ٣٠ دقيقة. ٣٦٠٠ ثانية = ساعة واحدة. اختر ما يناسب جدولك اليومي.");
-
-    vl->addStretch();
-    scroll->setWidget(w);
-    return scroll;
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
+    auto *info = new QLabel;
+    info->setProperty("i18n", QStringLiteral("settings.notifications_info"));
+    info->setWordWrap(true);
+    addRow(vl, nullptr, info, nullptr);
+    addRow(vl, "settings.notifications_interval", makeIntervalPicker(m_notifPreset, m_notifSpin, {300, 900, 1800, 3600, 7200}, 30),
+           "settings.notifications_interval_desc");
+    vl->addStretch(1);
+    return page;
 }
 
 QWidget *SettingsWindow::buildContentTab()
 {
-    QScrollArea *scroll = new QScrollArea;
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
 
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(24, 24, 24, 24);
-    vl->setSpacing(0);
-
-    // Categories group
-    QGroupBox   *catBox = new QGroupBox("الفئات المعروضة");
-    QVBoxLayout *catVl  = new QVBoxLayout(catBox);
-
-    struct Category { QString id; QString label; };
-    const QList<Category> cats = {
-        {"morning",     "أذكار الصباح"},
-        {"evening",     "أذكار المساء"},
-        {"sleep",       "أذكار النوم والاستيقاظ"},
-        {"post_prayer", "أذكار بعد الصلاة"},
-        {"istighfar",   "الاستغفار والتوبة"},
-        {"general",     "أدعية عامة"},
-        {"quran",       "أدعية قرآنية"},
-    };
-
-    m_categoryChks.clear();
-    for (const auto &cat : cats) {
-        QCheckBox *chk = new QCheckBox(cat.label);
-        chk->setObjectName(cat.id);
-        catVl->addWidget(chk);
-        m_categoryChks.append(chk);
+    auto *box = new QGroupBox;
+    box->setProperty("i18n", QStringLiteral("settings.content_categories"));
+    auto *bl = new QVBoxLayout(box);
+    for (const AdhkarCategory &c : m_db.categories()) {
+        auto *chk = new QCheckBox(box);
+        chk->setObjectName(c.id);
+        bl->addWidget(chk);
+        m_categoryChks << chk;
     }
+    addRow(vl, nullptr, box, "settings.content_categories_desc");
 
-    vl->addWidget(catBox);
-
-    QLabel *catHelp = new QLabel(
-        "اختر أنواع الأذكار والأدعية التي تريد عرضها. يمكنك تفعيل أو إيقاف أي فئة في أي وقت. "
-        "يجب تفعيل فئة واحدة على الأقل.", w);
-    catHelp->setWordWrap(true);
-    catHelp->setStyleSheet("color: gray; font-size: 11px; margin-bottom: 16px;");
-    vl->addWidget(catHelp);
-
-    vl->addSpacing(12);
-
-    // Shuffle
-    m_shuffleChk = new QCheckBox("ترتيب عشوائي");
-    addFormRow(w, vl, "ترتيب العرض", m_shuffleChk,
-               "عند التفعيل، تُعرض الأذكار بترتيب عشوائي في كل دورة بدلًا من الترتيب الثابت. يجعل التجربة أكثر تنوعًا.");
-
-    // Show source
-    m_showSourceChk = new QCheckBox("عرض مصدر الحديث");
-    addFormRow(w, vl, "المصدر", m_showSourceChk,
-               "عند التفعيل، يُعرض مرجع كل ذكر (مثل: البخاري ٦٣٠٦) أسفل النص. مفيد للتحقق والمراجعة.");
-
-    // Show translation
-    m_showTransChk = new QCheckBox("عرض الترجمة الإنجليزية");
-    addFormRow(w, vl, "الترجمة", m_showTransChk,
-               "يعرض ترجمة إنجليزية لكل ذكر أسفل النص العربي. مفيد إذا كنت تتعلم العربية أو تشارك الأذكار مع غير الناطقين بالعربية.");
-
-    vl->addStretch();
-    scroll->setWidget(w);
-    return scroll;
+    m_shuffleChk = new QCheckBox;
+    m_shuffleChk->setProperty("i18n", QStringLiteral("settings.content_shuffle_label"));
+    addRow(vl, "settings.content_shuffle", m_shuffleChk, "settings.content_shuffle_desc");
+    m_sourceChk = new QCheckBox;
+    m_sourceChk->setProperty("i18n", QStringLiteral("settings.content_show_source_label"));
+    addRow(vl, "settings.content_show_source", m_sourceChk, "settings.content_show_source_desc");
+    m_translationChk = new QCheckBox;
+    m_translationChk->setProperty("i18n", QStringLiteral("settings.content_show_translation_label"));
+    addRow(vl, "settings.content_show_translation", m_translationChk, "settings.content_show_translation_desc");
+    vl->addStretch(1);
+    return page;
 }
 
 QWidget *SettingsWindow::buildAboutTab()
 {
-    QWidget     *w  = new QWidget;
-    QVBoxLayout *vl = new QVBoxLayout(w);
-    vl->setContentsMargins(32, 32, 32, 32);
-    vl->setSpacing(16);
+    QVBoxLayout *vl;
+    QWidget *page = makePage(vl);
+    QWidget *host = vl->parentWidget();
 
-    // App title
-    QLabel *title = new QLabel("أذكاري — Azkare");
+    auto *title = new QLabel(host);
+    title->setProperty("i18n", QStringLiteral("app.name"));
     QFont tf = title->font();
-    tf.setPointSize(18);
+    tf.setPointSize(tf.pointSize() + 8);
     tf.setBold(true);
     title->setFont(tf);
     title->setAlignment(Qt::AlignCenter);
     vl->addWidget(title);
 
-    QLabel *version = new QLabel("الإصدار 1.0.0");
-    version->setAlignment(Qt::AlignCenter);
-    version->setStyleSheet("color: gray;");
-    vl->addWidget(version);
+    auto *ver = new QLabel(QString::fromLatin1(AZKARE_VERSION_FULL), host);
+    ver->setAlignment(Qt::AlignCenter);
+    muteLabel(ver);
+    vl->addWidget(ver);
 
-    QLabel *desc = new QLabel(
-        "تطبيق مكتبي مفتوح المصدر يعرض أكثر من ٥٠٠ ذكر ودعاء أصيل\n"
-        "فوق خلفية سطح مكتبك — Linux وWindows وmacOS\n\n"
-        "جميع الأذكار موثّقة من الدرر السنية، إسلام ويب، والإسلام سؤال وجواب."
-    );
-    desc->setAlignment(Qt::AlignCenter);
+    auto *desc = new QLabel(host);
+    desc->setProperty("i18n", QStringLiteral("app.about_desc"));
     desc->setWordWrap(true);
+    desc->setAlignment(Qt::AlignCenter);
+    vl->addSpacing(10);
     vl->addWidget(desc);
 
-    vl->addSpacing(8);
-
-    // Developer
-    QLabel *devLabel = new QLabel("المطور: Mahmoud El Sheikh (arcalc)");
-    devLabel->setAlignment(Qt::AlignCenter);
-    vl->addWidget(devLabel);
-
-    // Links
-    auto makeLink = [&](const QString &text, const QString &url) {
-        QPushButton *btn = new QPushButton(text, w);
-        btn->setFlat(true);
-        btn->setCursor(Qt::PointingHandCursor);
-        btn->setStyleSheet("QPushButton { color: #5289AD; } QPushButton:hover { color: #3f6e90; }");
-        connect(btn, &QPushButton::clicked, this, [url]() {
-            QDesktopServices::openUrl(QUrl(url));
-        });
-        return btn;
+    auto *links = new QHBoxLayout;
+    links->addStretch(1);
+    auto addLink = [&](const QString &text, const QString &url) {
+        auto *b = new QPushButton(text, host);
+        b->setFlat(true);
+        b->setCursor(Qt::PointingHandCursor);
+        connect(b, &QPushButton::clicked, this, [url]() { QDesktopServices::openUrl(QUrl(url)); });
+        links->addWidget(b);
     };
-
-    QHBoxLayout *linksRow = new QHBoxLayout;
-    linksRow->addStretch();
-    linksRow->addWidget(makeLink("GitHub", "https://github.com/arcalc/azkare"));
-    linksRow->addWidget(new QLabel("·"));
-    linksRow->addWidget(makeLink("الموقع الشخصي", "https://arcalc.github.io/arcalc"));
-    linksRow->addWidget(new QLabel("·"));
-    linksRow->addWidget(makeLink("arcalc@proton.me", "mailto:arcalc@proton.me"));
-    linksRow->addStretch();
-    vl->addLayout(linksRow);
-
+    addLink(QStringLiteral("GitHub"), QStringLiteral("https://github.com/arcalc/azkare"));
+    addLink(QStringLiteral("arcalc.github.io/arcalc"), QStringLiteral("https://arcalc.github.io/arcalc"));
+    addLink(QStringLiteral("arcalc@proton.me"), QStringLiteral("mailto:arcalc@proton.me"));
+    links->addStretch(1);
+    vl->addLayout(links);
     vl->addSpacing(16);
 
-    // Update check
-    m_updateLabel   = new QLabel("", w);
+    m_updateLabel = new QLabel(host);
     m_updateLabel->setAlignment(Qt::AlignCenter);
     m_updateLabel->setWordWrap(true);
+    m_updateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     vl->addWidget(m_updateLabel);
 
-    m_checkUpdateBtn = new QPushButton("البحث عن تحديثات");
-    m_checkUpdateBtn->setMaximumWidth(220);
-    connect(m_checkUpdateBtn, &QPushButton::clicked, this, &SettingsWindow::onCheckUpdate);
-    QHBoxLayout *updateRow = new QHBoxLayout;
-    updateRow->addStretch();
-    updateRow->addWidget(m_checkUpdateBtn);
-    updateRow->addStretch();
-    vl->addLayout(updateRow);
+    auto *check = new QPushButton(host);
+    check->setProperty("i18n", QStringLiteral("settings.about_check_updates"));
+    connect(check, &QPushButton::clicked, this, [this]() {
+        m_updateLabel->setText(m_loc.t(QStringLiteral("settings.about_checking")));
+        m_updater.checkAsync();
+    });
+    auto *row = new QHBoxLayout;
+    row->addStretch(1);
+    row->addWidget(check);
+    row->addStretch(1);
+    vl->addLayout(row);
 
-    vl->addStretch();
-
-    QLabel *license = new QLabel("مرخّص بموجب رخصة MIT — مفتوح المصدر بحرية");
-    license->setAlignment(Qt::AlignCenter);
-    license->setStyleSheet("color: gray; font-size: 11px;");
-    vl->addWidget(license);
-
-    return w;
+    m_releaseNotes = new QPlainTextEdit(host);
+    m_releaseNotes->setReadOnly(true);
+    m_releaseNotes->setMinimumHeight(140);
+    m_releaseNotes->setLayoutDirection(Qt::LeftToRight);
+    vl->addSpacing(8);
+    vl->addWidget(m_releaseNotes);
+    vl->addStretch(1);
+    return page;
 }
 
-// ── Load / Save ───────────────────────────────────────────────────────────────
+// ── Load / save ──────────────────────────────────────────────────────────────
 
 void SettingsWindow::loadToUi()
 {
-    // General
-    m_langCombo->setCurrentIndex(m_settings.language() == "ar" ? 0 : 1);
-    m_autostartChk->setChecked(m_settings.autostartEnabled());
+    m_loading = true;
+    m_langCombo->setCurrentIndex(m_langCombo->findData(m_settings.language()));
+    m_autostartChk->setChecked(AutostartManager().isEnabled());
 
-    // Display
-    m_modeCombo->setCurrentIndex(int(m_settings.displayMode()));
-    if (m_backendCombo) m_backendCombo->setCurrentIndex(int(m_settings.overlayBackend()));
-    m_posCombo->setCurrentIndex(int(m_settings.overlayPosition()));
-    m_monitorCombo->setCurrentIndex(m_settings.overlayMonitor());
-    m_rotationSpin->setValue(m_settings.rotationIntervalSecs());
+    m_modeCombo->setCurrentIndex(m_modeCombo->findData(int(m_settings.displayMode())));
+    if (m_backendCombo)
+        m_backendCombo->setCurrentIndex(m_backendCombo->findData(int(m_settings.overlayBackend())));
+    m_posCombo->setCurrentIndex(m_posCombo->findData(int(m_settings.overlayPosition())));
+    m_monitorCombo->setCurrentIndex(qBound(0, m_settings.overlayMonitor(), m_monitorCombo->count() - 1));
+    m_rotSpin->setValue(m_settings.rotationIntervalSecs());
+    syncPreset(m_rotPreset, m_rotSpin->value());
 
-    // Appearance
-    m_fontCombo->setCurrentFont(QFont(m_settings.fontFamily()));
-    m_fontSizeSpin->setValue(m_settings.fontSize());
-    m_shadowChk->setChecked(m_settings.shadowEnabled());
-
-    QColor c = m_settings.textColor();
-    m_colorBtn->setStyleSheet(
-        QString("background-color: %1; color: %2; padding: 4px 16px;")
-            .arg(c.name())
-            .arg(c.lightness() > 128 ? "#000" : "#fff"));
-
-    switch (int(m_settings.textAlignment())) {
-    case int(Qt::AlignRight):  m_alignCombo->setCurrentIndex(0); break;
-    case int(Qt::AlignCenter): m_alignCombo->setCurrentIndex(1); break;
-    case int(Qt::AlignLeft):   m_alignCombo->setCurrentIndex(2); break;
-    default: break;
+    const int fi = m_fontCombo->findText(m_settings.fontFamily());
+    if (fi >= 0)
+        m_fontCombo->setCurrentIndex(fi);
+    else {
+        m_fontCombo->insertItem(0, m_settings.fontFamily());
+        m_fontCombo->setCurrentIndex(0);
     }
+    m_sizeSpin->setValue(m_settings.fontSize());
+    m_shadowChk->setChecked(m_settings.shadowEnabled());
+    m_alignCombo->setCurrentIndex(m_alignCombo->findData(int(m_settings.textAlignment() & (Qt::AlignLeft | Qt::AlignRight | Qt::AlignHCenter))));
+    setColorButton(m_settings.textColor());
 
-    // Notifications
-    m_notifEnabledChk->setChecked(m_settings.notificationsEnabled());
-    m_notifIntervalSpin->setValue(m_settings.notificationIntervalSecs());
+    m_notifSpin->setValue(m_settings.notificationIntervalSecs());
+    syncPreset(m_notifPreset, m_notifSpin->value());
 
-    // Content
-    QStringList activeCats = m_settings.activeCategories();
-    for (QCheckBox *chk : m_categoryChks)
-        chk->setChecked(activeCats.isEmpty() || activeCats.contains(chk->objectName()));
-
+    const QStringList active = m_settings.activeCategories();
+    for (QCheckBox *c : m_categoryChks)
+        c->setChecked(active.isEmpty() || active.contains(c->objectName()));
     m_shuffleChk->setChecked(m_settings.shuffleEnabled());
-    m_showSourceChk->setChecked(m_settings.showSource());
-    m_showTransChk->setChecked(m_settings.showTranslation());
+    m_sourceChk->setChecked(m_settings.showSource());
+    m_translationChk->setChecked(m_settings.showTranslation());
+    m_loading = false;
+    updatePreview();
 }
 
 void SettingsWindow::saveFromUi()
 {
     m_settings.setLanguage(m_langCombo->currentData().toString());
-    m_settings.setAutostartEnabled(m_autostartChk->isChecked());
-
     m_settings.setDisplayMode(DisplayMode(m_modeCombo->currentData().toInt()));
     if (m_backendCombo)
         m_settings.setOverlayBackend(OverlayBackend(m_backendCombo->currentData().toInt()));
     m_settings.setOverlayPosition(OverlayPosition(m_posCombo->currentData().toInt()));
-    m_settings.setOverlayMonitor(m_monitorCombo->currentIndex());
-    m_settings.setRotationIntervalSecs(m_rotationSpin->value());
-
-    m_settings.setFontFamily(m_fontCombo->currentFont().family());
-    m_settings.setFontSize(m_fontSizeSpin->value());
+    m_settings.setOverlayMonitor(m_monitorCombo->currentData().toInt());
+    m_settings.setRotationIntervalSecs(m_rotSpin->value());
+    m_settings.setFontFamily(m_fontCombo->currentText());
+    m_settings.setFontSize(m_sizeSpin->value());
+    m_settings.setTextColor(m_color);
     m_settings.setShadowEnabled(m_shadowChk->isChecked());
-
-    static const Qt::Alignment aligns[] = {Qt::AlignRight, Qt::AlignCenter, Qt::AlignLeft};
-    m_settings.setTextAlignment(aligns[m_alignCombo->currentIndex()]);
-
-    m_settings.setNotificationsEnabled(m_notifEnabledChk->isChecked());
-    m_settings.setNotificationIntervalSecs(m_notifIntervalSpin->value());
+    m_settings.setTextAlignment(Qt::Alignment(m_alignCombo->currentData().toInt()));
+    m_settings.setNotificationIntervalSecs(m_notifSpin->value());
 
     QStringList cats;
-    for (QCheckBox *chk : m_categoryChks)
-        if (chk->isChecked()) cats << chk->objectName();
-    m_settings.setActiveCategories(cats);
-
+    bool all = true;
+    for (QCheckBox *c : m_categoryChks) {
+        if (c->isChecked()) cats << c->objectName();
+        else all = false;
+    }
+    m_settings.setActiveCategories(all || cats.isEmpty() ? QStringList() : cats); // never leave zero categories
     m_settings.setShuffleEnabled(m_shuffleChk->isChecked());
-    m_settings.setShowSource(m_showSourceChk->isChecked());
-    m_settings.setShowTranslation(m_showTransChk->isChecked());
+    m_settings.setShowSource(m_sourceChk->isChecked());
+    m_settings.setShowTranslation(m_translationChk->isChecked());
 }
 
-// ── Slots ─────────────────────────────────────────────────────────────────────
-
-void SettingsWindow::onSave()
+void SettingsWindow::applyAll()
 {
     saveFromUi();
     m_settings.save();
-
-    // Apply autostart change
-    AutostartManager autostart;
-    autostart.setEnabled(m_settings.autostartEnabled());
-
-    // Push new settings live
-    m_db.setActiveCategories(m_settings.activeCategories());
-    m_db.setShuffleEnabled(m_settings.shuffleEnabled());
-    m_overlay.applySettings();
-    m_scheduler.applyNewSettings();
-
-    hide();
+    AutostartManager am;
+    if (am.isEnabled() != m_autostartChk->isChecked())
+        am.setEnabled(m_autostartChk->isChecked());
+    Ipc::send(Ipc::daemonName(), QStringLiteral("reload")); // the running daemon re-reads settings.json
 }
 
-void SettingsWindow::onApply()
-{
-    saveFromUi();
-    m_settings.save();
-    m_db.setActiveCategories(m_settings.activeCategories());
-    m_db.setShuffleEnabled(m_settings.shuffleEnabled());
-    m_overlay.applySettings();
-    m_scheduler.applyNewSettings();
-}
+void SettingsWindow::onApply() { applyAll(); }
+void SettingsWindow::onSave() { applyAll(); close(); }
 
 void SettingsWindow::onCancel()
 {
-    loadToUi(); // Revert UI
-    hide();
+    m_settings.resetToDefaults();
+    m_settings.load();               // back to what is on disk
+    m_loc.load(m_settings.language());
+    loadToUi();
+    close();
 }
 
-void SettingsWindow::onLanguageChanged(int) {}
-void SettingsWindow::onDisplayModeChanged(int) {}
-void SettingsWindow::onBackendChanged(int) {}
-void SettingsWindow::onPositionChanged(int) {}
-
-void SettingsWindow::onDragModeToggled(bool checked)
+void SettingsWindow::onReset()
 {
-    // Live-preview drag mode on the overlay widget
-    m_overlay.setVisible(true);
-    // OverlayManager needs a setDragMode method — forwarded here
-    // m_overlay.setDragMode(checked);
+    m_settings.resetToDefaults();
+    m_loc.load(m_settings.language());
+    loadToUi();
 }
 
-void SettingsWindow::onFontChanged(const QFont &) {}
-
-void SettingsWindow::onColorPickerClicked()
+void SettingsWindow::onPickColor()
 {
-    QColor c = QColorDialog::getColor(
-        m_settings.textColor(), this, "اختر لون النص",
-        QColorDialog::ShowAlphaChannel);
+    const QColor c = QColorDialog::getColor(m_color, this);
     if (c.isValid()) {
-        m_settings.setTextColor(c);
-        m_colorBtn->setStyleSheet(
-            QString("background-color: %1; color: %2; padding: 4px 16px;")
-                .arg(c.name())
-                .arg(c.lightness() > 128 ? "#000" : "#fff"));
+        setColorButton(c);
+        updatePreview();
     }
 }
 
-void SettingsWindow::onCheckUpdate()
+void SettingsWindow::onDragToggled(bool on)
 {
-    if (m_updateLabel)
-        m_updateLabel->setText("جارٍ البحث...");
-
-    Updater *updater = new Updater("arcalc", "azkare", "1.0.0", this);
-    connect(updater, &Updater::updateAvailable, this, [this](const ReleaseInfo &info) {
-        if (m_updateLabel)
-            m_updateLabel->setText(
-                QString("يوجد تحديث جديد: %1\n%2").arg(info.tag, info.name));
-        m_tray.showUpdateNotification(info);
-    });
-    connect(updater, &Updater::upToDate, this, [this]() {
-        if (m_updateLabel)
-            m_updateLabel->setText("أنت تستخدم أحدث إصدار.");
-    });
-    connect(updater, &Updater::checkFailed, this, [this](const QString &reason) {
-        if (m_updateLabel)
-            m_updateLabel->setText("تعذّر التحقق: " + reason);
-    });
-    updater->checkAsync();
+    if (m_loading)
+        return;
+    if (on) // show the overlay with the current choices first
+        applyAll();
+    QString reply;
+    Ipc::send(Ipc::daemonName(), on ? QStringLiteral("drag:on") : QStringLiteral("drag:off"), &reply);
+    // the daemon answers "custom <x> <y>" when the overlay was moved
+    const QStringList parts = reply.split(QLatin1Char(' '));
+    if (!on && parts.size() == 3 && parts[0] == QLatin1String("custom")) {
+        m_settings.setOverlayCustomPos(QPoint(parts[1].toInt(), parts[2].toInt()));
+        m_settings.setOverlayPosition(OverlayPosition::Custom);
+        m_loading = true;
+        m_posCombo->setCurrentIndex(m_posCombo->findData(int(OverlayPosition::Custom)));
+        m_loading = false;
+        m_settings.save();
+    }
 }
 
-void SettingsWindow::retranslate() {}
+void SettingsWindow::setColorButton(const QColor &c)
+{
+    m_color = c;
+    m_colorBtn->setStyleSheet(QStringLiteral("QPushButton { background:%1; color:%2; padding:6px 16px; border:1px solid #888; }")
+                                  .arg(c.name(), c.lightness() > 128 ? QStringLiteral("#000") : QStringLiteral("#fff")));
+}
+
+void SettingsWindow::updatePreview()
+{
+    if (!m_preview || m_loading)
+        return;
+    m_preview->setFont(QFont(m_fontCombo->currentText(), m_sizeSpin->value()));
+    m_preview->setStyleSheet(QStringLiteral("QLabel { background:#243C4C; color:%1; border-radius:8px; padding:16px; }").arg(m_color.name()));
+    m_preview->setAlignment(Qt::Alignment(m_alignCombo->currentData().toInt()) | Qt::AlignVCenter);
+    if (m_shadowChk->isChecked()) {
+        auto *fx = new QGraphicsDropShadowEffect(m_preview);
+        fx->setOffset(2, 2);
+        fx->setBlurRadius(4);
+        fx->setColor(QColor(0, 0, 0, 200));
+        m_preview->setGraphicsEffect(fx);
+    } else {
+        m_preview->setGraphicsEffect(nullptr);
+    }
+}
+
+// ── Translation ──────────────────────────────────────────────────────────────
+
+void SettingsWindow::retranslate()
+{
+    static const char *tabKeys[] = {"settings.tab_general", "settings.tab_overlay", "settings.tab_appearance",
+                                    "settings.tab_notifications", "settings.tab_content", "settings.tab_about"};
+    setWindowTitle(m_loc.t(QStringLiteral("app.name")) + QStringLiteral(" — ") + m_loc.t(QStringLiteral("settings.title")));
+    for (int i = 0; i < 6; ++i)
+        m_tabs->setTabText(i, m_loc.t(QString::fromLatin1(tabKeys[i])));
+
+    const auto widgets = findChildren<QWidget *>();
+    for (QWidget *w : widgets) {
+        const QVariant key = w->property("i18n");
+        if (key.isValid()) {
+            const QString text = m_loc.t(key.toString());
+            if (auto *l = qobject_cast<QLabel *>(w)) l->setText(text);
+            else if (auto *b = qobject_cast<QAbstractButton *>(w)) b->setText(text);
+            else if (auto *g = qobject_cast<QGroupBox *>(w)) g->setTitle(text);
+        }
+        const QVariant suffix = w->property("i18nSuffix");
+        if (suffix.isValid())
+            if (auto *sp = qobject_cast<QSpinBox *>(w))
+                sp->setSuffix(QStringLiteral(" ") + m_loc.t(suffix.toString()));
+        if (auto *c = qobject_cast<QComboBox *>(w))
+            for (int i = 0; i < c->count(); ++i) {
+                const QVariant ik = c->itemData(i, kKeyRole);
+                if (ik.isValid())
+                    c->setItemText(i, m_loc.t(ik.toString()));
+            }
+    }
+    for (QCheckBox *c : m_categoryChks)
+        c->setText(m_db.categoryName(c->objectName(), m_loc.language()));
+
+    QApplication::setLayoutDirection(m_loc.layoutDirection());
+    m_preview->setLayoutDirection(Qt::RightToLeft);
+    m_releaseNotes->setLayoutDirection(Qt::LeftToRight);
+}

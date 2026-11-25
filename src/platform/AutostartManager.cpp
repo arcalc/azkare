@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
+#include <QSaveFile>
 #include <QTextStream>
 #include <QDebug>
 
@@ -10,155 +11,77 @@
 #  include <windows.h>
 #endif
 
-AutostartManager::AutostartManager(QObject *parent) : QObject(parent) {}
+static QString exePath() { return QCoreApplication::applicationFilePath(); }
 
-QString AutostartManager::executablePath() const
+QString AutostartManager::entryPath()
 {
-    return QCoreApplication::applicationFilePath();
+#if defined(Q_OS_MACOS)
+    return QDir::homePath() + QStringLiteral("/Library/LaunchAgents/io.github.arcalc.azkare.plist");
+#elif defined(Q_OS_WIN)
+    return QString();
+#else
+    return QDir::homePath() + QStringLiteral("/.config/autostart/azkare.desktop");
+#endif
 }
 
 bool AutostartManager::isEnabled() const
 {
-#if defined(Q_OS_LINUX)
-    QString desktopFile = QDir::homePath() + "/.config/autostart/azkare.desktop";
-    return QFile::exists(desktopFile);
-#elif defined(Q_OS_WIN)
+#if defined(Q_OS_WIN)
     HKEY key;
-    if (RegOpenKeyExW(HKEY_CURRENT_USER,
-                      L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
-                      0, KEY_READ, &key) != ERROR_SUCCESS)
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &key) != ERROR_SUCCESS)
         return false;
-    bool found = RegQueryValueExW(key, L"Azkare", nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS;
+    const bool found = RegQueryValueExW(key, L"Azkare", nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS;
     RegCloseKey(key);
     return found;
-#elif defined(Q_OS_MACOS)
-    QString plist = QDir::homePath() + "/Library/LaunchAgents/io.github.arcalc.azkare.plist";
-    return QFile::exists(plist);
 #else
-    return false;
+    return QFile::exists(entryPath());
 #endif
 }
 
 bool AutostartManager::setEnabled(bool on)
 {
-#if defined(Q_OS_LINUX)
-    return on ? enableLinux() : disableLinux();
-#elif defined(Q_OS_WIN)
-    return on ? enableWindows() : disableWindows();
-#elif defined(Q_OS_MACOS)
-    return on ? enableMacOS() : disableMacOS();
-#else
-    Q_UNUSED(on)
-    return false;
-#endif
-}
-
-// ── Linux ─────────────────────────────────────────────────────────────────────
-
-bool AutostartManager::enableLinux()
-{
-    QString dir = QDir::homePath() + "/.config/autostart";
-    QDir().mkpath(dir);
-
-    QFile f(dir + "/azkare.desktop");
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "[AutostartManager] Cannot write .desktop file.";
-        return false;
-    }
-
-    QTextStream s(&f);
-    s << "[Desktop Entry]\n"
-      << "Type=Application\n"
-      << "Name=Azkare\n"
-      << "GenericName=Adhkar Desktop Reminder\n"
-      << "Comment=Display Adhkar and Duas on your desktop\n"
-      << "Exec=" << executablePath() << "\n"
-      << "Icon=azkare\n"
-      << "Terminal=false\n"
-      << "Categories=Utility;\n"
-      << "X-GNOME-Autostart-enabled=true\n";
-    return true;
-}
-
-bool AutostartManager::disableLinux()
-{
-    return QFile::remove(QDir::homePath() + "/.config/autostart/azkare.desktop");
-}
-
-// ── Windows ───────────────────────────────────────────────────────────────────
-
-bool AutostartManager::enableWindows()
-{
 #if defined(Q_OS_WIN)
     HKEY key;
-    if (RegOpenKeyExW(HKEY_CURRENT_USER,
-                      L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
-                      0, KEY_SET_VALUE, &key) != ERROR_SUCCESS) {
-        qWarning() << "[AutostartManager] Cannot open registry key.";
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &key) != ERROR_SUCCESS)
         return false;
+    bool ok;
+    if (on) {
+        const std::wstring cmd = (QStringLiteral("\"") + QDir::toNativeSeparators(exePath()) + QStringLiteral("\" --foreground")).toStdWString();
+        ok = RegSetValueExW(key, L"Azkare", 0, REG_SZ, reinterpret_cast<const BYTE *>(cmd.c_str()),
+                            static_cast<DWORD>((cmd.size() + 1) * sizeof(wchar_t))) == ERROR_SUCCESS;
+    } else {
+        const LONG r = RegDeleteValueW(key, L"Azkare");
+        ok = (r == ERROR_SUCCESS || r == ERROR_FILE_NOT_FOUND);
     }
-    std::wstring path = executablePath().toStdWString();
-    bool ok = RegSetValueExW(key, L"Azkare", 0, REG_SZ,
-                             reinterpret_cast<const BYTE *>(path.c_str()),
-                             static_cast<DWORD>((path.size() + 1) * sizeof(wchar_t)))
-              == ERROR_SUCCESS;
     RegCloseKey(key);
     return ok;
 #else
-    return false;
-#endif
-}
+    const QString path = entryPath();
+    if (!on)
+        return !QFile::exists(path) || QFile::remove(path);
 
-bool AutostartManager::disableWindows()
-{
-#if defined(Q_OS_WIN)
-    HKEY key;
-    if (RegOpenKeyExW(HKEY_CURRENT_USER,
-                      L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
-                      0, KEY_SET_VALUE, &key) != ERROR_SUCCESS)
+    QDir().mkpath(QFileInfo(path).absolutePath());
+    QSaveFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "[Autostart] cannot write" << path;
         return false;
-    bool ok = RegDeleteValueW(key, L"Azkare") == ERROR_SUCCESS;
-    RegCloseKey(key);
-    return ok;
-#else
-    return false;
-#endif
-}
-
-// ── macOS ─────────────────────────────────────────────────────────────────────
-
-bool AutostartManager::enableMacOS()
-{
-    QString dir = QDir::homePath() + "/Library/LaunchAgents";
-    QDir().mkpath(dir);
-
-    QFile f(dir + "/io.github.arcalc.azkare.plist");
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        return false;
-
+    }
     QTextStream s(&f);
+#  if defined(Q_OS_MACOS)
+    QString esc = exePath().toHtmlEscaped();
     s << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      << "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\"\n"
-      << "    \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
-      << "<plist version=\"1.0\">\n"
-      << "<dict>\n"
-      << "    <key>Label</key>\n"
-      << "    <string>io.github.arcalc.azkare</string>\n"
-      << "    <key>ProgramArguments</key>\n"
-      << "    <array>\n"
-      << "        <string>" << executablePath() << "</string>\n"
-      << "    </array>\n"
-      << "    <key>RunAtLoad</key>\n"
-      << "    <true/>\n"
-      << "    <key>KeepAlive</key>\n"
-      << "    <false/>\n"
-      << "</dict>\n"
-      << "</plist>\n";
-    return true;
-}
-
-bool AutostartManager::disableMacOS()
-{
-    return QFile::remove(
-        QDir::homePath() + "/Library/LaunchAgents/io.github.arcalc.azkare.plist");
+         "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+         "<plist version=\"1.0\"><dict>\n"
+         "  <key>Label</key><string>io.github.arcalc.azkare</string>\n"
+         "  <key>ProgramArguments</key><array><string>" << esc << "</string><string>--foreground</string></array>\n"
+         "  <key>RunAtLoad</key><true/>\n"
+         "</dict></plist>\n";
+#  else
+    s << "[Desktop Entry]\nType=Application\nName=Azkare\nComment=Adhkar and Duas on your desktop\n"
+         "Exec=\"" << exePath() << "\" --foreground\nIcon=azkare\nTerminal=false\n"
+         "X-GNOME-Autostart-enabled=true\n";
+#  endif
+    s.flush();
+    return f.commit();
+#endif
 }

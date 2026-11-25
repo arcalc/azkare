@@ -1,39 +1,17 @@
-/**
- * MacOverlay.mm
- * Objective-C++ bridge: pins an NSWindow to kCGDesktopWindowLevel
- * so it renders above the macOS wallpaper but below all normal windows.
- *
- * Called from OverlayWidget::applyMacOSDesktopLevel().
- */
-
 #import <AppKit/AppKit.h>
+#include "MacOverlay.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void setWindowToDesktopLevel(unsigned long long winId)
+void azkare_setWindowToDesktopLevel(void *nsViewPtr)
 {
-    // Qt's winId() on macOS returns an NSView pointer cast to WId
-    NSView *view = (__bridge NSView *)(void *)winId;
-    if (!view) return;
-
-    NSWindow *window = [view window];
-    if (!window) return;
-
-    // kCGDesktopWindowLevel (-2147483623) — renders above wallpaper, below all apps
-    [window setLevel:kCGDesktopWindowLevel];
-
-    // Transparent, non-activating
+    NSView *view = (__bridge NSView *)nsViewPtr;
+    NSWindow *window = view ? [view window] : nil;
+    if (!window)
+        return;
+    [window setLevel:kCGDesktopWindowLevel];   // above the wallpaper, below normal windows
     [window setOpaque:NO];
     [window setBackgroundColor:[NSColor clearColor]];
     [window setIgnoresMouseEvents:YES];
-    [window setCollectionBehavior:
-        NSWindowCollectionBehaviorCanJoinAllSpaces |
-        NSWindowCollectionBehaviorStationary |
-        NSWindowCollectionBehaviorIgnoresCycle];
+    [window setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces |
+                                  NSWindowCollectionBehaviorStationary |
+                                  NSWindowCollectionBehaviorIgnoresCycle];
 }
-
-#ifdef __cplusplus
-}
-#endif

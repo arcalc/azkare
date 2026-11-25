@@ -1,139 +1,87 @@
 #pragma once
-
+#include <QColor>
 #include <QObject>
+#include <QPoint>
 #include <QString>
 #include <QStringList>
-#include <QColor>
-#include <QPoint>
-#include <QFont>
+#include <Qt>
 
-// Which display mode is active
-enum class DisplayMode {
-    OverlayOnly,
-    NotificationsOnly,
-    Both
-};
+enum class DisplayMode { OverlayOnly, NotificationsOnly, Both };
+enum class OverlayBackend { Native, Eww };
+enum class OverlayPosition { TopLeft, TopCenter, TopRight, Center, BottomLeft, BottomCenter, BottomRight, Custom };
 
-// Which rendering backend to use on Linux
-enum class OverlayBackend {
-    Native, ///< Built-in C++ renderer (default, all platforms)
-    Eww     ///< ElKowar's Wacky Widgets (Linux only)
-};
-
-// Preset anchor for overlay position
-enum class OverlayPosition {
-    TopLeft, TopCenter, TopRight,
-    Center,
-    BottomLeft, BottomCenter, BottomRight,
-    Custom
-};
-
-/**
- * All user-configurable settings, persisted as JSON in the
- * platform's standard app config directory.
- */
+/** All user settings, persisted as JSON in the app config directory. */
 class AppSettings : public QObject
 {
     Q_OBJECT
-
 public:
     explicit AppSettings(QObject *parent = nullptr);
 
-    // ── Persistence ───────────────────────────────────────────────────────
-    void load();
-    void save() const;
+    static QString configFilePath();
+    bool load();          ///< overlays values found on disk onto the current ones
+    bool save() const;    ///< atomic write
+    void resetToDefaults();
 
-    // ── General ───────────────────────────────────────────────────────────
-    QString     language() const;        ///< "ar" or "en"
-    void        setLanguage(const QString &lang);
+    QString language() const { return m_d.language; }
+    void setLanguage(const QString &v) { m_d.language = (v == QLatin1String("en")) ? QStringLiteral("en") : QStringLiteral("ar"); }
 
-    bool        autostartEnabled() const;
-    void        setAutostartEnabled(bool on);
+    DisplayMode displayMode() const { return m_d.mode; }
+    void setDisplayMode(DisplayMode m) { m_d.mode = m; }
+    bool overlayEnabled() const { return m_d.mode != DisplayMode::NotificationsOnly; }
+    bool notificationsEnabled() const { return m_d.mode != DisplayMode::OverlayOnly; }
 
-    // ── Display mode ──────────────────────────────────────────────────────
-    DisplayMode displayMode() const;
-    void        setDisplayMode(DisplayMode m);
+    OverlayBackend overlayBackend() const { return m_d.backend; }
+    void setOverlayBackend(OverlayBackend b) { m_d.backend = b; }
+    OverlayPosition overlayPosition() const { return m_d.position; }
+    void setOverlayPosition(OverlayPosition p) { m_d.position = p; }
+    QPoint overlayCustomPos() const { return m_d.customPos; }
+    void setOverlayCustomPos(const QPoint &p) { m_d.customPos = p; }
+    int overlayMonitor() const { return m_d.monitor; }
+    void setOverlayMonitor(int i) { m_d.monitor = qMax(0, i); }
 
-    // ── Overlay ───────────────────────────────────────────────────────────
-    OverlayBackend   overlayBackend() const;
-    void             setOverlayBackend(OverlayBackend b);
+    int rotationIntervalSecs() const { return m_d.rotationSecs; }
+    void setRotationIntervalSecs(int s) { m_d.rotationSecs = qBound(5, s, 86400); }
+    int notificationIntervalSecs() const { return m_d.notifSecs; }
+    void setNotificationIntervalSecs(int s) { m_d.notifSecs = qBound(30, s, 86400); }
 
-    OverlayPosition  overlayPosition() const;
-    void             setOverlayPosition(OverlayPosition p);
+    QString fontFamily() const { return m_d.fontFamily; }
+    void setFontFamily(const QString &f) { if (!f.isEmpty()) m_d.fontFamily = f; }
+    int fontSize() const { return m_d.fontSize; }
+    void setFontSize(int pt) { m_d.fontSize = qBound(8, pt, 96); }
+    QColor textColor() const { return m_d.color; }
+    void setTextColor(const QColor &c) { if (c.isValid()) m_d.color = c; }
+    bool shadowEnabled() const { return m_d.shadow; }
+    void setShadowEnabled(bool on) { m_d.shadow = on; }
+    Qt::Alignment textAlignment() const { return m_d.align; }
+    void setTextAlignment(Qt::Alignment a) { m_d.align = a; }
 
-    QPoint           overlayCustomPos() const;
-    void             setOverlayCustomPos(const QPoint &pos);
-
-    int              overlayMonitor() const;
-    void             setOverlayMonitor(int idx);
-
-    int              rotationIntervalSecs() const;
-    void             setRotationIntervalSecs(int secs);
-
-    // ── Appearance ────────────────────────────────────────────────────────
-    QString     fontFamily() const;
-    void        setFontFamily(const QString &family);
-
-    int         fontSize() const;
-    void        setFontSize(int pt);
-
-    QColor      textColor() const;
-    void        setTextColor(const QColor &c);
-
-    bool        shadowEnabled() const;
-    void        setShadowEnabled(bool on);
-
-    Qt::Alignment textAlignment() const;
-    void          setTextAlignment(Qt::Alignment a);
-
-    // ── Notifications ─────────────────────────────────────────────────────
-    bool notificationsEnabled() const;
-    void setNotificationsEnabled(bool on);
-
-    int  notificationIntervalSecs() const;
-    void setNotificationIntervalSecs(int secs);
-
-    // ── Content ───────────────────────────────────────────────────────────
-    QStringList activeCategories() const;
-    void        setActiveCategories(const QStringList &ids);
-
-    bool shuffleEnabled() const;
-    void setShuffleEnabled(bool on);
-
-    bool showSource() const;
-    void setShowSource(bool on);
-
-    bool showTranslation() const;
-    void setShowTranslation(bool on);
-
-signals:
-    void settingsChanged();
+    QStringList activeCategories() const { return m_d.categories; }
+    void setActiveCategories(const QStringList &ids) { m_d.categories = ids; }
+    bool shuffleEnabled() const { return m_d.shuffle; }
+    void setShuffleEnabled(bool on) { m_d.shuffle = on; }
+    bool showSource() const { return m_d.showSource; }
+    void setShowSource(bool on) { m_d.showSource = on; }
+    bool showTranslation() const { return m_d.showTranslation; }
+    void setShowTranslation(bool on) { m_d.showTranslation = on; }
 
 private:
-    QString configFilePath() const;
-
-    // ── Defaults ──────────────────────────────────────────────────────────
-    QString        m_language        = "ar";
-    bool           m_autostart       = false;
-
-    DisplayMode    m_displayMode     = DisplayMode::Both;
-    OverlayBackend m_backend         = OverlayBackend::Native;
-    OverlayPosition m_position       = OverlayPosition::BottomCenter;
-    QPoint         m_customPos       = {100, 100};
-    int            m_monitor         = 0;
-    int            m_rotationSecs    = 300; // 5 min
-
-    QString        m_fontFamily      = "Amiri";
-    int            m_fontSize        = 20;
-    QColor         m_textColor       = QColor(255, 255, 255);
-    bool           m_shadow          = true;
-    Qt::Alignment  m_alignment       = Qt::AlignCenter;
-
-    bool           m_notifEnabled    = true;
-    int            m_notifSecs       = 1800; // 30 min
-
-    QStringList    m_activeCategories; // empty = all
-    bool           m_shuffle         = false;
-    bool           m_showSource      = true;
-    bool           m_showTranslation = false;
+    struct Data {
+        QString language = QStringLiteral("ar");
+        DisplayMode mode = DisplayMode::Both;
+        OverlayBackend backend = OverlayBackend::Native;
+        OverlayPosition position = OverlayPosition::BottomCenter;
+        QPoint customPos = QPoint(100, 100);
+        int monitor = 0;
+        int rotationSecs = 300;
+        int notifSecs = 1800;
+        QString fontFamily = QStringLiteral("Amiri");
+        int fontSize = 26;
+        QColor color = QColor(255, 255, 255);
+        bool shadow = true;
+        Qt::Alignment align = Qt::AlignHCenter;
+        QStringList categories;   // empty = all
+        bool shuffle = false;
+        bool showSource = true;
+        bool showTranslation = false;
+    } m_d;
 };

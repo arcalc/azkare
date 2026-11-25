@@ -1,118 +1,88 @@
 #pragma once
-
+#include <QColor>
 #include <QMainWindow>
-#include <QTabWidget>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QSlider>
-#include <QSpinBox>
-#include <QFontComboBox>
-#include <QToolButton>
-#include <QLabel>
-#include <QPushButton>
+#include <QList>
 
+class QCheckBox;
+class QComboBox;
+class QLabel;
+class QPlainTextEdit;
+class QPushButton;
+class QSpinBox;
+class QTabWidget;
+class QVBoxLayout;
 class AppSettings;
 class AdhkarDatabase;
-class OverlayManager;
-class NotificationDispatcher;
-class Scheduler;
-class TrayController;
+class Localizer;
+class Updater;
 
 /**
- * Full settings window with tabs:
- *   General | Display | Notifications | Appearance | Content | About
- *
- * Every control has a plain-language helper label directly beneath it
- * so non-technical users understand each option.
+ * Bilingual (Arabic-first, RTL/LTR) settings window. Every control has a plain-language
+ * helper text under it. Texts are looked up through Localizer keys stored in the
+ * "i18n" widget property, so switching language retranslates everything live.
  */
 class SettingsWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
-    explicit SettingsWindow(AppSettings            &settings,
-                            AdhkarDatabase         &db,
-                            OverlayManager         &overlay,
-                            NotificationDispatcher &notifier,
-                            Scheduler              &scheduler,
-                            TrayController         &tray,
-                            QWidget                *parent = nullptr);
+    SettingsWindow(AppSettings &settings, AdhkarDatabase &db, Localizer &loc, Updater &updater, QWidget *parent = nullptr);
 
     void showAndRaise();
 
+protected:
+    void hideEvent(QHideEvent *event) override;
+
 private slots:
+    void retranslate();
     void onSave();
-    void onCancel();
     void onApply();
-    void onLanguageChanged(int idx);
-    void onDisplayModeChanged(int idx);
-    void onBackendChanged(int idx);
-    void onPositionChanged(int idx);
-    void onDragModeToggled(bool checked);
-    void onFontChanged(const QFont &font);
-    void onColorPickerClicked();
-    void onCheckUpdate();
+    void onCancel();
+    void onReset();
+    void onPickColor();
+    void onDragToggled(bool on);
+    void updatePreview();
 
 private:
-    // ── Tab builders ──────────────────────────────────────────────────────
     QWidget *buildGeneralTab();
     QWidget *buildDisplayTab();
-    QWidget *buildNotificationsTab();
     QWidget *buildAppearanceTab();
+    QWidget *buildNotificationsTab();
     QWidget *buildContentTab();
     QWidget *buildAboutTab();
 
-    /** Add a labeled control + helper subtitle in a consistent layout. */
-    void addFormRow(QWidget *container, QLayout *layout,
-                    const QString &label,
-                    QWidget       *control,
-                    const QString &helpText);
-
+    QWidget *makePage(QVBoxLayout *&layout);
+    void addRow(QVBoxLayout *vl, const char *titleKey, QWidget *control, const char *helpKey);
+    QWidget *makeIntervalPicker(QComboBox *&combo, QSpinBox *&spin, const QList<int> &presets, int minSecs);
+    void applyAll();
     void loadToUi();
     void saveFromUi();
-    void retranslate();
+    void setColorButton(const QColor &c);
 
-    // ── References ────────────────────────────────────────────────────────
-    AppSettings            &m_settings;
-    AdhkarDatabase         &m_db;
-    OverlayManager         &m_overlay;
-    NotificationDispatcher &m_notifier;
-    Scheduler              &m_scheduler;
-    TrayController         &m_tray;
+    AppSettings &m_settings;
+    AdhkarDatabase &m_db;
+    Localizer &m_loc;
+    Updater &m_updater;
 
-    // ── Tab widget ────────────────────────────────────────────────────────
+    bool m_loading = false;
+    QColor m_color;
     QTabWidget *m_tabs = nullptr;
 
-    // ── General controls ──────────────────────────────────────────────────
-    QComboBox *m_langCombo     = nullptr;
-    QCheckBox *m_autostartChk  = nullptr;
-
-    // ── Display controls ──────────────────────────────────────────────────
-    QComboBox *m_modeCombo     = nullptr;
-    QComboBox *m_backendCombo  = nullptr;
-    QComboBox *m_posCombo      = nullptr;
-    QComboBox *m_monitorCombo  = nullptr;
-    QSpinBox  *m_rotationSpin  = nullptr;
-    QCheckBox *m_dragModeChk   = nullptr;
-
-    // ── Appearance controls ───────────────────────────────────────────────
-    QFontComboBox *m_fontCombo   = nullptr;
-    QSpinBox      *m_fontSizeSpin = nullptr;
-    QToolButton   *m_colorBtn    = nullptr;
-    QCheckBox     *m_shadowChk   = nullptr;
-    QComboBox     *m_alignCombo  = nullptr;
-
-    // ── Notification controls ─────────────────────────────────────────────
-    QCheckBox *m_notifEnabledChk = nullptr;
-    QSpinBox  *m_notifIntervalSpin = nullptr;
-
-    // ── Content controls ──────────────────────────────────────────────────
+    QComboBox *m_langCombo = nullptr;
+    QCheckBox *m_autostartChk = nullptr;
+    QComboBox *m_modeCombo = nullptr, *m_backendCombo = nullptr, *m_posCombo = nullptr, *m_monitorCombo = nullptr;
+    QCheckBox *m_dragChk = nullptr;
+    QComboBox *m_rotPreset = nullptr;
+    QSpinBox *m_rotSpin = nullptr;
+    QComboBox *m_fontCombo = nullptr, *m_alignCombo = nullptr;
+    QSpinBox *m_sizeSpin = nullptr;
+    QPushButton *m_colorBtn = nullptr;
+    QCheckBox *m_shadowChk = nullptr;
+    QLabel *m_preview = nullptr;
+    QComboBox *m_notifPreset = nullptr;
+    QSpinBox *m_notifSpin = nullptr;
     QList<QCheckBox *> m_categoryChks;
-    QCheckBox *m_shuffleChk      = nullptr;
-    QCheckBox *m_showSourceChk   = nullptr;
-    QCheckBox *m_showTransChk    = nullptr;
-
-    // ── About ─────────────────────────────────────────────────────────────
-    QLabel    *m_updateLabel     = nullptr;
-    QPushButton *m_checkUpdateBtn = nullptr;
+    QCheckBox *m_shuffleChk = nullptr, *m_sourceChk = nullptr, *m_translationChk = nullptr;
+    QLabel *m_updateLabel = nullptr;
+    QPlainTextEdit *m_releaseNotes = nullptr;
+    QPushButton *m_btnSave = nullptr, *m_btnApply = nullptr, *m_btnCancel = nullptr, *m_btnReset = nullptr;
 };
