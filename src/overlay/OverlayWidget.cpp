@@ -135,15 +135,18 @@ void OverlayWidget::rebuildDocument()
                     .arg(QLatin1String(align)).arg(qMax(9, m_settings.fontSize() * 55 / 100))
                     .arg(m_entry.translationEn.toHtmlEscaped());
     }
-    QStringList meta;
-    if (m_settings.showSource() && !m_entry.sourceRef.isEmpty())
-        meta << m_entry.sourceRef;
-    if (m_entry.repeat > 1)
-        meta << QStringLiteral("× %1").arg(m_entry.repeat);
-    if (!meta.isEmpty()) {
-        html += QStringLiteral("<p align='%1' dir='ltr' style='margin:8px 0 0 0; font-size:%2pt;'>%3</p>")
-                    .arg(QLatin1String(align)).arg(qMax(8, m_settings.fontSize() * 45 / 100))
-                    .arg(meta.join(QStringLiteral("  ·  ")).toHtmlEscaped());
+    const int metaPt = qMax(8, m_settings.fontSize() * 45 / 100);
+    if (m_settings.showSource() && m_entry.hasSource()) {
+        // "المصدر: <source_ar> | Source: <source_en>" - each run isolated (RLI/LRI ... PDI) so neither reorders the other
+        const QString line = QString(QChar(0x2067)) + m_entry.sourceLabelAr().toHtmlEscaped() + QChar(0x2069)
+                           + QStringLiteral(" &nbsp;|&nbsp; ")
+                           + QChar(0x2066) + m_entry.sourceLabelEn().toHtmlEscaped() + QChar(0x2069);
+        html += QStringLiteral("<p align='%1' dir='rtl' style='margin:8px 0 0 0; font-size:%2pt;'>%3</p>")
+                    .arg(QLatin1String(align)).arg(metaPt).arg(line);
+    }
+    if (m_entry.repeat > 1) {
+        html += QStringLiteral("<p align='%1' dir='ltr' style='margin:4px 0 0 0; font-size:%2pt;'>× %3</p>")
+                    .arg(QLatin1String(align)).arg(metaPt).arg(m_entry.repeat);
     }
     m_doc.setHtml(html);
 }

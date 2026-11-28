@@ -8,10 +8,186 @@
 <meta name="theme-color" content="#243C4C">
 <meta property="og:title" content="أذكاري — Azkare">
 <meta property="og:description" content="Adhkar and Duas on your desktop. One terminal command to install.">
-<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCI+CiAgPGNpcmNsZSBjeD0iNjQiIGN5PSI2NCIgcj0iNTgiIGZpbGw9IiMyNDNDNEMiIHN0cm9rZT0iIzUyODlBRCIgc3Ryb2tlLXdpZHRoPSI2Ii8+CiAgPHRleHQgeD0iNjQiIHk9Ijg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQW1pcmksICdOb3RvIE5hc2toIEFyYWJpYycsIHNlcmlmIiBmb250LXNpemU9Ijc2IiBmaWxsPSIjRjRGQ0ZCIj7YsDwvdGV4dD4KPC9zdmc+Cg==">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<style>
+/* Azkare website — Arctic Reflection + Urban Slate. Every colour below derives from those ten hex values. */
+:root {
+  --navy: #243C4C;  --cerulean: #5289AD;  --teal: #698696;  --silver: #ACBCBF;  --ice: #F4FCFB;
+  --offwhite: #E9E6E7;  --charcoal: #5E5653;  --slate: #7B7F8A;  --taupe: #AB978C;  --steel: #6B7C98;
+
+  --bg: var(--offwhite);
+  --surface: var(--ice);
+  --surface-2: color-mix(in srgb, var(--ice) 55%, var(--offwhite));
+  --text: var(--charcoal);
+  --text-2: color-mix(in srgb, var(--slate) 45%, var(--charcoal));
+  --border: color-mix(in srgb, var(--silver) 80%, var(--offwhite));
+  --link: color-mix(in srgb, var(--cerulean) 72%, var(--navy));
+  --btn: color-mix(in srgb, var(--cerulean) 76%, var(--navy));
+  --btn-hover: color-mix(in srgb, var(--teal) 70%, var(--navy));
+  --badge-bg: color-mix(in srgb, var(--taupe) 35%, var(--ice));
+  --term: color-mix(in srgb, var(--navy) 58%, #000);
+  --term-bar: color-mix(in srgb, var(--navy) 80%, #000);
+  --term-text: var(--ice);
+  --term-dim: var(--silver);
+  --nav-bg: color-mix(in srgb, var(--offwhite) 88%, transparent);
+  --radius: 10px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: var(--navy);
+  --surface: color-mix(in srgb, var(--navy) 90%, var(--ice));
+  --surface-2: color-mix(in srgb, var(--navy) 80%, #000);
+  --text: var(--ice);
+  --text-2: var(--silver);
+  --border: color-mix(in srgb, var(--navy) 72%, var(--silver));
+  --link: color-mix(in srgb, var(--cerulean) 55%, var(--ice));
+  --btn: color-mix(in srgb, var(--cerulean) 82%, var(--navy));
+  --btn-hover: var(--cerulean);
+  --badge-bg: color-mix(in srgb, var(--taupe) 22%, var(--navy));
+  --term: color-mix(in srgb, var(--navy) 50%, #000);
+  --nav-bg: color-mix(in srgb, var(--navy) 88%, transparent);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) {
+  --bg: var(--navy); --surface: color-mix(in srgb, var(--navy) 90%, var(--ice)); --surface-2: color-mix(in srgb, var(--navy) 80%, #000);
+  --text: var(--ice); --text-2: var(--silver); --border: color-mix(in srgb, var(--navy) 72%, var(--silver));
+  --link: color-mix(in srgb, var(--cerulean) 55%, var(--ice)); --btn: color-mix(in srgb, var(--cerulean) 82%, var(--navy));
+  --btn-hover: var(--cerulean); --badge-bg: color-mix(in srgb, var(--taupe) 22%, var(--navy));
+  --term: color-mix(in srgb, var(--navy) 50%, #000); --nav-bg: color-mix(in srgb, var(--navy) 88%, transparent); color-scheme: dark; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+body { font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; transition: background .25s, color .25s; }
+a { color: var(--link); text-decoration: none; } a:hover { text-decoration: underline; }
+code, .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.amiri { font-family: 'Amiri', serif; }
+:focus-visible { outline: 2px solid var(--cerulean); outline-offset: 3px; border-radius: 4px; }
+.skip { position: absolute; inset-inline-start: 12px; top: -60px; background: var(--btn); color: var(--ice); padding: 8px 14px; border-radius: 6px; z-index: 200; }
+.skip:focus { top: 10px; text-decoration: none; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav .wrap { display: flex; align-items: center; gap: 20px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-family: 'Amiri', serif; font-size: 1.35rem; font-weight: 700; }
+.brand:hover { text-decoration: none; }
+.brand svg { width: 32px; height: 32px; color: var(--cerulean); }
+.nav ul { display: flex; list-style: none; gap: 2px; margin-inline-start: auto; }
+.nav ul a { color: var(--text-2); font-size: .92rem; padding: 6px 12px; border-radius: 6px; display: block; }
+.nav ul a:hover { background: var(--surface); color: var(--text); text-decoration: none; }
+.tools { display: flex; gap: 8px; }
+.tool { background: none; border: 1px solid var(--border); color: var(--text-2); border-radius: 6px; padding: 6px 12px; font: inherit; font-size: .85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.tool:hover { border-color: var(--cerulean); color: var(--text); }
+.icon-moon { display: none; } :root[data-theme="dark"] .icon-sun { display: none; } :root[data-theme="dark"] .icon-moon { display: block; }
+
+/* hero — a night desk: deep navy with a faint grid */
+.hero { background: var(--navy); color: var(--ice); position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+.hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(color-mix(in srgb, var(--cerulean) 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--cerulean) 9%, transparent) 1px, transparent 1px); background-size: 36px 36px; mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%); }
+.hero .wrap { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; padding-block: 88px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--silver); border: 1px solid color-mix(in srgb, var(--cerulean) 45%, transparent); border-radius: 100px; padding: 4px 14px; margin-bottom: 22px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--taupe); }
+h1 { font-family: 'Amiri', serif; font-size: clamp(2.4rem, 5.4vw, 3.9rem); line-height: 1.2; font-weight: 700; }
+h1 .b { display: block; font-size: .5em; color: color-mix(in srgb, var(--cerulean) 60%, var(--ice)); font-weight: 400; margin-top: 8px; }
+.lead { color: var(--silver); font-size: 1.08rem; max-width: 52ch; margin: 20px 0 28px; }
+.os-row { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--silver); margin-bottom: 8px; }
+.pill { border: 1px solid color-mix(in srgb, var(--cerulean) 45%, transparent); border-radius: 100px; padding: 1px 10px; font-family: 'IBM Plex Mono', monospace; font-size: .72rem; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 500; font-size: .95rem; padding: 11px 22px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }
+.btn:hover { text-decoration: none; }
+.btn-primary { background: var(--btn); color: var(--ice); } .btn-primary:hover { background: var(--btn-hover); }
+.btn-ghost { border-color: color-mix(in srgb, var(--silver) 55%, transparent); color: var(--ice); background: none; } .btn-ghost:hover { border-color: var(--cerulean); }
+.stats { display: flex; gap: 28px; margin-top: 36px; flex-wrap: wrap; }
+.stat b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; color: color-mix(in srgb, var(--cerulean) 60%, var(--ice)); }
+.stat small { color: var(--silver); font-size: .8rem; }
+
+/* terminal */
+.term { background: var(--term); border: 1px solid color-mix(in srgb, var(--steel) 60%, transparent); border-radius: var(--radius); overflow: hidden; text-align: start; }
+.term-bar { background: var(--term-bar); display: flex; align-items: center; gap: 10px; padding: 7px 14px; font: .72rem 'IBM Plex Mono', monospace; color: var(--term-dim); border-bottom: 1px solid color-mix(in srgb, var(--steel) 35%, transparent); direction: ltr; }
+.term-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); opacity: .8; }
+.term-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; direction: ltr; }
+.term-row + .term-row { border-top: 1px solid color-mix(in srgb, var(--steel) 25%, transparent); }
+.term code { flex: 1; color: var(--term-text); font-size: .86rem; word-break: break-all; }
+.term code::before { content: attr(data-prompt) " "; color: var(--teal); user-select: none; }
+.copy { background: color-mix(in srgb, var(--cerulean) 18%, transparent); border: 1px solid color-mix(in srgb, var(--cerulean) 45%, transparent); color: var(--ice); font: .76rem 'IBM Plex Sans Arabic', sans-serif; border-radius: 6px; padding: 5px 12px; cursor: pointer; white-space: nowrap; }
+.copy:hover { background: var(--btn); }
+.copy.done { background: color-mix(in srgb, var(--taupe) 55%, var(--navy)); border-color: var(--taupe); }
+
+/* hero mockup */
+.mock { direction: ltr; }
+.screen { border: 1px solid color-mix(in srgb, var(--steel) 60%, transparent); border-radius: 12px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.wall { height: 250px; position: relative; background: linear-gradient(135deg, color-mix(in srgb, var(--navy) 70%, var(--cerulean)), color-mix(in srgb, var(--navy) 55%, var(--teal)) 55%, var(--navy)); }
+.dhikr-wrap { position: absolute; inset-inline: 0; bottom: 22px; text-align: center; padding: 0 16px; animation: breathe 7s ease-in-out infinite; }
+.dhikr { font-family: 'Amiri', serif; font-size: 1.4rem; line-height: 1.7; color: var(--ice); text-shadow: 0 2px 8px rgba(0,0,0,.6); }
+.src { margin-top: 6px; font-size: .72rem; line-height: 1.6; color: var(--silver); text-shadow: 0 1px 4px rgba(0,0,0,.6); }
+.win { position: absolute; background: color-mix(in srgb, var(--navy) 85%, #000); border: 1px solid color-mix(in srgb, var(--steel) 50%, transparent); border-radius: 6px; box-shadow: 0 6px 22px rgba(0,0,0,.4); }
+.win::before { content: ""; display: block; height: 16px; background: color-mix(in srgb, var(--ice) 8%, transparent); }
+.win.a { top: 16px; inset-inline-start: 16px; width: 190px; height: 118px; } .win.b { top: 38px; inset-inline-end: 16px; width: 150px; height: 92px; }
+.bar { height: 28px; background: var(--term-bar); display: flex; gap: 8px; align-items: center; padding: 0 12px; }
+.bar i { width: 22px; height: 14px; border-radius: 3px; background: color-mix(in srgb, var(--cerulean) 25%, transparent); }
+.legend { display: flex; gap: 18px; margin-top: 14px; font-size: .78rem; color: var(--silver); flex-wrap: wrap; direction: inherit; }
+.legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-inline-end: 7px; vertical-align: -1px; }
+.legend .l1::before { background: color-mix(in srgb, var(--navy) 85%, #000); border: 1px solid var(--steel); } .legend .l2::before { background: var(--ice); } .legend .l3::before { background: var(--teal); }
+@keyframes breathe { 0%, 100% { opacity: .82; } 50% { opacity: 1; } }
+
+/* sections */
+section { padding: 84px 0; } .hero { padding: 0; } .alt { background: var(--surface-2); }
+h2 { font-family: 'Amiri', serif; font-size: clamp(1.7rem, 3vw, 2.35rem); text-align: center; line-height: 1.3; }
+.sub { text-align: center; color: var(--text-2); margin: 8px auto 44px; max-width: 60ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color .15s, transform .15s; }
+.card:hover { border-color: var(--cerulean); transform: translateY(-2px); }
+.card svg { width: 26px; height: 26px; color: var(--link); margin-bottom: 14px; }
+.card h3 { font-size: 1.02rem; margin-bottom: 6px; } .card p { color: var(--text-2); font-size: .92rem; }
+.badge { display: inline-block; font: .72rem 'IBM Plex Mono', monospace; background: var(--badge-bg); color: var(--text); border-radius: 4px; padding: 2px 8px; margin-top: 12px; }
+
+/* install */
+.ver { display: flex; width: fit-content; margin: 0 auto 30px; gap: 8px; align-items: center; font: .82rem 'IBM Plex Mono', monospace; color: var(--text-2); border: 1px solid var(--border); background: var(--surface); border-radius: 100px; padding: 5px 16px; }
+.note { margin-top: 14px; font-size: .84rem; color: var(--text-2); border-inline-start: 3px solid var(--taupe); padding: 6px 12px; background: var(--surface); }
+
+/* cli table */
+.cli { max-width: 780px; margin: 0 auto; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th { text-align: start; padding: 10px 14px; background: var(--term-bar); color: var(--term-dim); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+td { padding: 10px 14px; border-top: 1px solid color-mix(in srgb, var(--steel) 25%, transparent); color: var(--term-dim); vertical-align: top; }
+td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--term-text); white-space: nowrap; direction: ltr; text-align: left; }
+.cli .term { background: var(--term); }
+
+/* developer + footer */
+.dev { display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap; }
+.who { display: flex; gap: 18px; align-items: center; } .who svg { width: 60px; height: 60px; color: var(--cerulean); flex: none; }
+.who h3 { font-size: 1.25rem; } .who .h { font-family: 'IBM Plex Mono', monospace; color: var(--link); font-size: .85rem; } .who p { color: var(--text-2); font-size: .9rem; max-width: 40ch; margin-top: 4px; }
+.links { display: flex; flex-direction: column; gap: 8px; }
+.links a { display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text-2); font-size: .9rem; background: var(--surface); }
+.links a:hover { border-color: var(--cerulean); color: var(--text); text-decoration: none; }
+footer { background: var(--navy); color: var(--silver); padding: 36px 0; font-size: .85rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+footer a { color: var(--silver); } footer a:hover { color: var(--ice); }
+footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; padding-block: 56px; } .mock { display: none; } }
+@media (max-width: 720px) { .nav ul { display: none; } .tools { margin-inline-start: auto; } section { padding: 60px 0; } .term-row { flex-wrap: wrap; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+
+/* install: always dark, independent of the page theme */
+.install { background: var(--navy); color: var(--ice); }
+.install h2 { color: var(--ice); }
+.install .sub, .install .note { color: var(--silver); }
+.install .ver { background: color-mix(in srgb, var(--navy) 78%, #000); border-color: color-mix(in srgb, var(--steel) 50%, transparent); color: var(--silver); }
+.os-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+.os-card { background: color-mix(in srgb, var(--navy) 86%, #000); border: 1px solid color-mix(in srgb, var(--steel) 45%, transparent); border-radius: 12px; padding: 22px; transition: border-color .2s, box-shadow .2s; }
+.os-card[data-current="true"] { border-color: var(--cerulean); box-shadow: 0 0 0 1px var(--cerulean), 0 16px 44px rgba(0,0,0,.35); }
+.os-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.os-head h3 { font-size: 1.12rem; }
+.shell { font: .7rem 'IBM Plex Mono', monospace; color: var(--silver); border: 1px solid color-mix(in srgb, var(--steel) 55%, transparent); border-radius: 100px; padding: 1px 10px; }
+.rec { margin-inline-start: auto; font-size: .74rem; color: var(--ice); background: color-mix(in srgb, var(--taupe) 32%, var(--navy)); border-radius: 4px; padding: 1px 9px; }
+.rec[hidden] { display: none; }
+.install .note { background: none; margin-top: 14px; }
+.after { text-align: center; margin-top: 30px; font-size: .9rem; color: var(--silver); }
+.after a { color: color-mix(in srgb, var(--cerulean) 55%, var(--ice)); }
+
+</style>
 </head>
 <body>
 <a class="skip" href="#main" data-ar="تخطَّ إلى المحتوى" data-en="Skip to content">تخطَّ إلى المحتوى</a>
@@ -40,7 +216,7 @@
     <h1><span class="a" data-ar="أذكار وأدعية" data-en="Adhkar &amp; Duas">أذكار وأدعية</span><span class="b" data-ar="على سطح مكتبك — دائمًا" data-en="on your desktop, always">على سطح مكتبك — دائمًا</span></h1>
     <p class="lead" data-ar="يعرض أذكاري الأذكار والأدعية فوق خلفية سطح مكتبك وتحت نوافذك، ويذكّرك بها بإشعارات دورية. ثبّته بأمر واحد في الطرفية — بلا ملفات تنزيل يدوية." data-en="Azkare shows Adhkar and Duas above your wallpaper and below your windows, with periodic reminder notifications. Install it with a single terminal command — no manual downloads.">يعرض أذكاري الأذكار والأدعية فوق خلفية سطح مكتبك وتحت نوافذك، ويذكّرك بها بإشعارات دورية. ثبّته بأمر واحد في الطرفية — بلا ملفات تنزيل يدوية.</p>
     <div class="os-row"><span data-ar="تثبيت سريع" data-en="Quick install">تثبيت سريع</span><span class="pill" id="osPill">Linux</span></div>
-    <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>terminal</span></div><div class="term-row"><code id="heroCmd" data-prompt="$">curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code><button class="copy" type="button" data-copy="heroCmd" data-ar="نسخ" data-en="Copy">نسخ</button></div></div>
+    <div class="term" dir="ltr"><div class="term-bar"><i></i><i></i><i></i><span>terminal</span></div><div class="term-row" dir="ltr"><code id="heroCmd" dir="ltr" data-prompt="$">curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code><button class="copy" type="button" data-copy="heroCmd" data-ar="نسخ" data-en="Copy">نسخ</button></div></div>
     <div class="cta">
       <a class="btn btn-primary" href="#install" data-ar="دليل التثبيت الكامل" data-en="Full install guide">دليل التثبيت الكامل</a>
       <a class="btn btn-ghost" href="https://github.com/arcalc/azkare" target="_blank" rel="noopener" data-ar="عرض المصدر" data-en="View source">عرض المصدر</a>
@@ -53,7 +229,7 @@
   </div>
   <div class="mock" aria-hidden="true">
     <div class="screen"><div class="wall">
-      <div class="dhikr">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="dhikr-wrap"><div class="dhikr" lang="ar" dir="rtl">رَّبِّ زِدۡنِي عِلۡمࣰا</div><div class="src" dir="rtl"><bdi lang="ar">المصدر: سورة طه: 114</bdi> <span aria-hidden="true">|</span> <bdi lang="en" dir="ltr">Source: Surah Ta-Ha 20:114</bdi></div></div>
       <div class="win a"></div><div class="win b"></div>
     </div><div class="bar"><i></i><i></i><i></i></div></div>
     <div class="legend"><span class="l1" data-ar="نوافذ التطبيقات" data-en="App windows">نوافذ التطبيقات</span><span class="l2" data-ar="نص الذكر" data-en="Dhikr text">نص الذكر</span><span class="l3" data-ar="الخلفية" data-en="Wallpaper">الخلفية</span></div>
@@ -63,26 +239,35 @@
 <section id="features"><div class="wrap">
   <h2 data-ar="ما يميّز أذكاري" data-en="What Azkare does">ما يميّز أذكاري</h2>
   <p class="sub" data-ar="مصمم للمستخدم العادي، ومبني بمعايير المطوّر" data-en="Built for everyday users, with developer-grade tooling">مصمم للمستخدم العادي، ومبني بمعايير المطوّر</p>
-  <div class="grid"><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><h3 data-ar="تثبيت بأمر واحد" data-en="One-command install">تثبيت بأمر واحد</h3><p data-ar="أمر واحد يثبّت التبعيات والخطوط ويبني من المصدر — بلا ملفات تنزيل يدوية." data-en="One command installs dependencies and fonts and builds from source — no manual downloads.">أمر واحد يثبّت التبعيات والخطوط ويبني من المصدر — بلا ملفات تنزيل يدوية.</p><span class=badge>Linux · macOS · Windows</span></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><h3 data-ar="طبقة سطح المكتب" data-en="Wallpaper layer">طبقة سطح المكتب</h3><p data-ar="يظهر الذكر فوق الخلفية وتحت نوافذك دون أن يسرق التركيز. X11 وWayland (layer-shell)." data-en="The Dhikr sits above your wallpaper and below your windows without stealing focus. X11 and Wayland (layer-shell).">يظهر الذكر فوق الخلفية وتحت نوافذك دون أن يسرق التركيز. X11 وWayland (layer-shell).</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg><h3 data-ar="مرجع لكل ذكر" data-en="A reference for every entry">مرجع لكل ذكر</h3><p data-ar="كل ذكر يحمل مرجعه (البخاري، مسلم، القرآن…). المجموعة الحالية بداية وتنمو، والمراجعة العلمية مرحَّب بها." data-en="Every entry carries its reference (Bukhari, Muslim, Quran…). The collection is a growing starter set; scholarly review is welcome.">كل ذكر يحمل مرجعه (البخاري، مسلم، القرآن…). المجموعة الحالية بداية وتنمو، والمراجعة العلمية مرحَّب بها.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><h3 data-ar="توقيت مرن" data-en="Flexible timing">توقيت مرن</h3><p data-ar="من ٣٠ ثانية إلى ساعة أو أي مدة تختارها، للعرض وللإشعارات كلٌّ على حدة." data-en="From 30 seconds to an hour or any custom length, set separately for the overlay and for notifications.">من ٣٠ ثانية إلى ساعة أو أي مدة تختارها، للعرض وللإشعارات كلٌّ على حدة.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><h3 data-ar="إشعارات النظام" data-en="Native notifications">إشعارات النظام</h3><p data-ar="عبر D-Bus على لينكس، وإشعارات Qt الأصلية على ويندوز وmacOS." data-en="Over D-Bus on Linux, Qt's native notifications on Windows and macOS.">عبر D-Bus على لينكس، وإشعارات Qt الأصلية على ويندوز وmacOS.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><h3 data-ar="خطوط عربية مدمجة" data-en="Bundled Arabic fonts">خطوط عربية مدمجة</h3><p data-ar="أميري، شهرزاد، نوتو نسخ، كايرو، IBM Plex العربي، عرف رقعة — مدمجة في البرنامج." data-en="Amiri, Scheherazade New, Noto Naskh, Cairo, IBM Plex Arabic, Aref Ruqaa — built into the app.">أميري، شهرزاد، نوتو نسخ، كايرو، IBM Plex العربي، عرف رقعة — مدمجة في البرنامج.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 5a10 10 0 010 14M5 5a10 10 0 000 14"/></svg><h3 data-ar="دعم eww على لينكس" data-en="eww on Linux">دعم eww على لينكس</h3><p data-ar="اختر eww كمحرك عرض بديل؛ يكتب أذكاري إعداداته في مجلد خاص ولا يمس إعداداتك." data-en="Pick eww as an alternative engine; Azkare writes its config to a private folder and never touches yours.">اختر eww كمحرك عرض بديل؛ يكتب أذكاري إعداداته في مجلد خاص ولا يمس إعداداتك.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg><h3 data-ar="إعدادات بلغة بسيطة" data-en="Plain-language settings">إعدادات بلغة بسيطة</h3><p data-ar="عربي (يمين لليسار) وإنجليزي، وتحت كل خيار شرح بسيط، مع معاينة حية للخط واللون." data-en="Arabic (right-to-left) and English, with a plain explanation under every option and a live preview of font and colour.">عربي (يمين لليسار) وإنجليزي، وتحت كل خيار شرح بسيط، مع معاينة حية للخط واللون.</p></article></div>
+  <div class="grid"><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><h3 data-ar="تثبيت بأمر واحد" data-en="One-command install">تثبيت بأمر واحد</h3><p data-ar="أمر واحد يثبّت التبعيات والخطوط ويبني من المصدر — بلا ملفات تنزيل يدوية." data-en="One command installs dependencies and fonts and builds from source — no manual downloads.">أمر واحد يثبّت التبعيات والخطوط ويبني من المصدر — بلا ملفات تنزيل يدوية.</p><span class=badge>Linux · macOS · Windows</span></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><h3 data-ar="طبقة سطح المكتب" data-en="Wallpaper layer">طبقة سطح المكتب</h3><p data-ar="يظهر الذكر فوق الخلفية وتحت نوافذك دون أن يسرق التركيز. X11 وWayland (layer-shell)." data-en="The Dhikr sits above your wallpaper and below your windows without stealing focus. X11 and Wayland (layer-shell).">يظهر الذكر فوق الخلفية وتحت نوافذك دون أن يسرق التركيز. X11 وWayland (layer-shell).</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg><h3 data-ar="المصدر بالعربية والإنجليزية" data-en="Sources in Arabic and English">المصدر بالعربية والإنجليزية</h3><p data-ar="كل ذكر يعرض مصدره بالعربية والإنجليزية معًا (القرآن، البخاري، مسلم…). المجموعة الحالية بداية وتنمو، والمراجعة العلمية مرحَّب بها." data-en="Every entry shows its source in Arabic and English together (Quran, Bukhari, Muslim…). The collection is a growing starter set; scholarly review is welcome.">كل ذكر يعرض مصدره بالعربية والإنجليزية معًا (القرآن، البخاري، مسلم…). المجموعة الحالية بداية وتنمو، والمراجعة العلمية مرحَّب بها.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><h3 data-ar="توقيت مرن" data-en="Flexible timing">توقيت مرن</h3><p data-ar="من ٣٠ ثانية إلى ساعة أو أي مدة تختارها، للعرض وللإشعارات كلٌّ على حدة." data-en="From 30 seconds to an hour or any custom length, set separately for the overlay and for notifications.">من ٣٠ ثانية إلى ساعة أو أي مدة تختارها، للعرض وللإشعارات كلٌّ على حدة.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><h3 data-ar="إشعارات النظام" data-en="Native notifications">إشعارات النظام</h3><p data-ar="عبر D-Bus على لينكس، وإشعارات Qt الأصلية على ويندوز وmacOS." data-en="Over D-Bus on Linux, Qt's native notifications on Windows and macOS.">عبر D-Bus على لينكس، وإشعارات Qt الأصلية على ويندوز وmacOS.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><h3 data-ar="خطوط عربية مدمجة" data-en="Bundled Arabic fonts">خطوط عربية مدمجة</h3><p data-ar="أميري، شهرزاد، نوتو نسخ، كايرو، IBM Plex العربي، عرف رقعة — مدمجة في البرنامج." data-en="Amiri, Scheherazade New, Noto Naskh, Cairo, IBM Plex Arabic, Aref Ruqaa — built into the app.">أميري، شهرزاد، نوتو نسخ، كايرو، IBM Plex العربي، عرف رقعة — مدمجة في البرنامج.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 5a10 10 0 010 14M5 5a10 10 0 000 14"/></svg><h3 data-ar="دعم eww على لينكس" data-en="eww on Linux">دعم eww على لينكس</h3><p data-ar="اختر eww كمحرك عرض بديل؛ يكتب أذكاري إعداداته في مجلد خاص ولا يمس إعداداتك." data-en="Pick eww as an alternative engine; Azkare writes its config to a private folder and never touches yours.">اختر eww كمحرك عرض بديل؛ يكتب أذكاري إعداداته في مجلد خاص ولا يمس إعداداتك.</p></article><article class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg><h3 data-ar="إعدادات بلغة بسيطة" data-en="Plain-language settings">إعدادات بلغة بسيطة</h3><p data-ar="عربي (يمين لليسار) وإنجليزي، وتحت كل خيار شرح بسيط، مع معاينة حية للخط واللون." data-en="Arabic (right-to-left) and English, with a plain explanation under every option and a live preview of font and colour.">عربي (يمين لليسار) وإنجليزي، وتحت كل خيار شرح بسيط، مع معاينة حية للخط واللون.</p></article></div>
 </div></section>
 
-<section id="install" class="alt"><div class="wrap">
-  <h2 data-ar="التثبيت عبر الطرفية" data-en="Terminal installation">التثبيت عبر الطرفية</h2>
-  <p class="sub" data-ar="لا ملفات تنزيل ولا نقرات — أمر واحد يفعل كل شيء" data-en="No downloads, no clicking — one command does everything">لا ملفات تنزيل ولا نقرات — أمر واحد يفعل كل شيء</p>
+<section id="install" class="install"><div class="wrap">
+  <h2 data-ar="التثبيت" data-en="Install">التثبيت</h2>
+  <p class="sub" data-ar="أمر واحد في الطرفية يثبّت التبعيات والخطوط ثم يبني أذكاري — بلا ملفات تنزيل ولا نقرات" data-en="One terminal command installs the dependencies and fonts, then builds Azkare — no downloads, no clicking">أمر واحد في الطرفية يثبّت التبعيات والخطوط ثم يبني أذكاري — بلا ملفات تنزيل ولا نقرات</p>
   <div class="ver" id="verBadge" aria-live="polite"><span class="dot"></span><span id="verText">…</span></div>
-  <div class="tabs" role="tablist" aria-label="Platform">
-    <button class="tab" role="tab" id="tab-linux" aria-selected="true" aria-controls="panel-linux" data-tab="linux">Linux <small data-ar="مُختبَر" data-en="tested">مُختبَر</small></button>
-    <button class="tab" role="tab" id="tab-windows" aria-selected="false" aria-controls="panel-windows" data-tab="windows" tabindex="-1">Windows <small data-ar="تجريبي" data-en="experimental">تجريبي</small></button>
-    <button class="tab" role="tab" id="tab-macos" aria-selected="false" aria-controls="panel-macos" data-tab="macos" tabindex="-1">macOS <small data-ar="تجريبي" data-en="experimental">تجريبي</small></button>
+  <div class="os-grid">
+    <article class="os-card" data-os="unix">
+      <div class="os-head"><h3>Linux &amp; macOS</h3><span class="shell">bash</span><span class="rec" hidden data-ar="لجهازك" data-en="For your system">لجهازك</span></div>
+      <div class="term" dir="ltr"><div class="term-bar"><i></i><i></i><i></i><span># Linux &amp; macOS</span></div>
+        <div class="term-row" dir="ltr"><code id="cmd-unix" dir="ltr" data-prompt="$">curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code><button class="copy" type="button" data-copy="cmd-unix" data-ar="نسخ" data-en="Copy">نسخ</button></div></div>
+      <p class="note" data-ar="Linux مُختبَر (Ubuntu 24.04 / X11) · macOS تجريبي ولم يُختبر بعد." data-en="Linux tested (Ubuntu 24.04 / X11) · macOS is experimental and not tested yet.">Linux مُختبَر (Ubuntu 24.04 / X11) · macOS تجريبي ولم يُختبر بعد.</p>
+    </article>
+    <article class="os-card" data-os="win">
+      <div class="os-head"><h3>Windows (PowerShell)</h3><span class="shell">PowerShell</span><span class="rec" hidden data-ar="لجهازك" data-en="For your system">لجهازك</span></div>
+      <div class="term" dir="ltr"><div class="term-bar"><i></i><i></i><i></i><span># Windows (PowerShell)</span></div>
+        <div class="term-row" dir="ltr"><code id="cmd-win" dir="ltr" data-prompt="PS&gt;">irm https://raw.githubusercontent.com/arcalc/azkare/main/install.ps1 | iex</code><button class="copy" type="button" data-copy="cmd-win" data-ar="نسخ" data-en="Copy">نسخ</button></div></div>
+      <p class="note" data-ar="تجريبي: لم يُختبر على ويندوز حقيقي بعد. يثبّت Git وMSYS2 وQt6 تلقائيًا." data-en="Experimental: not tested on a real Windows machine yet. Installs Git, MSYS2 and Qt6 automatically.">تجريبي: لم يُختبر على ويندوز حقيقي بعد. يثبّت Git وMSYS2 وQt6 تلقائيًا.</p>
+    </article>
   </div>
-  <div class="panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux"><div class="step"><span class="num">1</span><div><h3 data-ar="تثبيت تلقائي بأمر واحد (موصى به)" data-en="Automatic one-line install (recommended)">تثبيت تلقائي بأمر واحد (موصى به)</h3><p data-ar="يكتشف توزيعتك (Arch / Debian / Ubuntu / Fedora / openSUSE / Alpine)، يثبّت التبعيات والخطوط، يبني ويثبّت في ~/.local/bin." data-en="Detects your distro (Arch / Debian / Ubuntu / Fedora / openSUSE / Alpine), installs dependencies and fonts, builds and installs to ~/.local/bin.">يكتشف توزيعتك (Arch / Debian / Ubuntu / Fedora / openSUSE / Alpine)، يثبّت التبعيات والخطوط، يبني ويثبّت في ~/.local/bin.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>bash</span></div><div class="term-row"><code id="linux-auto" data-prompt="$">curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code><button class="copy" type="button" data-copy="linux-auto" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">2</span><div><h3 data-ar="بناء يدوي من المصدر" data-en="Manual build from source">بناء يدوي من المصدر</h3><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>bash</span></div><div class="term-row"><code id="linux-manual" data-prompt="$">git clone https://github.com/arcalc/azkare.git &amp;&amp; cd azkare &amp;&amp; bash scripts/fetch-fonts.sh &amp;&amp; cmake -B build -DCMAKE_BUILD_TYPE=Release &amp;&amp; cmake --build build -j &amp;&amp; sudo cmake --install build</code><button class="copy" type="button" data-copy="linux-manual" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">3</span><div><h3 data-ar="التحكم والتحديث وإلغاء التثبيت" data-en="Control, update and uninstall">التحكم والتحديث وإلغاء التثبيت</h3><p data-ar="تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة." data-en="Start in the background, settings, autostart, update, then full removal.">تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>bash</span></div><div class="term-row"><code id="linux-m0" data-prompt="$">azkare</code><button class="copy" type="button" data-copy="linux-m0" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="linux-m1" data-prompt="$">azkare --settings</code><button class="copy" type="button" data-copy="linux-m1" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="linux-m2" data-prompt="$">azkare --autostart on</code><button class="copy" type="button" data-copy="linux-m2" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="linux-m3" data-prompt="$">azkare --update</code><button class="copy" type="button" data-copy="linux-m3" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="linux-m4" data-prompt="$">azkare --uninstall</code><button class="copy" type="button" data-copy="linux-m4" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><p class="note" data-ar="مُختبَر على Ubuntu 24.04 مع X11. على Wayland يلزم تثبيت layer-shell-qt (يحاول المثبّت تثبيته)، وعلى GNOME بلا layer-shell يظهر النص كنافذة عادية." data-en="Tested on Ubuntu 24.04 with X11. On Wayland, layer-shell-qt is needed (the installer tries to install it); on GNOME without layer-shell the text appears as an ordinary window.">مُختبَر على Ubuntu 24.04 مع X11. على Wayland يلزم تثبيت layer-shell-qt (يحاول المثبّت تثبيته)، وعلى GNOME بلا layer-shell يظهر النص كنافذة عادية.</p></div><div class="panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden><div class="step"><span class="num">1</span><div><h3 data-ar="تثبيت تلقائي بأمر واحد (موصى به)" data-en="Automatic one-line install (recommended)">تثبيت تلقائي بأمر واحد (موصى به)</h3><p data-ar="يثبّت Git وMSYS2 عبر winget (أو choco/scoop) ثم المترجم وQt6 داخل MSYS2، ويبني ويضيف المسار إلى PATH." data-en="Installs Git and MSYS2 via winget (or choco/scoop), then the compiler and Qt6 inside MSYS2, builds, and adds the folder to PATH.">يثبّت Git وMSYS2 عبر winget (أو choco/scoop) ثم المترجم وQt6 داخل MSYS2، ويبني ويضيف المسار إلى PATH.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>PowerShell</span></div><div class="term-row"><code id="windows-auto" data-prompt="PS&gt;">irm https://raw.githubusercontent.com/arcalc/azkare/main/install.ps1 | iex</code><button class="copy" type="button" data-copy="windows-auto" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">2</span><div><h3 data-ar="بناء يدوي من المصدر" data-en="Manual build from source">بناء يدوي من المصدر</h3><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>PowerShell</span></div><div class="term-row"><code id="windows-manual" data-prompt="PS&gt;">git clone https://github.com/arcalc/azkare.git; cd azkare; $env:MSYSTEM='UCRT64'; $env:CHERE_INVOKING='1'; &amp; C:\msys64\usr\bin\bash.exe -lc 'bash scripts/fetch-fonts.sh; cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release &amp;&amp; cmake --build build -j'</code><button class="copy" type="button" data-copy="windows-manual" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">3</span><div><h3 data-ar="التحكم والتحديث وإلغاء التثبيت" data-en="Control, update and uninstall">التحكم والتحديث وإلغاء التثبيت</h3><p data-ar="تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة." data-en="Start in the background, settings, autostart, update, then full removal.">تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>PowerShell</span></div><div class="term-row"><code id="windows-m0" data-prompt="PS&gt;">azkare</code><button class="copy" type="button" data-copy="windows-m0" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="windows-m1" data-prompt="PS&gt;">azkare --settings</code><button class="copy" type="button" data-copy="windows-m1" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="windows-m2" data-prompt="PS&gt;">azkare --autostart on</code><button class="copy" type="button" data-copy="windows-m2" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="windows-m3" data-prompt="PS&gt;">azkare --update</code><button class="copy" type="button" data-copy="windows-m3" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="windows-m4" data-prompt="PS&gt;">azkare --uninstall</code><button class="copy" type="button" data-copy="windows-m4" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><p class="note" data-ar="تجريبي: لم يُختبر المثبّت على جهاز ويندوز حقيقي بعد. يستخدم MSYS2 لتثبيت المترجم وQt6." data-en="Experimental: the installer has not been tested on a real Windows machine yet. It uses MSYS2 for the compiler and Qt6.">تجريبي: لم يُختبر المثبّت على جهاز ويندوز حقيقي بعد. يستخدم MSYS2 لتثبيت المترجم وQt6.</p></div><div class="panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos" hidden><div class="step"><span class="num">1</span><div><h3 data-ar="تثبيت تلقائي بأمر واحد (موصى به)" data-en="Automatic one-line install (recommended)">تثبيت تلقائي بأمر واحد (موصى به)</h3><p data-ar="يثبّت التبعيات عبر Homebrew، يُنزّل الخطوط، يبني ويثبّت في ~/.local/bin." data-en="Installs dependencies with Homebrew, downloads the fonts, builds and installs to ~/.local/bin.">يثبّت التبعيات عبر Homebrew، يُنزّل الخطوط، يبني ويثبّت في ~/.local/bin.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div><div class="term-row"><code id="macos-auto" data-prompt="%">curl -fsSL https://raw.githubusercontent.com/arcalc/azkare/main/install.sh | bash</code><button class="copy" type="button" data-copy="macos-auto" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">2</span><div><h3 data-ar="بناء يدوي من المصدر" data-en="Manual build from source">بناء يدوي من المصدر</h3><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div><div class="term-row"><code id="macos-manual" data-prompt="%">brew install cmake ninja qt &amp;&amp; git clone https://github.com/arcalc/azkare.git &amp;&amp; cd azkare &amp;&amp; bash scripts/fetch-fonts.sh &amp;&amp; cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$(brew --prefix qt)" &amp;&amp; cmake --build build -j &amp;&amp; sudo cmake --install build</code><button class="copy" type="button" data-copy="macos-manual" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><div class="step"><span class="num">3</span><div><h3 data-ar="التحكم والتحديث وإلغاء التثبيت" data-en="Control, update and uninstall">التحكم والتحديث وإلغاء التثبيت</h3><p data-ar="تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة." data-en="Start in the background, settings, autostart, update, then full removal.">تشغيل في الخلفية، الإعدادات، التشغيل التلقائي، التحديث، ثم الإزالة الكاملة.</p><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div><div class="term-row"><code id="macos-m0" data-prompt="%">azkare</code><button class="copy" type="button" data-copy="macos-m0" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="macos-m1" data-prompt="%">azkare --settings</code><button class="copy" type="button" data-copy="macos-m1" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="macos-m2" data-prompt="%">azkare --autostart on</code><button class="copy" type="button" data-copy="macos-m2" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="macos-m3" data-prompt="%">azkare --update</code><button class="copy" type="button" data-copy="macos-m3" data-ar="نسخ" data-en="Copy">نسخ</button></div><div class="term-row"><code id="macos-m4" data-prompt="%">azkare --uninstall</code><button class="copy" type="button" data-copy="macos-m4" data-ar="نسخ" data-en="Copy">نسخ</button></div></div></div></div><p class="note" data-ar="تجريبي: لم يُختبر على macOS بعد. يتطلب Homebrew." data-en="Experimental: not tested on macOS yet. Requires Homebrew.">تجريبي: لم يُختبر على macOS بعد. يتطلب Homebrew.</p></div>
+  <p class="after"><span data-ar="بعد التثبيت:" data-en="After installing:">بعد التثبيت:</span> <a href="#cli" data-ar="أوامر الطرفية للتحديث والإعدادات وإلغاء التثبيت" data-en="terminal commands for updating, settings and uninstalling">أوامر الطرفية للتحديث والإعدادات وإلغاء التثبيت</a></p>
 </div></section>
 
 <section id="cli"><div class="wrap">
   <h2 data-ar="مرجع أوامر الطرفية" data-en="CLI reference">مرجع أوامر الطرفية</h2>
   <p class="sub" data-ar="تحكّم كامل بدون واجهة رسومية (ولا يحتاج شاشة: يعمل عبر SSH)" data-en="Full control without a GUI (needs no display: works over SSH)">تحكّم كامل بدون واجهة رسومية (ولا يحتاج شاشة: يعمل عبر SSH)</p>
   <div class="cli"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>azkare --help</span></div>
-  <table><thead><tr><th data-ar="الأمر" data-en="Command">الأمر</th><th data-ar="الوصف" data-en="What it does">الوصف</th></tr></thead><tbody><tr><td>azkare</td><td data-ar="تشغيل في الخلفية (الطبقة + شريط المهام)" data-en="Start in the background (overlay + tray)">تشغيل في الخلفية (الطبقة + شريط المهام)</td></tr><tr><td>azkare --foreground</td><td data-ar="البقاء في الطرفية" data-en="Stay attached to the terminal">البقاء في الطرفية</td></tr><tr><td>azkare --settings</td><td data-ar="فتح نافذة الإعدادات" data-en="Open the settings window">فتح نافذة الإعدادات</td></tr><tr><td>azkare --next</td><td data-ar="الذكر التالي فورًا" data-en="Show the next Dhikr now">الذكر التالي فورًا</td></tr><tr><td>azkare --mode overlay|notify|both</td><td data-ar="وضع العرض: سطح المكتب / إشعارات / الاثنان" data-en="Display mode: desktop / notifications / both">وضع العرض: سطح المكتب / إشعارات / الاثنان</td></tr><tr><td>azkare --autostart on|off</td><td data-ar="التشغيل عند بدء النظام" data-en="Start at login">التشغيل عند بدء النظام</td></tr><tr><td>azkare --update [--force]</td><td data-ar="التحديث: يفحص GitHub ثم يسحب ويعيد البناء ويعيد التشغيل" data-en="Update: checks GitHub, pulls, rebuilds, restarts">التحديث: يفحص GitHub ثم يسحب ويعيد البناء ويعيد التشغيل</td></tr><tr><td>azkare --uninstall [--purge]</td><td data-ar="إلغاء التثبيت (مع --purge يحذف الإعدادات والمصدر)" data-en="Uninstall (--purge also removes settings and source)">إلغاء التثبيت (مع --purge يحذف الإعدادات والمصدر)</td></tr><tr><td>azkare --quit</td><td data-ar="إيقاف النسخة العاملة" data-en="Stop the running instance">إيقاف النسخة العاملة</td></tr><tr><td>azkare --status</td><td data-ar="الحالة والإصدار ومسار الإعدادات" data-en="Status, version and config path">الحالة والإصدار ومسار الإعدادات</td></tr><tr><td>azkare --version</td><td data-ar="الإصدار + hash + تاريخ البناء" data-en="Version + git hash + build date">الإصدار + hash + تاريخ البناء</td></tr><tr><td>azkare --help</td><td data-ar="دليل الاستخدام ثنائي اللغة" data-en="Bilingual usage guide">دليل الاستخدام ثنائي اللغة</td></tr></tbody></table></div></div>
+  <table><thead><tr><th data-ar="الأمر" data-en="Command">الأمر</th><th data-ar="الوصف" data-en="What it does">الوصف</th></tr></thead><tbody><tr><td dir="ltr">azkare</td><td data-ar="تشغيل في الخلفية (الطبقة + شريط المهام)" data-en="Start in the background (overlay + tray)">تشغيل في الخلفية (الطبقة + شريط المهام)</td></tr><tr><td dir="ltr">azkare --foreground</td><td data-ar="البقاء في الطرفية" data-en="Stay attached to the terminal">البقاء في الطرفية</td></tr><tr><td dir="ltr">azkare --settings</td><td data-ar="فتح نافذة الإعدادات" data-en="Open the settings window">فتح نافذة الإعدادات</td></tr><tr><td dir="ltr">azkare --next</td><td data-ar="الذكر التالي فورًا" data-en="Show the next Dhikr now">الذكر التالي فورًا</td></tr><tr><td dir="ltr">azkare --mode overlay|notify|both</td><td data-ar="وضع العرض: سطح المكتب / إشعارات / الاثنان" data-en="Display mode: desktop / notifications / both">وضع العرض: سطح المكتب / إشعارات / الاثنان</td></tr><tr><td dir="ltr">azkare --autostart on|off</td><td data-ar="التشغيل عند بدء النظام" data-en="Start at login">التشغيل عند بدء النظام</td></tr><tr><td dir="ltr">azkare --update [--force]</td><td data-ar="التحديث: يفحص GitHub ثم يسحب ويعيد البناء ويعيد التشغيل" data-en="Update: checks GitHub, pulls, rebuilds, restarts">التحديث: يفحص GitHub ثم يسحب ويعيد البناء ويعيد التشغيل</td></tr><tr><td dir="ltr">azkare --uninstall [--purge]</td><td data-ar="إلغاء التثبيت (مع --purge يحذف الإعدادات والمصدر)" data-en="Uninstall (--purge also removes settings and source)">إلغاء التثبيت (مع --purge يحذف الإعدادات والمصدر)</td></tr><tr><td dir="ltr">azkare --quit</td><td data-ar="إيقاف النسخة العاملة" data-en="Stop the running instance">إيقاف النسخة العاملة</td></tr><tr><td dir="ltr">azkare --status</td><td data-ar="الحالة والإصدار ومسار الإعدادات" data-en="Status, version and config path">الحالة والإصدار ومسار الإعدادات</td></tr><tr><td dir="ltr">azkare --version</td><td data-ar="الإصدار + hash + تاريخ البناء" data-en="Version + git hash + build date">الإصدار + hash + تاريخ البناء</td></tr><tr><td dir="ltr">azkare --help</td><td data-ar="دليل الاستخدام ثنائي اللغة" data-en="Bilingual usage guide">دليل الاستخدام ثنائي اللغة</td></tr></tbody></table></div></div>
 </div></section>
 
 <section id="developer" class="alt"><div class="wrap dev">
@@ -100,6 +285,146 @@
   <span data-ar="مفتوح المصدر · رخصة MIT" data-en="Open source · MIT licence">مفتوح المصدر · رخصة MIT</span>
   <nav><a href="https://github.com/arcalc/azkare/releases" target="_blank" rel="noopener" data-ar="الإصدارات" data-en="Releases">الإصدارات</a><a href="https://github.com/arcalc/azkare/issues" target="_blank" rel="noopener" data-ar="الإبلاغ عن مشكلة" data-en="Report an issue">الإبلاغ عن مشكلة</a><a href="https://github.com/arcalc/azkare/security/policy" target="_blank" rel="noopener" data-ar="الأمان" data-en="Security">الأمان</a></nav>
 </div></footer>
-<script src="app.js"></script>
+<script>
+'use strict';
+/* Azkare site: bilingual RTL/LTR, light/dark, OS-aware install box, copy buttons, tabs, latest tag. */
+
+const RAW = 'https://raw.githubusercontent.com/arcalc/azkare/main';
+const CMD = {
+  unix: `curl -fsSL ${RAW}/install.sh | bash`,
+  win: `irm ${RAW}/install.ps1 | iex`,
+};
+const LABELS = {
+  copy: { ar: 'نسخ', en: 'Copy' },
+  copied: { ar: 'تم النسخ ✓', en: 'Copied! ✓' },
+};
+const state = { lang: 'ar', theme: null, tag: null, noRelease: false };
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* private mode */ } },
+};
+
+/* ── language ─────────────────────────────────────────────────────────────── */
+function applyLang(lang) {
+  state.lang = lang;
+  const root = document.documentElement;
+  root.lang = lang;
+  root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  $$('[data-ar]').forEach((el) => {
+    const v = el.dataset[lang];
+    if (v !== undefined) el.textContent = v;
+  });
+  const btn = $('#langBtn span');
+  if (btn) btn.textContent = lang === 'ar' ? 'English' : 'عربي';
+  renderVersion();
+  store.set('az-lang', lang);
+}
+
+/* ── theme ────────────────────────────────────────────────────────────────── */
+function applyTheme(theme) {
+  state.theme = theme;
+  document.documentElement.dataset.theme = theme;
+  const meta = $('meta[name="theme-color"]');
+  if (meta) meta.content = theme === 'dark' ? '#243C4C' : '#E9E6E7';
+  store.set('az-theme', theme);
+}
+function initialTheme() {
+  const saved = store.get('az-theme');
+  if (saved === 'light' || saved === 'dark') return saved;
+  return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+/* ── OS detection ─────────────────────────────────────────────────────────── */
+function detectOS() {
+  const hint = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '') + ' ' + (navigator.userAgent || '');
+  const s = hint.toLowerCase();
+  if (s.includes('win')) return 'windows';
+  if (s.includes('mac') || s.includes('iphone') || s.includes('ipad')) return 'macos';
+  return 'linux';
+}
+function applyOS(os) {
+  $$('.os-card').forEach((c) => {
+    const mine = c.dataset.os === (os === 'windows' ? 'win' : 'unix');
+    c.dataset.current = String(mine);
+    const rec = $('.rec', c);
+    if (rec) rec.hidden = !mine;
+  });
+  const code = $('#heroCmd');
+  const pill = $('#osPill');
+  if (!code) return;
+  code.textContent = os === 'windows' ? CMD.win : CMD.unix;
+  code.dataset.prompt = os === 'windows' ? 'PS>' : os === 'macos' ? '%' : '$';
+  if (pill) pill.textContent = { windows: 'Windows', macos: 'macOS', linux: 'Linux' }[os];
+}
+
+/* ── copy ─────────────────────────────────────────────────────────────────── */
+async function copyFrom(btn) {
+  const target = document.getElementById(btn.dataset.copy);
+  if (!target) return;
+  const text = target.textContent.trim();       // the prompt is CSS-only, so this is the exact command
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+    ta.remove();
+  }
+  if (!ok) return;
+  btn.classList.add('done');
+  btn.textContent = LABELS.copied[state.lang];
+  clearTimeout(btn._t);
+  btn._t = setTimeout(() => { btn.classList.remove('done'); btn.textContent = LABELS.copy[state.lang]; }, 2000);
+}
+
+/* ── latest version from GitHub (release first, newest v* tag as fallback) ─── */
+function semverKey(t) { return t.replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0); }
+function newer(a, b) { const x = semverKey(a), y = semverKey(b); for (let i = 0; i < 3; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; }
+
+async function fetchLatest() {
+  const api = 'https://api.github.com/repos/arcalc/azkare';
+  const opts = { headers: { Accept: 'application/vnd.github+json' } };
+  try {
+    const r = await fetch(`${api}/releases/latest`, opts);
+    if (r.ok) { state.tag = (await r.json()).tag_name; return; }
+    if (r.status !== 404) throw new Error(String(r.status));
+    const t = await fetch(`${api}/tags?per_page=100`, opts);
+    if (!t.ok) throw new Error(String(t.status));
+    const tags = (await t.json()).map((x) => x.name).filter((n) => /^v?\d+\.\d+\.\d+$/.test(n));
+    if (tags.length) state.tag = tags.reduce((m, n) => (newer(n, m) ? n : m));
+    else state.noRelease = true;
+  } catch (_) { state.tag = null; }
+}
+function renderVersion() {
+  const el = $('#verText');
+  if (!el) return;
+  const ar = state.lang === 'ar';
+  if (state.tag) el.textContent = ar ? `أحدث إصدار: ${state.tag}` : `Latest: ${state.tag}`;
+  else if (state.noRelease) el.textContent = ar ? 'لا إصدار منشور بعد — يُثبَّت من فرع main' : 'No release published yet — installs from main';
+  else el.textContent = 'github.com/arcalc/azkare';
+}
+
+/* ── boot ─────────────────────────────────────────────────────────────────── */
+function init() {
+  if (init.done) return;
+  init.done = true;
+  const lang = store.get('az-lang');
+  applyTheme(initialTheme());
+  applyLang(lang === 'en' ? 'en' : 'ar');
+  applyOS(detectOS());
+
+  $('#langBtn').addEventListener('click', () => applyLang(state.lang === 'ar' ? 'en' : 'ar'));
+  $('#themeBtn').addEventListener('click', () => applyTheme(state.theme === 'dark' ? 'light' : 'dark'));
+  document.addEventListener('click', (e) => { const b = e.target.closest('.copy[data-copy]'); if (b) copyFrom(b); });
+
+  renderVersion();
+  fetchLatest().then(renderVersion);
+}
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
 </body>
 </html>

@@ -20,10 +20,10 @@ void NotificationDispatcher::send(const AdhkarEntry &e)
         return;
     const QString title = QString::fromUtf8("أذكاري");
     QString body = e.textAr;
-    if (m_settings.showSource() && !e.sourceRef.isEmpty())
-        body += QStringLiteral("\n— ") + e.sourceRef;
+    if (m_settings.showSource() && e.hasSource())
+        body += QLatin1Char('\n') + e.sourceLabelAr() + QLatin1Char('\n') + e.sourceLabelEn();
     if (e.repeat > 1)
-        body += QStringLiteral("  (× %1)").arg(e.repeat);
+        body += QStringLiteral("\n× %1").arg(e.repeat);
 
     if (sendViaDBus(title, body))
         return;

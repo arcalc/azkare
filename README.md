@@ -65,10 +65,25 @@ Debian/Ubuntu 24.10+). The installer tries to install it. Without it, Wayland se
 
 ## Content / المحتوى
 
-`resources/data/adhkar.json` is a **starter set** (see `"total"` in the file) in 7 categories. Every entry has a
-reference to the hadith collection or Quran verse. **The references have not been reviewed by a scholar yet**; please
-verify before relying on them and send corrections with sources.
-Validate changes: `python3 scripts/validate_adhkar.py`.
+`resources/data/adhkar.json` (schema `azkare-adhkar-v2`) is a **starter set** (see `"total"`) in 7 categories. Every entry carries
+`source_ar` **and** `source_en`; the overlay, notifications and eww backend always show both together
+(`المصدر: … | Source: …`) whatever the interface language.
+
+What is verified, and what is not (details per entry in [`AUDIT.md`](AUDIT.md)):
+
+| | Quranic entries (11) | Prophetic adhkar (33) |
+|---|---|---|
+| Arabic text | verbatim from the Uthmani Hafs text, ayah by ayah | words matched against a Hisn al-Muslim-based text (30 of 33); **diacritics not independently verifiable** |
+| English | verbatim Saheeh International | **unverified** (no source supplied) |
+| Reference | surah:ayah verified | **hadith numbers unverified** |
+| `count` | checked against the Hisn-based text | checked against the Hisn-based text |
+
+Scholarly review is welcome. Re-run the checks with:
+
+```bash
+python3 scripts/validate_adhkar.py          # schema, bilingual sources, flags (offline)
+bash scripts/fetch-audit-refs.sh && python3 scripts/audit_adhkar.py   # re-verifies every claim against the reference texts
+```
 
 ## Build from source
 

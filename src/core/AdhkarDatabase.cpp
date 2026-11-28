@@ -42,13 +42,10 @@ bool AdhkarDatabase::load(const QString &path)
             e.textAr = eo.value(QLatin1String("text_ar")).toString();
             if (e.id.isEmpty() || e.textAr.isEmpty())
                 continue;
-            e.transliteration = eo.value(QLatin1String("transliteration")).toString();
             e.translationEn = eo.value(QLatin1String("translation_en")).toString();
-            e.repeat = qMax(1, eo.value(QLatin1String("repeat")).toInt(1));
-            const QJsonObject src = eo.value(QLatin1String("source")).toObject();
-            e.sourceRef = src.value(QLatin1String("ref")).toString();
-            e.sourceNameAr = src.value(QLatin1String("source_name_ar")).toString();
-            e.sourceUrl = src.value(QLatin1String("url")).toString();
+            e.repeat = qMax(1, eo.value(QLatin1String("count")).toInt(1));
+            e.sourceAr = eo.value(QLatin1String("source_ar")).toString();
+            e.sourceEn = eo.value(QLatin1String("source_en")).toString();
             m_all.append(e);
             ++cat.count;
         }

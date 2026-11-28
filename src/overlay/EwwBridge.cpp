@@ -44,13 +44,13 @@ void EwwBridge::showEntry(const AdhkarEntry &e)
     if (!m_open)
         return;
     QStringList meta;
-    if (m_settings.showSource() && !e.sourceRef.isEmpty()) meta << e.sourceRef;
+    if (m_settings.showSource() && e.hasSource()) meta << e.sourceLabelAr() << e.sourceLabelEn();
     if (e.repeat > 1) meta << QStringLiteral("× %1").arg(e.repeat);
     // No shell is involved, so the values are passed verbatim (no quoting needed).
     runEww({QStringLiteral("update"),
             QStringLiteral("azkare-text=") + e.textAr,
             QStringLiteral("azkare-translation=") + (m_settings.showTranslation() ? e.translationEn : QString()),
-            QStringLiteral("azkare-meta=") + meta.join(QStringLiteral("  ·  "))});
+            QStringLiteral("azkare-meta=") + meta.join(QLatin1Char('\n'))});
 }
 
 void EwwBridge::close()

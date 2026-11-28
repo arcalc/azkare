@@ -8,13 +8,15 @@ struct AdhkarEntry {
     QString id;
     QString categoryId;
     QString textAr;
-    QString transliteration;
     QString translationEn;
-    int repeat = 1;
-    QString sourceRef;     ///< e.g. "Muslim 2723"
-    QString sourceNameAr;  ///< e.g. "مسلم"
-    QString sourceUrl;     ///< optional
+    int repeat = 1;        ///< "count" in the JSON: how many times to recite
+    QString sourceAr;      ///< e.g. "سورة البقرة: 255" or "رواه مسلم (2723) — حصن المسلم"
+    QString sourceEn;      ///< e.g. "Surah Al-Baqarah 2:255" or "Sahih Muslim 2723 — Hisn al-Muslim"
     bool isValid() const { return !id.isEmpty(); }
+    bool hasSource() const { return !sourceAr.isEmpty() && !sourceEn.isEmpty(); }
+    /** Both sources are always shown together, whatever language the UI is in. */
+    QString sourceLabelAr() const { return QString::fromUtf8("المصدر: ") + sourceAr; }
+    QString sourceLabelEn() const { return QStringLiteral("Source: ") + sourceEn; }
 };
 
 struct AdhkarCategory {
